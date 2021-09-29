@@ -53,12 +53,34 @@ resource "kubernetes_service" "test" {
     selector = {
       app = kubernetes_deployment.test.spec.0.template.0.metadata.0.labels.app
     }
-    type = "NodePort"
+    #type = "LoadBalancer"
     port {
-      node_port   = 30201
       port        = 80
       target_port = 80
     }
   }
 }
-
+resource "kubernetes_ingress" "test" {
+  wait_for_load_balancer = true
+  metadata {
+    name = "nginx-ingress"
+    namespace = kubernetes_namespace.test.metadata.0.name
+    annotations = {
+      "kubernetes.io/ingress.class" = "nginx"
+    }
+  }
+  spec {
+    rule {
+      host = "nginx.kube.ac"
+      http {
+        path {
+          path = "/"
+          backend {
+            service_name = kubernetes_service.test.metadata.0.name
+            service_port = 80
+          }
+        }
+      }
+    }
+  }
+}
