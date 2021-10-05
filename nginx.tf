@@ -34,7 +34,7 @@ resource "kubernetes_deployment" "nginx" {
       }
       spec {
         container {
-          image = "nginx"
+          image = "toleksa/kaboom-games"
           name  = "nginx-container"
           port {
             container_port = 80
