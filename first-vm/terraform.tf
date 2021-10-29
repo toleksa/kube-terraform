@@ -21,6 +21,7 @@ resource "libvirt_network" "br0" {
   name = "br0"
   mode = "bridge"
   bridge = "br0"
+  autostart = "true"
 }
 
 resource "libvirt_volume" "centos7-qcow2" {
