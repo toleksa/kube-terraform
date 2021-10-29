@@ -1,0 +1,22 @@
+network:
+  version: 2
+  renderer: networkd
+
+  ethernets:
+    enp3s0:
+      dhcp4: no
+      dhcp6: no
+
+  bridges:
+    br0:
+      interfaces: [ enp3s0 ]
+      addresses: [ {{ ip }}/24 ]
+      gateway4: {{ gw }}
+      mtu: 1500
+      nameservers:
+        addresses: [ {{ ns }} ]
+      parameters:
+        stp: true
+        forward-delay: 4
+      dhcp4: no
+      dhcp6: no

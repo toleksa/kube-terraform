@@ -1,0 +1,37 @@
+- hosts: all
+  tasks:
+  - name: Update and upgrade apt packages
+    apt:
+      upgrade: yes
+      update_cache: yes
+      cache_valid_time: 86400 #One day
+  - name: remove packages
+    apt:
+      pkg: ['eject','nano','xauth']
+      state: absent
+  - name: autoremove
+    apt:
+      autoremove: yes
+  - name: install packages
+    apt:
+      pkg: ['qemu-kvm','libvirt-daemon-system','bridge-utils']
+      state: latest
+  - name: upload bridge config
+    template:
+      src: netplan-bridge.j2
+      dest: /etc/netplan/00-installer-config.yaml
+      owner: root
+      backup: yes
+    notify: restart netplan
+  - name: apparmor profile for libvirt
+    lineinfile:
+      dest: /etc/apparmor.d/libvirt/TEMPLATE.qemu
+      insertafter: "#include <abstractions/libvirt-qemu>"
+      line: "  /virtualki/**.qcow2 rkw,"
+      state: present
+
+  handlers:
+  - name: restart netplan
+    command: netplan apply
+    async: 100
+    poll: 0
