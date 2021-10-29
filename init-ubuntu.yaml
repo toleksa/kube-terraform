@@ -29,9 +29,20 @@
       insertafter: "#include <abstractions/libvirt-qemu>"
       line: "  /virtualki/**.qcow2 rkw,"
       state: present
+  - name: disable suspend on lid close
+    lineinfile:
+      dest: /etc/systemd/logind.conf
+      line: "HandleLidSwitch=lock"
+      regexp: "HandleLidSwitch="
+      state: present
+    notify: restart logind
 
   handlers:
   - name: restart netplan
     command: netplan apply
     async: 100
     poll: 0
+  - name: restart logind
+    systemd:
+      name: systemd-logind.service
+      state: restarted
