@@ -38,7 +38,7 @@ resource "libvirt_domain" "first" {
   vcpu   = 1
 
   network_interface {
-    network_name = "default"
+    network_name = "${libvirt_network.br0.name}"
   }
 
   disk {
