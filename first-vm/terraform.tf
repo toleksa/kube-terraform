@@ -17,6 +17,12 @@ provider "libvirt" {
 #  path = "/virtualki/default/"
 #}
 
+resource "libvirt_network" "br0" {
+  name = "br0"
+  mode = "bridge"
+  bridge = "br0"
+}
+
 resource "libvirt_volume" "centos7-qcow2" {
   name = "centos7.qcow2"
   pool = "default"
