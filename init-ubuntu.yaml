@@ -27,7 +27,7 @@
     lineinfile:
       dest: /etc/apparmor.d/libvirt/TEMPLATE.qemu
       insertafter: "#include <abstractions/libvirt-qemu>"
-      line: "  /virtualki/**.qcow2 rkw,"
+      line: "  /virtualki/** rkw,"
       state: present
   - name: disable suspend on lid close
     lineinfile:
