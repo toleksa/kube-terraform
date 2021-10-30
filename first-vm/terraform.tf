@@ -56,7 +56,7 @@ resource "libvirt_domain" "first" {
 #    network_name = "${libvirt_network.br0.name}"
     network_name = "default"
     hostname = "first"
-    wait_for_lease = true
+    #wait_for_lease = true
   }
 
   disk {
