@@ -1,3 +1,4 @@
+# vim: syntax=yaml
 terraform {
   required_providers {
     libvirt = {
@@ -24,11 +25,12 @@ resource "libvirt_network" "br0" {
   autostart = "true"
 }
 
-resource "libvirt_volume" "centos7-qcow2" {
-  name = "centos7.qcow2"
+resource "libvirt_volume" "first-ubuntu-20_04" {
+  name = "first-ubuntu-20_04"
   pool = "default"
-  source = "https://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud.qcow2"
+  #source = "https://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud.qcow2"
   #source = "/virtualki/templates/CentOS-7-x86_64-GenericCloud.qcow2"
+  source = "https://cloud-images.ubuntu.com/focal/current/focal-server-cloudimg-amd64-disk-kvm.img"
   format = "qcow2"
 }
 
@@ -57,7 +59,7 @@ resource "libvirt_domain" "first" {
   }
 
   disk {
-    volume_id = "${libvirt_volume.centos7-qcow2.id}"
+    volume_id = "${libvirt_volume.first-ubuntu-20_04.id}"
   }
 
   cloudinit = "${libvirt_cloudinit_disk.commoninit.id}"
