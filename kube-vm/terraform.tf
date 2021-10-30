@@ -15,7 +15,7 @@ provider "libvirt" {
 resource "libvirt_pool" "kube" {
   name = "kube"
   type = "dir"
-  path = "/virtualki/kube/"
+  path = "/virtualki/kube"
 }
 
 resource "libvirt_network" "kube" {
@@ -35,6 +35,10 @@ resource "libvirt_volume" "virtkube1" {
   format = "qcow2"
 }
 
+data "template_file" "meta_data" {
+  template = "${file("${path.module}/meta_data.cfg")}"
+}
+
 data "template_file" "user_data" {
   template = "${file("${path.module}/user_data.cfg")}"
 }
@@ -43,6 +47,7 @@ data "template_file" "user_data" {
 # Use CloudInit to add the instance
 resource "libvirt_cloudinit_disk" "commoninit" {
   name = "commoninit.iso"
+  meta_data  = "${data.template_file.meta_data.rendered}"
   user_data  = "${data.template_file.user_data.rendered}"
   pool = "kube"
 }
