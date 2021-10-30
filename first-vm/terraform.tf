@@ -35,8 +35,9 @@ resource "libvirt_volume" "first-ubuntu-20_04" {
 }
 
 data "template_file" "user_data" {
-  template = "${file("${path.module}/cloud_init.cfg")}"
+  template = "${file("${path.module}/user_data.cfg")}"
 }
+
 
 # Use CloudInit to add the instance
 resource "libvirt_cloudinit_disk" "commoninit" {
