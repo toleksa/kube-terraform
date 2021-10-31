@@ -59,10 +59,10 @@ resource "libvirt_domain" "virtkube1" {
   vcpu   = 2
 
   network_interface {
-#    network_name = "${libvirt_network.kube.name}"
-    network_name = "default"
+    network_name = "${libvirt_network.kube.name}"
+#    network_name = "default"
     hostname = "virtkube1"
-    wait_for_lease = true
+#    wait_for_lease = true
   }
 
   disk {
