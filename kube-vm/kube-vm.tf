@@ -84,7 +84,7 @@ resource "libvirt_domain" "virtkube1" {
   }
 }
 
-output "ip" {
-  value = "${libvirt_domain.virtkube1.network_interface.0.addresses.0}"
-}
+#output "ip" {
+#  value = "${libvirt_domain.virtkube1.network_interface.0.addresses.0}"
+#}
 
