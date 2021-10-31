@@ -7,7 +7,8 @@ terraform {
   }
 }
 provider "kubernetes" {
-  config_path = "/etc/rancher/rke2/rke2.yaml"
+ # config_path = "/etc/rancher/rke2/rke2.yaml"
+  config_path = "./rke2.yaml"
 }
 resource "kubernetes_namespace" "nginx" {
   metadata {
@@ -71,7 +72,7 @@ resource "kubernetes_ingress" "nginx" {
   }
   spec {
     rule {
-      host = "nginx.kube.ac"
+      host = "nginx.v1.kube.ac"
       http {
         path {
           path = "/"
