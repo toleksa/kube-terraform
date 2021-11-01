@@ -1,13 +1,13 @@
 # kube-terraform
 
-# client (this machine)
-* install-terraform.sh
+## client (this machine)
+* ```install-terraform.sh```
 * get ansible
 
-# server
-adjust inv file
-* ansible init-ubuntu.yaml to install libvirt
+## server
+* adjust inv file
+* ```ansible-playbook -i inv init-ubuntu.yaml``` to install libvirt
 
-# deploy kubernetes:
-* cd kube-vm ; terraform apply # to install rke2 with argocd
-* cd nginx ; terraform apply # to deploy nginx
+## deploy kubernetes:
+* ```cd kube-vm ; terraform apply``` # to install rke2 with argocd
+* ```cd nginx ; terraform apply``` # to deploy nginx
