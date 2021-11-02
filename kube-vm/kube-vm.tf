@@ -56,7 +56,7 @@ resource "libvirt_cloudinit_disk" "commoninit" {
 resource "libvirt_domain" "virtkube1" {
   name   = "virtkube1"
   memory = "4096"
-  vcpu   = 2
+  vcpu   = 3
 
   network_interface {
     network_name = "${libvirt_network.kube.name}"
