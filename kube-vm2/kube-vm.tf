@@ -1,6 +1,6 @@
 # vim: syntax=yaml
 variable "host_count" {
-  default = "4"
+  default = "3"
 }
 
 terraform {
