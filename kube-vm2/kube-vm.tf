@@ -16,23 +16,24 @@ provider "libvirt" {
   uri   = "qemu+ssh://root@192.168.0.3/system"
 }
 
-resource "libvirt_pool" "kube" {
-  name = "kube"
-  type = "dir"
-  path = "/virtualki/kube"
-}
+#resource "libvirt_pool" "kube" {
+#  name = "kube"
+#  type = "dir"
+#  path = "/virtualki/kube"
+#}
 
-resource "libvirt_network" "kube" {
-  name = "kube"
-  mode = "bridge"
-  bridge = "br0"
-  autostart = "true"
-}
+#resource "libvirt_network" "kube" {
+#  name = "kube"
+#  mode = "bridge"
+#  bridge = "br0"
+#  autostart = "true"
+#}
 
 resource "libvirt_volume" "volume" {
   count = "${var.host_count}"
   name = "v${count.index + 1}"
-  pool = "kube"
+  #pool = "kube"
+  pool = "default"
   #source = "https://cloud-images.ubuntu.com/focal/current/focal-server-cloudimg-amd64-disk-kvm.img"
   source = "http://192.168.0.3/focal-server-cloudimg-amd64-disk-kvm.img"
   format = "qcow2"
@@ -58,7 +59,8 @@ resource "libvirt_cloudinit_disk" "cloudinit" {
   name = "cloudinit${count.index + 1}.iso"
   meta_data  = "${data.template_file.meta_data[count.index].rendered}"
   user_data  = "${data.template_file.user_data.rendered}"
-  pool = "kube"
+  #pool = "kube"
+  pool = "default"
 }
 
 # Define KVM domain to create
