@@ -56,7 +56,7 @@ data "template_file" "user_data" {
 # Use CloudInit to add the instance
 resource "libvirt_cloudinit_disk" "cloudinit" {
   count = "${var.host_count}"
-  name = "cloudinit${count.index + 1}.iso"
+  name = "cloudinit-v${count.index + 1}.iso"
   meta_data  = "${data.template_file.meta_data[count.index].rendered}"
   user_data  = "${data.template_file.user_data.rendered}"
   #pool = "kube"
