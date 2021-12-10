@@ -71,8 +71,8 @@ resource "libvirt_domain" "virtkubes" {
   vcpu   = 3
 
   network_interface {
-    network_name = "${libvirt_network.kube.name}"
-    #network_name = "default"
+    #network_name = "${libvirt_network.kube.name}"
+    network_name = "br0"
     #wait_for_lease = true
     hostname = "v${count.index + 1}.kube.ac"
   }
