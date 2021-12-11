@@ -22,12 +22,12 @@ provider "libvirt" {
 #  path = "/virtualki/postgres"
 #}
 
-#resource "libvirt_network" "postgres" {
-#  name = "postgres"
-#  mode = "bridge"
-#  bridge = "br0"
-#  autostart = "true"
-#}
+resource "libvirt_network" "postgres" {
+  name = "postgres"
+  mode = "bridge"
+  bridge = "br0"
+  autostart = "true"
+}
 
 resource "libvirt_volume" "volume" {
   count = "${var.host_count}"
@@ -72,8 +72,8 @@ resource "libvirt_domain" "virtkubes" {
   vcpu   = 2
 
   network_interface {
-    #network_name = "${libvirt_network.postgres.name}"
-    network_name = "br0"
+    network_name = "${libvirt_network.postgres.name}"
+    #network_name = "default"
     #wait_for_lease = true
     hostname = "postgres${count.index + 1}"
   }
