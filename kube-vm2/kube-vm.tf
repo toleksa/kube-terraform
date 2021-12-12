@@ -22,12 +22,12 @@ provider "libvirt" {
 #  path = "/virtualki/kube"
 #}
 
-#resource "libvirt_network" "kube" {
-#  name = "kube"
-#  mode = "bridge"
-#  bridge = "br0"
-#  autostart = "true"
-#}
+resource "libvirt_network" "kube" {
+  name = "kube"
+  mode = "bridge"
+  bridge = "br0"
+  autostart = "true"
+}
 
 resource "libvirt_volume" "volume" {
   count = "${var.host_count}"
@@ -71,8 +71,8 @@ resource "libvirt_domain" "virtkubes" {
   vcpu   = 3
 
   network_interface {
-    #network_name = "${libvirt_network.kube.name}"
-    network_name = "br0"
+    network_name = "${libvirt_network.kube.name}"
+    #network_name = "default"
     #wait_for_lease = true
     hostname = "v${count.index + 1}.kube.ac"
   }
