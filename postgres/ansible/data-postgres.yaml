@@ -1,0 +1,48 @@
+---
+- name: data-postgres
+  hosts: postgres
+
+  tasks:
+  - name: create test1 database
+    command: psql -c "create database test1;"
+    become_user: postgres
+    become_method: su
+    become: true
+    when: "'1' in inventory_hostname"
+
+  - name: create test1.journal table
+    command: psql -c "CREATE TABLE journal (t timestamp without time zone);" -d test1
+    become_user: postgres
+    become_method: su
+    become: true
+    when: "'1' in inventory_hostname"
+
+  - name: create journal.sql
+    copy:
+      dest: ~/journal.sql
+      content: insert into journal values (now());
+    become_user: postgres
+    become_method: su
+    become: true
+
+  - name: create query.sh
+    copy:
+      dest: ~/query.sh
+      content: |
+        #!/bin/bash
+        psql -c 'select * from journal order by t desc limit 10;' -d test1;
+      mode: '0755'
+    become_user: postgres
+    become_method: su
+    become: true
+
+  - name: crontab - feed data every minute
+    cron:
+      name: feed data
+      minute: "*"
+      job: psql -f ~/journal.sql -d test1 >> ~/journal.log 2>&1
+    become_user: postgres
+    become_method: su
+    become: true
+    when: "'1' in inventory_hostname"
+
