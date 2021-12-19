@@ -1,0 +1,44 @@
+---
+- name: install postgres
+  hosts: postgres
+
+  tasks:
+#  - name: stop and disable firewalld
+#    systemd:
+#      name: firewalld
+#      state: stopped
+#      enabled: no
+
+  - name: install postgres repo
+    dnf:
+      name: 'https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-x86_64/pgdg-redhat-repo-latest.noarch.rpm'
+      state: present
+      disable_gpg_check: yes
+
+  - name: disable default postgres
+    command: dnf -qy module disable postgresql
+
+  - name: install postgres and timescaledb packages - v11
+    dnf:
+      name:
+        - timescaledb_11
+        - postgresql11-devel 
+        - postgresql11-contrib
+      state: latest
+
+  - name: postgres initdb
+    command: /usr/pgsql-11/bin/postgresql-11-setup initdb
+
+  - name: enable and start postgres
+    systemd:
+      name: postgresql-11
+      state: started
+      enabled: yes
+
+  - name: psql PATH
+    lineinfile:
+      path: /var/lib/pgsql/.bash_profile
+      line: export PATH=$PATH:/usr/pgsql-11/bin/
+
+
+
