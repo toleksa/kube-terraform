@@ -35,6 +35,12 @@
     become_method: su
     become: true
     when: "'1' in inventory_hostname"
+  
+  - name: reload postgres1
+    systemd:
+      name: postgresql-11
+      state: reloaded
+    when: "'1' in inventory_hostname"
 
   - name: .pgpass
     copy:
@@ -71,4 +77,5 @@
     systemd:
       name: postgresql-11
       state: restarted
+    when: "'2' in inventory_hostname"
 
