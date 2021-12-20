@@ -1,0 +1,74 @@
+---
+- name: replication-postgres
+  hosts: postgres
+  tasks:
+  - name: create user
+    command: psql -c "create user replication replication login encrypted password 'replication';"
+    become_user: postgres
+    become_method: su
+    become: true
+    when: "'1' in inventory_hostname"
+
+  - name: postgresql.conf
+    lineinfile:
+      dest: /var/lib/pgsql/11/data/postgresql.conf
+      regexp: "{{ item.regexp }}"
+      line: "{{ item.line }}"
+      backup: yes
+    loop:
+      - { regexp: 'wal_level =',          line: 'wal_level = replica' }  
+      - { regexp: 'wal_log_hints =',      line: 'wal_log_hints = on' }  
+      - { regexp: 'max_wal_senders =',    line: 'max_wal_senders = 3' }  
+      - { regexp: 'wal_keep_segments =',  line: 'wal_keep_segments = 8' }  
+      - { regexp: 'hot_standby =',        line: 'hot_standby = on' }  
+    become_user: postgres
+    become_method: su
+    become: true
+    when: "'1' in inventory_hostname"
+
+  - name: pg_hba.conf
+    lineinfile:
+      dest: /var/lib/pgsql/11/data/pg_hba.conf
+      line: host    replication     all             all                     md5
+      backup: yes
+    become_user: postgres
+    become_method: su
+    become: true
+    when: "'1' in inventory_hostname"
+
+  - name: .pgpass
+    copy:
+      dest: /var/lib/pgsql/.pgpass
+      content: |
+        *:*:*:replication:replication
+      mode: '0600'
+    become_user: postgres
+    become_method: su
+    become: true
+
+  - name: clone database
+    shell: pg_basebackup -D /var/lib/pgsql/11/data/ -h postgres1.kube.ac -X stream -c fast -U replication -R
+    environment:
+      PGPASS: /var/lib/pgsql/.pgpass
+    become_user: postgres
+    become_method: su
+    become: true
+    when: "'2' in inventory_hostname"
+
+  - name: recovery.conf
+    copy:
+      dest: /var/lib/pgsql/11/data/recovery.conf
+      content: |
+        standby_mode = 'on'
+        primary_conninfo = 'user=replication password=replication host=postgres1.kube.ac port=5432 sslmode=prefer sslcompression=0 krbsrvname=postgres target_session_attrs=any'
+        trigger_file = '/var/lib/pgsql/11/data/trigger_file'
+    become_user: postgres
+    become_method: su
+    become: true
+    when: "'2' in inventory_hostname"
+
+  - name: restart
+    systemd:
+      name: postgresql-11
+      state: restarted
+

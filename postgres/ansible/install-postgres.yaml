@@ -28,12 +28,20 @@
 
   - name: postgres initdb
     command: /usr/pgsql-11/bin/postgresql-11-setup initdb
+    when: "'1' in inventory_hostname"
+
+  - name: postgresql.conf - listen_address
+    lineinfile:
+      dest: /var/lib/pgsql/11/data/postgresql.conf
+      regexp: 'listen_addresses ='
+      line: "listen_addresses = '*'"
 
   - name: enable and start postgres
     systemd:
       name: postgresql-11
       state: started
       enabled: yes
+    when: "'1' in inventory_hostname"
 
   - name: psql PATH
     lineinfile:
