@@ -3,6 +3,7 @@
   hosts: postgres
 
   tasks:
+
 #  - name: stop and disable firewalld
 #    systemd:
 #      name: firewalld
@@ -35,6 +36,7 @@
       dest: /var/lib/pgsql/11/data/postgresql.conf
       regexp: 'listen_addresses ='
       line: "listen_addresses = '*'"
+    when: "'1' in inventory_hostname"
 
   - name: enable and start postgres
     systemd:

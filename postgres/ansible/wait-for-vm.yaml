@@ -1,0 +1,14 @@
+---
+- name: wait-for-vm
+  hosts: postgres
+  gather_facts: false
+  tasks:
+
+  - name: Wait for system to become reachable
+    wait_for_connection:
+      timeout: 900
+
+  - name: wait for /cloud-init-ready.txt
+    wait_for:
+      path: /cloud-init-ready.txt
+
