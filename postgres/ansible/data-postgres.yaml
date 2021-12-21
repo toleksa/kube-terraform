@@ -44,5 +44,5 @@
     become_user: postgres
     become_method: su
     become: true
-    when: "'1' in inventory_hostname"
+    #when: "'1' in inventory_hostname"
 

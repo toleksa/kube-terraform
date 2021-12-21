@@ -2,7 +2,14 @@
 - name: replication-postgres
   hosts: postgres
   tasks:
-  - name: create user
+  - name: set user postgres password
+    command: psql -c "alter user postgres with password 'postgres';"
+    become_user: postgres
+    become_method: su
+    become: true
+    when: "'1' in inventory_hostname"
+
+  - name: create user replication
     command: psql -c "create user replication replication login encrypted password 'replication';"
     become_user: postgres
     become_method: su
@@ -29,8 +36,11 @@
   - name: pg_hba.conf
     lineinfile:
       dest: /var/lib/pgsql/11/data/pg_hba.conf
-      line: host    replication     all             all                     md5
+      line: "{{ item.line }}"
       backup: yes
+    loop:
+      - { line: 'host    replication     all             all                     md5' }
+      - { line: 'host    postgres        postgres        all                     md5' }
     become_user: postgres
     become_method: su
     become: true
@@ -47,6 +57,7 @@
       dest: /var/lib/pgsql/.pgpass
       content: |
         *:*:*:replication:replication
+        *:*:*:postgres:postgres
       mode: '0600'
     become_user: postgres
     become_method: su
