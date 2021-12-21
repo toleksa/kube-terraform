@@ -1,0 +1,61 @@
+---
+- name: failover-and-recovery
+  hosts: postgres
+  tasks:
+  - name: stop primary
+    command: systemctl stop postgresql-11
+    when: "'1' in inventory_hostname"
+
+  - name: promote secondary
+    shell: . ~/.bash_profile ; pg_ctl promote
+    args:
+      executable: /bin/bash
+    become_user: postgres
+    become_method: su
+    become: true
+    when: "'2' in inventory_hostname"
+
+  - name: bounce primary 1
+    shell: . ~/.bash_profile ; pg_ctl start
+    args:
+      executable: /bin/bash
+    become_user: postgres
+    become_method: su
+    become: true
+    when: "'1' in inventory_hostname" 
+
+  - name: bounce primary 2
+    shell: . ~/.bash_profile ; pg_ctl stop
+    args:
+      executable: /bin/bash
+    become_user: postgres
+    become_method: su
+    become: true
+    when: "'1' in inventory_hostname"
+
+  - name: pg_rewind
+    shell: . ~/.bash_profile ; pg_rewind --source-server="port=5432 host=postgres2.kube.ac user=postgres dbname=postgres" --target-pgdata=/var/lib/pgsql/11/data/
+    args:
+      executable: /bin/bash
+    become_user: postgres
+    become_method: su
+    become: true
+    when: "'1' in inventory_hostname"
+
+  - name: recovery.conf
+    copy:
+      dest: /var/lib/pgsql/11/data/recovery.conf
+      content: |
+        standby_mode = 'on'
+        primary_conninfo = 'user=replication password=replication host=postgres2.kube.ac port=5432 sslmode=prefer sslcompression=0 krbsrvname=postgres target_session_attrs=any'
+        trigger_file = '/var/lib/pgsql/11/data/trigger_file'
+    become_user: postgres
+    become_method: su
+    become: true
+    when: "'1' in inventory_hostname"
+
+  - name: start primary as new replica
+    command: systemctl start postgresql-11
+    when: "'1' in inventory_hostname"
+
+
