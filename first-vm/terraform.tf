@@ -3,7 +3,7 @@ terraform {
   required_providers {
     libvirt = {
       source = "dmacvicar/libvirt"
-      version = "0.6.11"
+      version = "0.6.12"
     }
   }
 }
@@ -12,11 +12,11 @@ provider "libvirt" {
   uri   = "qemu+ssh://root@192.168.0.3/system"
 }
 
-#resource "libvirt_pool" "default" {
-#  name = "default"
-#  type = "dir"
-#  path = "/virtualki/default/"
-#}
+resource "libvirt_pool" "first-vm" {
+  name = "first-vm"
+  type = "dir"
+  path = "/virtualki/first-vm"
+}
 
 resource "libvirt_network" "br0" {
   name = "br0"
@@ -27,7 +27,7 @@ resource "libvirt_network" "br0" {
 
 resource "libvirt_volume" "first-ubuntu-20_04" {
   name = "first-ubuntu-20_04"
-  pool = "default"
+  pool = "${libvirt_pool.first-vm.name}"
   #source = "https://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud.qcow2"
   #source = "/virtualki/templates/CentOS-7-x86_64-GenericCloud.qcow2"
   source = "https://cloud-images.ubuntu.com/focal/current/focal-server-cloudimg-amd64-disk-kvm.img"
@@ -43,7 +43,7 @@ data "template_file" "user_data" {
 resource "libvirt_cloudinit_disk" "commoninit" {
   name = "commoninit.iso"
   user_data      = "${data.template_file.user_data.rendered}"
-  pool = "default"
+  pool = "${libvirt_pool.first-vm.name}"
 }
 
 # Define KVM domain to create
@@ -53,8 +53,8 @@ resource "libvirt_domain" "first" {
   vcpu   = 1
 
   network_interface {
-#    network_name = "${libvirt_network.br0.name}"
-    network_name = "default"
+    network_name = "${libvirt_network.br0.name}"
+    #network_name = "default"
     hostname = "first"
     #wait_for_lease = true
   }
@@ -78,7 +78,7 @@ resource "libvirt_domain" "first" {
   }
 }
 
-output "ip" {
-  value = "${libvirt_domain.first.network_interface.0.addresses.0}"
-}
+#output "ip" {
+#  value = "${libvirt_domain.first.network_interface.0.addresses.0}"
+#}
 
