@@ -16,3 +16,10 @@ ssh: handshake failed: ssh: unable to authenticate, attempted methods [none publ
 ## deploy kubernetes:
 * ```cd kube-vm ; terraform apply``` # to install rke2 with argocd
 * ```cd nginx ; terraform apply``` # to deploy nginx
+
+## 192.168.0.3 - secret repo, contains:
+- dns <- dns key
+- env-v1 <- env configs for instances
+- env-v2
+- ...
+- focal-server-cloudimg-amd64-disk-kvm.img <- optional image for faster deploy, but I'm not sure if it's helping ;)
