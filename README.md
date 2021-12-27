@@ -9,7 +9,7 @@ ssh: handshake failed: ssh: unable to authenticate, attempted methods [none publ
 * ```install-terraform.sh```
 * get ansible
 
-## server
+## server (new host for libvirt)
 * adjust inv file
 * ```ansible-playbook -i inv init-ubuntu.yaml``` to install libvirt
 
