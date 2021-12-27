@@ -36,6 +36,13 @@
       regexp: "HandleLidSwitch="
       state: present
     notify: restart logind
+  - name: set dns
+    lineinfile:
+      dest: /etc/systemd/resolved.conf
+      line: "DNS=192.168.0.2"
+      regexp: "DNS="
+      state: present
+    notify: restart resolved
 
   handlers:
   - name: restart netplan
@@ -45,4 +52,8 @@
   - name: restart logind
     systemd:
       name: systemd-logind.service
+      state: restarted
+  - name: restart resolved
+    systemd:
+      name: systemd-resolved.service
       state: restarted
