@@ -46,7 +46,6 @@ data "template_file" "meta_data" {
     HOSTNAME = "kubevirt${count.index + 1}.kube.ac"
     FQDN = "kubevirt${count.index + 1}.kube.ac" 
     ID = "ID-kubevirt${count.index + 1}"
-    #pubkey   = file("~/.ssh/id_rsa.pub")
   }
 }
 
