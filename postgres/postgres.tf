@@ -34,8 +34,6 @@ resource "libvirt_volume" "volume" {
   name = "postgres${count.index + 1}"
   #pool = "postgres"
   pool = "default"
-  #source = "https://cloud-images.ubuntu.com/focal/current/focal-server-cloudimg-amd64-disk-kvm.img"
-  #source = "http://192.168.0.2:8765/focal-server-cloudimg-amd64-disk-kvm.img"
   source = "http://cloud.centos.org/centos/8/x86_64/images/CentOS-8-GenericCloud-8.4.2105-20210603.0.x86_64.qcow2"
   format = "qcow2"
 }
