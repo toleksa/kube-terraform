@@ -16,13 +16,16 @@
       state: present
       disable_gpg_check: yes
 
+  - name: timescaledb repo
+    shell: curl -s https://packagecloud.io/install/repositories/timescale/timescaledb/script.rpm.sh | bash
+
   - name: disable default postgres
     command: dnf -qy module disable postgresql
 
   - name: install postgres and timescaledb packages - v11
     dnf:
       name:
-        - timescaledb_11
+        - timescaledb-postgresql-11
         - postgresql11-devel 
         - postgresql11-contrib
       state: latest
