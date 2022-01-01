@@ -43,6 +43,12 @@
       regexp: "DNS="
       state: present
     notify: restart resolved
+  - name: disable ssh fingerprint check
+    lineinfile:
+      dest: /etc/ssh/ssh_config
+      line: StrictHostKeyChecking no
+      regexp: StrictHostKeyChecking
+      state: present
 
   handlers:
   - name: restart netplan
