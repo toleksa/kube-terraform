@@ -15,7 +15,7 @@
 
   - name: postgres initdb
     command: /usr/pgsql-12/bin/postgresql-12-setup initdb
-    #when: "'1' in inventory_hostname"
+    when: "'1' in inventory_hostname"
 
   - name: postgresql.conf
     lineinfile:
