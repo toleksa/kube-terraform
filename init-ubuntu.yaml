@@ -43,6 +43,12 @@
       regexp: "DNS="
       state: present
     notify: restart resolved
+  - name: sshd password auth
+    lineinfile:
+      dest: /etc/ssh/sshd_config
+      line: "PasswordAuthentication yes"
+      regexp: "(^|^#)PasswordAuthentication"
+    notify: restart sshd
 
   handlers:
   - name: restart netplan
@@ -57,3 +63,8 @@
     systemd:
       name: systemd-resolved.service
       state: restarted
+  - name: restart sshd
+    systemd:
+      name: sshd
+      state: restarted
+
