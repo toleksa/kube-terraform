@@ -16,13 +16,17 @@
       state: present
       disable_gpg_check: yes
 
+  - name: timescaledb repo
+    shell: curl -s https://packagecloud.io/install/repositories/timescale/timescaledb/script.rpm.sh | bash
+
   - name: disable default postgres
     command: dnf -qy module disable postgresql
 
   - name: install postgres and timescaledb packages - v11
     dnf:
       name:
-        - timescaledb_11
+        - timescaledb-postgresql-11
+        - timescaledb-loader-postgresql-11-1.7.5
         - postgresql11-devel 
         - postgresql11-contrib
       state: latest
@@ -36,6 +40,13 @@
       dest: /var/lib/pgsql/11/data/postgresql.conf
       regexp: 'listen_addresses ='
       line: "listen_addresses = '*'"
+    when: "'1' in inventory_hostname"
+
+  - name: postgresql.conf - shared_preload_libraries
+    lineinfile:
+      dest: /var/lib/pgsql/11/data/postgresql.conf
+      regexp: 'shared_preload_libraries'
+      line: "shared_preload_libraries = 'timescaledb'"
     when: "'1' in inventory_hostname"
 
   - name: enable and start postgres

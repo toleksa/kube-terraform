@@ -10,6 +10,13 @@
     become: true
     when: "'1' in inventory_hostname"
 
+  - name: timescaledb extension
+    command: psql -c "CREATE EXTENSION IF NOT EXISTS timescaledb;" -d test1
+    become_user: postgres
+    become_method: su
+    become: true
+    when: "'1' in inventory_hostname"
+
   - name: create test1.journal table
     command: psql -c "CREATE TABLE journal (t timestamp without time zone);" -d test1
     become_user: postgres

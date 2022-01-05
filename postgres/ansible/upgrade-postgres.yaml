@@ -1,20 +1,40 @@
 ---
 - name: upgrade postgres
   hosts: postgres
+  any_errors_fatal: true
 
   tasks:
 
   - name: install postgres and timescaledb packages - v12
     dnf:
       name:
-        - timescaledb_12
+        - timescaledb-postgresql-12-1.7.5
         - postgresql12-devel 
         - postgresql12-contrib
       state: latest
 
   - name: postgres initdb
     command: /usr/pgsql-12/bin/postgresql-12-setup initdb
-    #when: "'1' in inventory_hostname"
+    when: "'1' in inventory_hostname"
+
+  - name: postgresql.conf
+    lineinfile:
+      dest: /var/lib/pgsql/12/data/postgresql.conf
+      regexp: "{{ item.regexp }}"
+      line: "{{ item.line }}"
+      backup: yes
+    loop:
+      - { regexp: 'listen_addresses =',       line: "listen_addresses = '*'" }
+      - { regexp: 'hared_preload_libraries',  line: "shared_preload_libraries = 'timescaledb'" }
+      - { regexp: 'wal_level =',              line: 'wal_level = replica' }
+      - { regexp: 'wal_log_hints =',          line: 'wal_log_hints = on' }
+      - { regexp: 'max_wal_senders =',        line: 'max_wal_senders = 3' }
+      - { regexp: 'wal_keep_segments =',      line: 'wal_keep_segments = 8' }
+      - { regexp: 'hot_standby =',            line: 'hot_standby = on' }
+    become_user: postgres
+    become_method: su
+    become: true
+    when: "'1' in inventory_hostname"
 
   - name: stop and disable postgres-11
     systemd:
@@ -59,24 +79,6 @@
     lineinfile:
       path: /var/lib/pgsql/.bash_profile
       line: export PATH=$PATH:/usr/pgsql-12/bin/
-
-  - name: postgresql.conf
-    lineinfile:
-      dest: /var/lib/pgsql/12/data/postgresql.conf
-      regexp: "{{ item.regexp }}"
-      line: "{{ item.line }}"
-      backup: yes
-    loop:
-      - { regexp: 'listen_addresses =',    line: "listen_addresses = '*'" }
-      - { regexp: 'wal_level =',          line: 'wal_level = replica' }  
-      - { regexp: 'wal_log_hints =',      line: 'wal_log_hints = on' }  
-      - { regexp: 'max_wal_senders =',    line: 'max_wal_senders = 3' }  
-      - { regexp: 'wal_keep_segments =',  line: 'wal_keep_segments = 8' }  
-      - { regexp: 'hot_standby =',        line: 'hot_standby = on' }  
-    become_user: postgres
-    become_method: su
-    become: true
-    when: "'1' in inventory_hostname"
 
   - name: pg_hba.conf
     lineinfile:

@@ -43,12 +43,21 @@
       regexp: "DNS="
       state: present
     notify: restart resolved
+<<<<<<< HEAD
   - name: sshd password auth
     lineinfile:
       dest: /etc/ssh/sshd_config
       line: "PasswordAuthentication yes"
       regexp: "(^|^#)PasswordAuthentication"
     notify: restart sshd
+=======
+  - name: disable ssh fingerprint check
+    lineinfile:
+      dest: /etc/ssh/ssh_config
+      line: StrictHostKeyChecking no
+      regexp: StrictHostKeyChecking
+      state: present
+>>>>>>> 7a62083e5ac3098740c13b4926c39e9a3c7f945c
 
   handlers:
   - name: restart netplan
