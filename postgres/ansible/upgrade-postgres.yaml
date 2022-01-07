@@ -25,7 +25,7 @@
       backup: yes
     loop:
       - { regexp: 'listen_addresses =',       line: "listen_addresses = '*'" }
-      - { regexp: 'hared_preload_libraries',  line: "shared_preload_libraries = 'timescaledb'" }
+      - { regexp: 'shared_preload_libraries',  line: "shared_preload_libraries = 'timescaledb'" }
       - { regexp: 'wal_level =',              line: 'wal_level = replica' }
       - { regexp: 'wal_log_hints =',          line: 'wal_log_hints = on' }
       - { regexp: 'max_wal_senders =',        line: 'max_wal_senders = 3' }
