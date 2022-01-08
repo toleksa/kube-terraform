@@ -31,6 +31,28 @@
         - postgresql11-contrib
       state: latest
 
+  - name: .ssh dir
+    file:
+      path: '~/.ssh'
+      mode: '0700'
+      state: directory
+    become: true
+    become_user: postgres
+    become_method: su
+
+  - name: ssh keys
+    get_url:
+      url: 'http://192.168.0.2:8765/ssh/postgres/{{ item }}'
+      dest: '~/.ssh/{{ item }}'
+      mode: '0600'
+    with_items:
+    - 'id_rsa'
+    - 'id_rsa.pub'
+    - 'authorized_keys'
+    become: true
+    become_user: postgres
+    become_method: su
+
   - name: postgres initdb
     command: /usr/pgsql-11/bin/postgresql-11-setup initdb
     when: "'1' in inventory_hostname"
