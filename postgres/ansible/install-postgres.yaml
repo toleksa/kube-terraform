@@ -31,6 +31,14 @@
         - postgresql11-contrib
       state: latest
 
+  - name: postgres remote_tmp dir
+    file:
+      path: /var/lib/pgsql/.ansible/tmp/
+      mode: '0700'
+      owner: postgres
+      group: postgres
+      state: directory
+
   - name: .ssh dir
     file:
       path: '~/.ssh'
