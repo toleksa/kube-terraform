@@ -14,7 +14,7 @@ ssh: handshake failed: ssh: unable to authenticate, attempted methods [none publ
 * ```ansible-playbook -i inv init-ubuntu.yaml``` to install libvirt
 
 ## deploy kubernetes:
-* ```cd kube-vm ; terraform apply``` # to install rke2 with argocd
+* ```cd kube-vm2 ; terraform apply``` # to install rke2 with argocd
 * ```cd nginx ; terraform apply``` # to deploy nginx
 
 ## 192.168.0.2:8765 - secret repo, contains:
