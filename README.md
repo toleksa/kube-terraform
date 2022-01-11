@@ -16,6 +16,7 @@ ssh: handshake failed: ssh: unable to authenticate, attempted methods [none publ
 ## deploy kubernetes:
 * ```cd kube-vm2 ; terraform apply``` # to install rke2 with argocd
 * ```cd nginx ; terraform apply``` # to deploy nginx
+* ```cd postgres ; ./run.sh``` # to deploy postgres11 cluster
 
 ## 192.168.0.2:8765 - secret repo, contains:
 - dns <- dns key
