@@ -14,7 +14,7 @@
       autoremove: yes
   - name: install packages
     apt:
-      pkg: ['qemu-kvm','libvirt-daemon-system','bridge-utils']
+      pkg: ['qemu-kvm','libvirt-daemon-system','bridge-utils','prometheus-node-exporter']
       state: latest
   - name: upload bridge config
     template:
