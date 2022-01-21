@@ -55,6 +55,11 @@
       line: StrictHostKeyChecking no
       regexp: StrictHostKeyChecking
       state: present
+  - name: .bash_profile
+    get_url:
+      url: 'https://raw.githubusercontent.com/toleksa/configs/main/.bash_profile'
+      dest: '/root/.bash_profile'
+      mode: '0700'
 
   handlers:
   - name: restart netplan
