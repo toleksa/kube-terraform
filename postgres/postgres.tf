@@ -34,7 +34,8 @@ resource "libvirt_volume" "volume" {
   name = "postgres${count.index + 1}"
   #pool = "postgres"
   pool = "default"
-  source = "http://cloud.centos.org/centos/8/x86_64/images/CentOS-8-GenericCloud-8.4.2105-20210603.0.x86_64.qcow2"
+#  source = "http://cloud.centos.org/centos/8/x86_64/images/CentOS-8-GenericCloud-8.4.2105-20210603.0.x86_64.qcow2"
+  source = "http://almalinux-mirror.datakeepers.co.za/8.5/cloud/x86_64/images/AlmaLinux-8-GenericCloud-latest.x86_64.qcow2"
   format = "qcow2"
 }
 
