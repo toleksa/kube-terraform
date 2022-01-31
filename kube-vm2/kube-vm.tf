@@ -67,8 +67,8 @@ resource "libvirt_cloudinit_disk" "cloudinit" {
 resource "libvirt_domain" "virtkubes" {
   count = "${var.host_count}"
   name   = "v${count.index + 1}"
-  memory = "3500"
-  vcpu   = 3
+  memory = "6000"
+  vcpu   = 4
 
   network_interface {
     network_name = "${libvirt_network.kube.name}"
