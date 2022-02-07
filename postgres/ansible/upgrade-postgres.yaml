@@ -100,6 +100,19 @@
       enabled: yes
     when: "'1' in inventory_hostname"
 
+  - name: check postgres if new postgres is working
+    command: /usr/pgsql-12/bin/psql -c "select version();" -d postgres
+    become_user: postgres
+    become_method: su
+    become: true
+    register: pg_version
+    when: "'1' in inventory_hostname"
+
+  - name: print new postgres version
+    debug:
+      msg: '{{ pg_version.stdout }}'
+    when: "'1' in inventory_hostname"
+
   - name: clone database to standby
     shell: pg_basebackup -D /var/lib/pgsql/12/data/ -h postgres1.kube.ac -X stream -c fast -U replication -R
     environment:
