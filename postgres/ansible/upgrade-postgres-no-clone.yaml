@@ -1,0 +1,168 @@
+---
+- name: upgrade postgres
+  hosts: postgres
+  any_errors_fatal: true
+
+  tasks:
+
+  - name: install postgres and timescaledb packages - v12
+    dnf:
+      name:
+        - timescaledb-postgresql-12-1.7.5
+        - postgresql12-devel 
+        - postgresql12-contrib
+      state: latest
+
+  - name: postgres initdb
+    command: /usr/pgsql-12/bin/postgresql-12-setup initdb
+    when: "'1' in inventory_hostname"
+
+  - name: postgresql.conf
+    lineinfile:
+      dest: /var/lib/pgsql/12/data/postgresql.conf
+      regexp: "{{ item.regexp }}"
+      line: "{{ item.line }}"
+      backup: yes
+    loop:
+      - { regexp: 'listen_addresses =',       line: "listen_addresses = '*'" }
+      - { regexp: 'shared_preload_libraries',  line: "shared_preload_libraries = 'timescaledb'" }
+      - { regexp: 'wal_level =',              line: 'wal_level = replica' }
+      - { regexp: 'wal_log_hints =',          line: 'wal_log_hints = on' }
+      - { regexp: 'max_wal_senders =',        line: 'max_wal_senders = 3' }
+      - { regexp: 'wal_keep_segments =',      line: 'wal_keep_segments = 8' }
+      - { regexp: 'hot_standby =',            line: 'hot_standby = on' }
+    become_user: postgres
+    become_method: su
+    become: true
+    when: "'1' in inventory_hostname"
+
+  - name: stop and disable postgres-11
+    systemd:
+      name: postgresql-11
+      state: stopped
+      enabled: no
+
+  - name: BLOCK pre-upgrade check
+    block:
+    - name: check upgrade
+      shell: /usr/pgsql-12/bin/pg_upgrade -b /usr/pgsql-11/bin -B /usr/pgsql-12/bin -d /var/lib/pgsql/11/data -D /var/lib/pgsql/12/data --link --check | tee /tmp/compat.log | grep "Clusters are compatible"
+      become_user: postgres
+      become_method: su
+      become: true
+      when: "'1' in inventory_hostname"
+
+    rescue:
+    - name: get error
+      command: tail -n 2 /tmp/compat.log
+      register: upgrade_error
+      when: "'1' in inventory_hostname"
+
+    - name: fail and print error
+      fail:
+        msg: "{{ upgrade_error.stdout_lines[-2:] }}"
+      when: "'1' in inventory_hostname"
+
+  - name: upgrade database
+    command: /usr/pgsql-12/bin/pg_upgrade -b /usr/pgsql-11/bin -B /usr/pgsql-12/bin -d /var/lib/pgsql/11/data -D /var/lib/pgsql/12/data --link
+    become_user: postgres
+    become_method: su
+    become: true
+    when: "'1' in inventory_hostname"
+
+  - name: remove psql-11 PATH
+    lineinfile:
+      path: /var/lib/pgsql/.bash_profile
+      regexp: 'export PATH=$PATH:/usr/pgsql-11/bin/'
+      state: absent
+
+  - name: add psql-12 PATH
+    lineinfile:
+      path: /var/lib/pgsql/.bash_profile
+      line: export PATH=$PATH:/usr/pgsql-12/bin/
+
+  - name: pg_hba.conf
+    lineinfile:
+      dest: /var/lib/pgsql/12/data/pg_hba.conf
+      line: "{{ item.line }}"
+      backup: yes
+    loop:
+      - { line: 'host    replication     all             all                     md5' }
+      - { line: 'host    postgres        postgres        all                     md5' }
+    become_user: postgres
+    become_method: su
+    become: true
+    when: "'1' in inventory_hostname"
+
+  - name: enable and start postgres-12 primary
+    systemd:
+      name: postgresql-12
+      state: started
+      enabled: yes
+    when: "'1' in inventory_hostname"
+
+  - name: check postgres if new postgres is working
+    command: /usr/pgsql-12/bin/psql -c "select version();" -d postgres
+    become_user: postgres
+    become_method: su
+    become: true
+    register: pg_version
+    when: "'1' in inventory_hostname"
+
+  - name: print new postgres version
+    debug:
+      msg: '{{ pg_version.stdout }}'
+    when: "'1' in inventory_hostname"
+
+#  - name: clone database to standby
+#    shell: pg_basebackup -D /var/lib/pgsql/12/data/ -h postgres1.kube.ac -X stream -c fast -U replication -R
+#    environment:
+#      PGPASS: /var/lib/pgsql/.pgpass
+#    become_user: postgres
+#    become_method: su
+#    become: true
+#    when: "'2' in inventory_hostname"
+
+  - name: rsync
+    shell: |
+      rsync --archive --delete --hard-links --size-only --no-inc-recursive /var/lib/pgsql/11 /var/lib/pgsql/12 postgres@postgres2.kube.ac:/var/lib/pgsql &> /tmp/rsync.log
+    become_user: postgres
+    become_method: su
+    become: true
+    when: "'1' in inventory_hostname"
+
+  - name: standby.signal
+    file:
+      path: /var/lib/pgsql/12/data/standby.signal
+      state: touch
+    when: "'2' in inventory_hostname"
+
+  - name: postgresql.auto.conf
+    copy:
+      dest: /var/lib/pgsql/12/data/postgresql.auto.conf
+      content: |
+        listen_addresses = '*'
+        primary_conninfo = 'user=replication password=replication host=postgres1.kube.ac port=5432 sslmode=prefer sslcompression=0 krbsrvname=postgres target_session_attrs=any'
+    become_user: postgres
+    become_method: su
+    become: true
+    when: "'2' in inventory_hostname"
+
+  - name: enable and start postgres-12 primary
+    systemd:
+      name: postgresql-12
+      state: started
+      enabled: yes
+    when: "'2' in inventory_hostname"
+
+  - name: check postgres version
+    command: /usr/pgsql-12/bin/psql -c "select version();" -d postgres
+    become_user: postgres
+    become_method: su
+    become: true
+    register: pg_version
+
+  - name: print postgres version
+    debug:
+      msg: '{{ pg_version.stdout }}'
+
+
