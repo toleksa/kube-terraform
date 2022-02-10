@@ -1,14 +1,14 @@
 - hosts: all
   tasks:
+  - name: remove unneeded packages
+    apt:
+      pkg: ['eject','nano','xauth']
+      state: absent
   - name: Update and upgrade apt packages
     apt:
       upgrade: yes
       update_cache: yes
       cache_valid_time: 86400 #One day
-  - name: remove packages
-    apt:
-      pkg: ['eject','nano','xauth']
-      state: absent
   - name: autoremove
     apt:
       autoremove: yes
@@ -23,6 +23,10 @@
       owner: root
       backup: yes
     notify: restart netplan
+  - name: mkdir /virtualki
+    file:
+      path: '/virtualki'
+      state: directory
   - name: apparmor profile for libvirt
     lineinfile:
       dest: /etc/apparmor.d/libvirt/TEMPLATE.qemu
@@ -60,6 +64,17 @@
       url: 'https://raw.githubusercontent.com/toleksa/configs/main/.bash_profile'
       dest: '/root/.bash_profile'
       mode: '0700'
+  - name: get dns-update.sh
+    get_url: 
+      url: 'http://192.168.0.2:8765/dns-update.sh'
+      dest: '/etc/cron.hourly/dns-update.sh'
+      mode: '0700'
+    notify: update dns
+  - name: crontab dns-update
+    cron:
+      name: dns-update.sh
+      special_time: reboot
+      job: '/etc/cron.hourly/dns-update.sh'
 
   handlers:
   - name: restart netplan
@@ -78,4 +93,6 @@
     systemd:
       name: sshd
       state: restarted
+  - name: update dns
+    shell: /etc/cron.hourly/dns-update.sh
 
