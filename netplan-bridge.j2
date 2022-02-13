@@ -3,13 +3,13 @@ network:
   renderer: networkd
 
   ethernets:
-    enp3s0:
+    {{ ansible_default_ipv4.interface }}:
       dhcp4: no
       dhcp6: no
 
   bridges:
     br0:
-      interfaces: [ enp3s0 ]
+      interfaces: [ {{ ansible_default_ipv4.interface }} ]
       addresses: [ {{ ip }}/24 ]
       gateway4: {{ gw }}
       mtu: 1500
