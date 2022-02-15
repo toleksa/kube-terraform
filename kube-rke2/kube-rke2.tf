@@ -13,7 +13,7 @@ terraform {
 }
 
 provider "libvirt" {
-  uri   = "qemu+ssh://root@192.168.0.3/system"
+  uri   = "qemu+ssh://root@192.168.0.3:/system"
 }
 
 #resource "libvirt_pool" "kube" {
@@ -31,7 +31,7 @@ resource "libvirt_network" "kube" {
 
 resource "libvirt_volume" "volume" {
   count = "${var.host_count}"
-  name = "v${count.index + 1}"
+  name = "r${count.index + 1}"
   #pool = "kube"
   pool = "default"
   #source = "https://cloud-images.ubuntu.com/focal/current/focal-server-cloudimg-amd64-disk-kvm.img" #too small disk, needs resize
@@ -43,9 +43,9 @@ data "template_file" "meta_data" {
   count = "${var.host_count}"
   template = file("${path.module}/meta_data.cfg")
   vars = {
-    HOSTNAME = "v${count.index + 1}.kube.ac"
-    FQDN = "v${count.index + 1}.kube.ac" 
-    ID = "ID-v${count.index + 1}"
+    HOSTNAME = "r${count.index + 1}.kube.ac"
+    FQDN = "r${count.index + 1}.kube.ac" 
+    ID = "ID-r${count.index + 1}"
   }
 }
 
@@ -56,7 +56,7 @@ data "template_file" "user_data" {
 # Use CloudInit to add the instance
 resource "libvirt_cloudinit_disk" "cloudinit" {
   count = "${var.host_count}"
-  name = "cloudinit-v${count.index + 1}.iso"
+  name = "cloudinit-r${count.index + 1}.iso"
   meta_data  = "${data.template_file.meta_data[count.index].rendered}"
   user_data  = "${data.template_file.user_data.rendered}"
   #pool = "kube"
@@ -66,15 +66,15 @@ resource "libvirt_cloudinit_disk" "cloudinit" {
 # Define KVM domain to create
 resource "libvirt_domain" "virtkubes" {
   count = "${var.host_count}"
-  name   = "v${count.index + 1}"
+  name   = "r${count.index + 1}"
   memory = "4000"
   vcpu   = 4
 
   network_interface {
     network_name = "${libvirt_network.kube.name}"
     #network_name = "default"
-    #wait_for_lease = true
-    hostname = "v${count.index + 1}.kube.ac"
+    wait_for_lease = true
+    hostname = "r${count.index + 1}.kube.ac"
   }
 
   disk {
@@ -94,9 +94,10 @@ resource "libvirt_domain" "virtkubes" {
     listen_type = "address"
     autoport = true
   }
+  qemu_agent = true
 }
 
-#output "ip" {
-#  value = "${libvirt_domain.virtkube1.network_interface.0.addresses.0}"
-#}
+output "ip" {
+  value = "${libvirt_domain.virtkubes[0].network_interface.0.addresses.0}"
+}
 
