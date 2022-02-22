@@ -73,7 +73,7 @@ resource "libvirt_domain" "virtkubes" {
   network_interface {
     network_name = "${libvirt_network.kube.name}"
     #network_name = "default"
-    #wait_for_lease = true
+    wait_for_lease = true
     hostname = "v${count.index + 1}.kube.ac"
   }
 
@@ -96,7 +96,6 @@ resource "libvirt_domain" "virtkubes" {
   }
 }
 
-#output "ip" {
-#  value = "${libvirt_domain.virtkube1.network_interface.0.addresses.0}"
-#}
-
+output "ip" {
+  value = "${libvirt_domain.virtkubes[0].network_interface.0.addresses.0}"
+}
