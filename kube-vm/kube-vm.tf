@@ -31,7 +31,7 @@ resource "libvirt_volume" "virtkube1" {
   #source = "https://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud.qcow2"
   #source = "/virtualki/templates/CentOS-7-x86_64-GenericCloud.qcow2"
   #source = "https://cloud-images.ubuntu.com/focal/current/focal-server-cloudimg-amd64-disk-kvm.img"
-  source = "http://192.168.0.2:8765/focal-server-cloudimg-amd64-disk-kvm-10G.img"
+  source = "http://192.168.0.2:8765/focal-server-cloudimg-amd64-disk-kvm-50G.img"
   format = "qcow2"
 }
 

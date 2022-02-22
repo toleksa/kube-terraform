@@ -30,7 +30,7 @@ resource "libvirt_volume" "first-ubuntu-20_04" {
   pool = "${libvirt_pool.first-vm.name}"
   #source = "https://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud.qcow2"
   #source = "/virtualki/templates/CentOS-7-x86_64-GenericCloud.qcow2"
-  source = "https://cloud-images.ubuntu.com/focal/current/focal-server-cloudimg-amd64-disk-kvm-10G.img"
+  source = "https://cloud-images.ubuntu.com/focal/current/focal-server-cloudimg-amd64-disk-kvm-50G.img"
   format = "qcow2"
 }
 

@@ -35,7 +35,7 @@ resource "libvirt_volume" "volume" {
   #pool = "kube"
   pool = "default"
   #source = "https://cloud-images.ubuntu.com/focal/current/focal-server-cloudimg-amd64-disk-kvm.img" #too small disk, needs resize
-  source = "http://192.168.0.2:8765/focal-server-cloudimg-amd64-disk-kvm-10G.img"
+  source = "http://192.168.0.2:8765/focal-server-cloudimg-amd64-disk-kvm-50G.img"
   format = "qcow2"
 }
 
