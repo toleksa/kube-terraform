@@ -13,7 +13,7 @@ terraform {
 }
 
 provider "libvirt" {
-  uri   = "qemu+ssh://root@192.168.0.3:/system"
+  uri   = "qemu+ssh://root@192.168.0.3/system"
 }
 
 #resource "libvirt_pool" "kube" {
@@ -23,7 +23,7 @@ provider "libvirt" {
 #}
 
 resource "libvirt_network" "kube" {
-  name = "kube"
+  name = "kube-r"
   mode = "bridge"
   bridge = "br0"
   autostart = "true"
