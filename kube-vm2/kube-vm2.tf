@@ -23,7 +23,7 @@ provider "libvirt" {
 #}
 
 resource "libvirt_network" "kube" {
-  name = "kube"
+  name = "kube-v"
   mode = "bridge"
   bridge = "br0"
   autostart = "true"
@@ -94,6 +94,7 @@ resource "libvirt_domain" "virtkubes" {
     listen_type = "address"
     autoport = true
   }
+  qemu_agent = true
 }
 
 output "ip" {
