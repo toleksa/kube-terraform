@@ -74,6 +74,7 @@ resource "libvirt_domain" "virtkubes" {
     network_name = "${libvirt_network.kube.name}"
     #network_name = "default"
     wait_for_lease = true
+    mac = "44:8a:5b:00:02:0${count.index + 1}"
     hostname = "v${count.index + 1}.kube.ac"
   }
 
