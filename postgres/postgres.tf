@@ -74,6 +74,7 @@ resource "libvirt_domain" "virtkubes" {
     network_name = "${libvirt_network.postgres.name}"
     #network_name = "default"
     wait_for_lease = true
+    mac = "44:8a:5b:00:03:0${count.index + 1}"
     hostname = "postgres${count.index + 1}"
   }
 
