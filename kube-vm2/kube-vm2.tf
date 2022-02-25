@@ -50,7 +50,7 @@ data "template_file" "meta_data" {
 }
 
 data "template_file" "user_data" {
-  template = file("${path.module}/user_data.cfg")
+  template = format("%s%s",file("${path.module}/../user_data_base.cfg"),file("${path.module}/user_data_kube.cfg"))
 }
 
 # Use CloudInit to add the instance
