@@ -50,7 +50,7 @@ data "template_file" "meta_data" {
 }
 
 data "template_file" "user_data" {
-  template = file("${path.module}/user_data.cfg")
+  template = format("%s%s",file("${path.module}/../user_data_base.cfg"),file("${path.module}/user_data_postgres.cfg"))
 }
 
 # Use CloudInit to add the instance
@@ -73,7 +73,7 @@ resource "libvirt_domain" "virtkubes" {
   network_interface {
     network_name = "${libvirt_network.postgres.name}"
     #network_name = "default"
-    #wait_for_lease = true
+    wait_for_lease = true
     hostname = "postgres${count.index + 1}"
   }
 
@@ -94,9 +94,11 @@ resource "libvirt_domain" "virtkubes" {
     listen_type = "address"
     autoport = true
   }
+  qemu_agent = true
 }
 
-#output "ip" {
-#  value = "${libvirt_domain.virtkube1.network_interface.0.addresses.0}"
-#}
+output "ip" {
+  #count = "${var.host_count}"
+  value = "${libvirt_domain.virtkubes[*].network_interface.0.addresses.0}"
+}
 
