@@ -64,7 +64,7 @@
     become: true
 
   - name: clone database
-    shell: pg_basebackup -D /var/lib/pgsql/11/data/ -h postgres1.kube.ac -X stream -c fast -U replication -R
+    shell: pg_basebackup -D /var/lib/pgsql/11/data/ -h postgres1.kube.ac -X stream -c fast -U replication -R &> $HOME/pg_basebackup.log
     environment:
       PGPASS: /var/lib/pgsql/.pgpass
     become_user: postgres
