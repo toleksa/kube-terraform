@@ -1,0 +1,81 @@
+---
+- name: upgrade-postgres-no-clone-only-primary-revert
+  hosts: postgres
+  any_errors_fatal: true
+
+  tasks:
+
+  - name: stop primary postgresql-12
+    systemd:
+      name: postgresql-12
+      state: stopped
+    when: "'1' in inventory_hostname"
+
+  - name: start secondary postgres-11
+    systemd:
+      name: postgresql-11
+      state: started
+    when: "'2' in inventory_hostname"
+
+  - name: promote secondary
+    shell: . ~/.bash_profile ; pg_ctl promote
+    args:
+      executable: /bin/bash
+    become_user: postgres
+    become_method: su
+    become: true
+    when: "'2' in inventory_hostname"
+
+  - name: remove psql-12 PATH
+    lineinfile:
+      path: /var/lib/pgsql/.bash_profile
+      regexp: 'export PATH=$PATH:/usr/pgsql-12/bin/'
+      state: absent
+    when: "'1' in inventory_hostname"
+
+  - name: add psql-11 PATH
+    lineinfile:
+      path: /var/lib/pgsql/.bash_profile
+      line: export PATH=$PATH:/usr/pgsql-11/bin/
+    when: "'1' in inventory_hostname"
+
+  - name: rsync
+    shell: |
+      rsync -v --archive --delete --hard-links --size-only --no-inc-recursive postgres@postgres2.kube.ac:/var/lib/pgsql/11 /var/lib/pgsql &> /tmp/rsync.log
+    become_user: postgres
+    become_method: su
+    become: true
+    when: "'1' in inventory_hostname"
+
+  - name: recovery.conf
+    copy:
+      dest: /var/lib/pgsql/11/data/recovery.conf
+      content: |
+        standby_mode = 'on'
+        primary_conninfo = 'user=replication password=replication host=postgres2.kube.ac port=5432 sslmode=prefer sslcompression=0 krbsrvname=postgres target_session_attrs=any'
+        recovery_target_timeline = 'latest'
+        trigger_file = '/var/lib/pgsql/11/data/trigger_file'
+    become_user: postgres
+    become_method: su
+    become: true
+    when: "'1' in inventory_hostname"
+
+  - name: start pri
+    systemd:
+      name: postgresql-11
+      state: restarted
+    when: "'1' in inventory_hostname"
+
+  - name: check new postgres is working
+    shell: . ~/.bash_profile ; psql -c "select version();" -d postgres
+    args:
+      executable: /bin/bash
+    become_user: postgres
+    become_method: su
+    become: true
+    register: pg_version
+
+  - name: print postgres version
+    debug:
+      msg: '{{ pg_version.stdout }}'
+
