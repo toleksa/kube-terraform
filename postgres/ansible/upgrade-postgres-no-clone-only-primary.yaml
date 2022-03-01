@@ -123,17 +123,3 @@
       msg: '{{ pg_version.stdout }}'
     when: "'1' in inventory_hostname"
 
-  - name: check secondary postgres version
-    command: /usr/pgsql-11/bin/psql -c "select version();" -d postgres
-    become_user: postgres
-    become_method: su
-    become: true
-    register: pg_version
-    when: "'2' in inventory_hostname"
-
-  - name: print postgres version
-    debug:
-      msg: '{{ pg_version.stdout }}'
-    when: "'2' in inventory_hostname"
-
-
