@@ -4,7 +4,6 @@
 ssh: handshake failed: ssh: unable to authenticate, attempted methods [none publickey], no supported methods remain
 * ```ssh-add ~/.ssh/id_rsa```
 
-
 ## client (this machine)
 * ```install-terraform.sh```
 * get ansible
@@ -25,3 +24,7 @@ ssh: handshake failed: ssh: unable to authenticate, attempted methods [none publ
 - ...
 - focal-server-cloudimg-amd64-disk-kvm.img <- optional image for faster deploy, but I'm not sure if it's helping ;)
 - ssh/postgres/ <- .ssh content
+
+## hints
+- adjust host_count: ```terraform apply -var="host_count=2"```
+
