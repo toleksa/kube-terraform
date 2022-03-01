@@ -147,7 +147,7 @@
     become: true
     when: "'2' in inventory_hostname"
 
-  - name: enable and start postgres-12 primary
+  - name: enable and start postgres-12 secondary
     systemd:
       name: postgresql-12
       state: started
