@@ -5,6 +5,12 @@
 
   tasks:
 
+  - name: stop secondary postgres-11
+    systemd:
+      name: postgresql-11
+      state: stopped
+    when: "'2' in inventory_hostname"
+
   - name: install postgres and timescaledb packages - v12
     dnf:
       name:
@@ -37,7 +43,7 @@
     become: true
     when: "'1' in inventory_hostname"
 
-  - name: stop and disable postgres-11
+  - name: stop and disable primary postgres-11
     systemd:
       name: postgresql-11
       state: stopped
