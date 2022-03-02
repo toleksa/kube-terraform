@@ -48,6 +48,7 @@
       content: |
         standby_mode = 'on'
         primary_conninfo = 'user=replication password=replication host=postgres2.kube.ac port=5432 sslmode=prefer sslcompression=0 krbsrvname=postgres target_session_attrs=any'
+        recovery_target_timeline = 'latest'
         trigger_file = '/var/lib/pgsql/11/data/trigger_file'
     become_user: postgres
     become_method: su
