@@ -3,6 +3,9 @@
   hosts: postgres
 
   tasks:
+  - name: Populate service facts
+    service_facts:
+
   - name: stop postgresql-11
     systemd:
       name: postgresql-11
