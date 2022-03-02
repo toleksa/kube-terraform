@@ -1,0 +1,24 @@
+---
+- name: stop-and-reset
+  hosts: postgres
+
+  tasks:
+  - name: stop postgresql-11
+    systemd:
+      name: postgresql-11
+      state: stopped
+    when: "'postgresql-11' in services"
+
+  - name: stop postgresql-12
+    systemd:
+      name: postgresql-12
+      state: stopped
+    when: "'postgresql-12' in services"
+
+  - name: clear data
+    file:
+      path: "{{ item }}"
+      state: absent
+    with_items: 
+    - /var/lib/pgsql/11/data
+    - /var/lib/pgsql/12/data
