@@ -33,6 +33,7 @@
         - postgresql11-devel 
         - postgresql11-contrib
       state: latest
+    tags: repo
 
   - name: postgres remote_tmp dir
     file:
