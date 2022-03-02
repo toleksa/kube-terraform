@@ -15,12 +15,15 @@
       name: 'https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-x86_64/pgdg-redhat-repo-latest.noarch.rpm'
       state: present
       disable_gpg_check: yes
+    tags: repo
 
   - name: timescaledb repo
     shell: curl -s https://packagecloud.io/install/repositories/timescale/timescaledb/script.rpm.sh | bash
+    tags: repo
 
   - name: disable default postgres
     command: dnf -qy module disable postgresql
+    tags: repo
 
   - name: install postgres and timescaledb packages - v11
     dnf:
