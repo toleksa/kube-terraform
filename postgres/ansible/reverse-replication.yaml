@@ -1,5 +1,6 @@
 ---
 - name: reverse-replication
+  any_errors_fatal: true
   hosts: postgres
   tasks: 
   - name: check replication status
@@ -17,7 +18,12 @@
     when: "'PRI' in rep.stdout"
 
   - name: set new primary hostname
-    set_fact: new_primary="{{ ansible_hostname }}"
+    set_fact: 
+      new_primary: "{{ inventory_hostname }}"
+    delegate_to: "{{ item }}"
+    with_items: "{{ play_hosts }}"
+    #run_once: yes
+    delegate_facts: True
     when: "'SEC' in rep.stdout"
 
   - name: print results
@@ -29,7 +35,7 @@
     when: "'PRI' in rep.stdout"
 
   - name: promote secondary
-    shell: pg_ctl promote
+    shell: . ~/.bash_profile ; pg_ctl promote
     args:
       executable: /bin/bash
     become_user: postgres
@@ -42,7 +48,7 @@
       dest: /var/lib/pgsql/11/data/recovery.conf
       content: |
         standby_mode = 'on'
-        primary_conninfo = 'user=replication password=replication host=postgres2.kube.ac port=5432 sslmode=prefer sslcompression=0 krbsrvname=postgres target_session_attrs=any'
+        primary_conninfo = 'user=replication password=replication host={{ new_primary }} port=5432 sslmode=prefer sslcompression=0 krbsrvname=postgres target_session_attrs=any'
         recovery_target_timeline = 'latest'
         trigger_file = '/var/lib/pgsql/11/data/trigger_file'
     become_user: postgres
