@@ -2,6 +2,7 @@
 - name: check-versions
   hosts: postgres
 
+  tasks:
   - name: check postgres if new postgres is working
     command: psql -c "select version();" -d postgres
     become_user: postgres
