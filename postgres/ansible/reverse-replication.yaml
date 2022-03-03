@@ -12,10 +12,9 @@
     become: true
     register: rep
 
-  - name: print results
+  - name: print results rep
     debug:
       msg: "{{ rep.stdout }}"
-    when: "'PRI' in rep.stdout"
 
   - name: set new primary hostname
     set_fact: 
@@ -26,7 +25,7 @@
     delegate_facts: True
     when: "'SEC' in rep.stdout"
 
-  - name: print results
+  - name: print results new_primary
     debug:
       msg: "{{ new_primary }}"
 
@@ -60,3 +59,15 @@
     command: systemctl start postgresql-11
     when: "'PRI' in rep.stdout"
 
+  - name: check new replication status
+    shell: $HOME/replication_status.sh
+    args:
+      executable: /bin/bash
+    become_user: postgres
+    become_method: su
+    become: true
+    register: rep
+
+  - name: print results new rep
+    debug:
+      msg: "{{ rep.stdout }}"
