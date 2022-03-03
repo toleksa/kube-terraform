@@ -39,6 +39,13 @@
       line: export PATH=$PATH:/usr/pgsql-11/bin/
     when: "'1' in inventory_hostname"
 
+  - name: revert PDGATA
+    lineinfile:
+      path: /var/lib/pgsql/.bash_profile
+      regexp: "^PGDATA="
+      line: PGDATA=/var/lib/pgsql/11/data
+    when: "'1' in inventory_hostname"
+
   - name: rsync
     shell: |
       rsync -v --archive --delete --hard-links --size-only --no-inc-recursive postgres@postgres2.kube.ac:/var/lib/pgsql/11 /var/lib/pgsql &> /tmp/rsync.log
