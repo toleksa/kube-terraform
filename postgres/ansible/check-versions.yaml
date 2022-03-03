@@ -8,8 +8,6 @@
     become_user: postgres
     become_method: su
     become: true
-    args:
-      executable: /bin/bash
     register: pg_version
 
   - name: print new postgres version
