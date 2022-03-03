@@ -1,0 +1,24 @@
+---
+- name: reverse-replication
+  hosts: postgres
+  tasks: 
+  - name: check 1 replication status
+    shell: $HOME/replication_status.sh
+    args:
+      executable: /bin/bash
+    become_user: postgres
+    become_method: su
+    become: true
+    register: rep_1
+    when: "'1' in inventory_hostname" 
+
+  - name: check 2 replication status
+    shell: $HOME/replication_status.sh      
+    args:
+      executable: /bin/bash
+    become_user: postgres
+    become_method: su
+    become: true
+    register: rep_2
+    when: "'2' in inventory_hostname"
+
