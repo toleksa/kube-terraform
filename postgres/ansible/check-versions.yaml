@@ -1,0 +1,17 @@
+---
+- name: check-versions
+  hosts: postgres
+
+  - name: check postgres if new postgres is working
+    command: psql -c "select version();" -d postgres
+    become_user: postgres
+    become_method: su
+    become: true
+    args:
+      executable: /bin/bash
+    register: pg_version
+
+  - name: print new postgres version
+    debug:
+      msg: '{{ pg_version.stdout }}'
+
