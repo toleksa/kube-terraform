@@ -10,13 +10,13 @@
     systemd:
       name: postgresql-11
       state: stopped
-    when: "'postgresql-11' in services"
+    when: "'postgresql-11.service' in services"
 
   - name: stop postgresql-12
     systemd:
       name: postgresql-12
       state: stopped
-    when: "'postgresql-12' in services"
+    when: "'postgresql-12.service' in services"
 
   - name: clear data
     file:
