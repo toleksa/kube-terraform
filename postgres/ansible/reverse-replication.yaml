@@ -2,23 +2,55 @@
 - name: reverse-replication
   hosts: postgres
   tasks: 
-  - name: check 1 replication status
+  - name: check replication status
     shell: $HOME/replication_status.sh
     args:
       executable: /bin/bash
     become_user: postgres
     become_method: su
     become: true
-    register: rep_1
-    when: "'1' in inventory_hostname" 
+    register: rep
 
-  - name: check 2 replication status
-    shell: $HOME/replication_status.sh      
+  - name: print results
+    debug:
+      msg: "{{ rep.stdout }}"
+    when: "'PRI' in rep.stdout"
+
+  - name: set new primary hostname
+    set_fact: new_primary="{{ ansible_hostname }}"
+    when: "'SEC' in rep.stdout"
+
+  - name: print results
+    debug:
+      msg: "{{ new_primary }}"
+
+  - name: stop primary
+    command: systemctl stop postgresql-11
+    when: "'PRI' in rep.stdout"
+
+  - name: promote secondary
+    shell: pg_ctl promote
     args:
       executable: /bin/bash
     become_user: postgres
     become_method: su
     become: true
-    register: rep_2
-    when: "'2' in inventory_hostname"
+    when: "'SEC' in rep.stdout"
+
+  - name: recovery.conf
+    copy:
+      dest: /var/lib/pgsql/11/data/recovery.conf
+      content: |
+        standby_mode = 'on'
+        primary_conninfo = 'user=replication password=replication host=postgres2.kube.ac port=5432 sslmode=prefer sslcompression=0 krbsrvname=postgres target_session_attrs=any'
+        recovery_target_timeline = 'latest'
+        trigger_file = '/var/lib/pgsql/11/data/trigger_file'
+    become_user: postgres
+    become_method: su
+    become: true
+    when: "'PRI' in rep.stdout"
+
+  - name: start primary as new replica
+    command: systemctl start postgresql-11
+    when: "'PRI' in rep.stdout"
 
