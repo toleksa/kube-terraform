@@ -5,6 +5,25 @@
 
   tasks:
 
+  - name: check replication status
+    shell: $HOME/replication_status.sh
+    args:
+      executable: /bin/bash
+    become_user: postgres
+    become_method: su
+    become: true
+    register: rep
+
+  - name: print results rep
+    debug:
+      msg: "{{ rep.stdout }}"
+
+  - fail:
+      msg: "PRI must be on 1 instance, reverse replication"
+    when: 
+      - "'SEC' in rep.stdout"
+      - "'1' in inventory_hostname"
+
   - name: stop secondary postgres-11
     systemd:
       name: postgresql-11
