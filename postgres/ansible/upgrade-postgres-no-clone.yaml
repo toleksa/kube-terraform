@@ -13,12 +13,10 @@
     become_method: su
     become: true
     register: rep
-    when: "'1' in inventory_hostname"
 
   - name: print results rep
     debug:
       msg: "{{ rep.stdout }}"
-    when: "'1' in inventory_hostname"
 
   - fail:
       msg: "PRI must be on 1 instance, reverse replication"
