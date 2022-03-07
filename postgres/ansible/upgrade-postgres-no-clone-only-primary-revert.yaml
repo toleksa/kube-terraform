@@ -29,7 +29,7 @@
   - name: remove psql-12 PATH
     lineinfile:
       path: /var/lib/pgsql/.bash_profile
-      regexp: 'export PATH=$PATH:/usr/pgsql-12/bin/'
+      regexp: 'export PATH=.PATH:/usr/pgsql-12/bin/'
       state: absent
     when: "'1' in inventory_hostname"
 
