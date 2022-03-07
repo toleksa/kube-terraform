@@ -13,6 +13,14 @@
         - postgresql12-contrib
       state: latest
 
+  # make sure 12/data is empty -> possible leftovers from other upgrade/revert
+  - name: clear data
+    file:
+      path: "{{ item }}"
+      state: absent
+    with_items:
+    - /var/lib/pgsql/12/data
+
   - name: postgres initdb
     command: /usr/pgsql-12/bin/postgresql-12-setup initdb
     when: "'1' in inventory_hostname"
@@ -72,13 +80,19 @@
   - name: remove psql-11 PATH
     lineinfile:
       path: /var/lib/pgsql/.bash_profile
-      regexp: 'export PATH=$PATH:/usr/pgsql-11/bin/'
+      regexp: 'export PATH=.PATH:/usr/pgsql-11/bin/'
       state: absent
 
   - name: add psql-12 PATH
     lineinfile:
       path: /var/lib/pgsql/.bash_profile
       line: export PATH=$PATH:/usr/pgsql-12/bin/
+
+  - name: update PDGATA
+    lineinfile:
+      path: /var/lib/pgsql/.bash_profile
+      regexp: "^PGDATA="
+      line: PGDATA=/var/lib/pgsql/12/data
 
   - name: pg_hba.conf
     lineinfile:
