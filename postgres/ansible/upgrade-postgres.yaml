@@ -20,7 +20,7 @@
 
   - fail:
       msg: "PRI must be on 1 instance, reverse replication"
-    when: 
+    when:
       - "'SEC' in rep.stdout"
       - "'1' in inventory_hostname"
 
