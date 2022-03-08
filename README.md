@@ -28,3 +28,10 @@ ssh: handshake failed: ssh: unable to authenticate, attempted methods [none publ
 ## hints
 - adjust host_count: ```terraform apply -var="host_count=2"```
 
+- create default pool:
+```
+virsh pool-define-as default dir - - - - /virtualki
+virsh pool-build default
+virsh pool-start default
+virsh pool-autostart default
+```
