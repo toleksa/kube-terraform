@@ -8,7 +8,7 @@
     wait_for_connection:
       timeout: 900
 
-  - name: wait for /cloud-init-ready.txt
+  - name: wait for /cloud-init-postgres-ready.txt
     wait_for:
-      path: /cloud-init-ready.txt
+      path: /cloud-init-postgres-ready.txt
 
