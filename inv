@@ -1,2 +1,2 @@
 [server]
-192.168.0.3 ansible_user=root ip=192.168.0.3 gw=192.168.0.1 ns=192.168.0.2
+192.168.0.3 ansible_user=root ip=192.168.0.3 gw=192.168.0.1 ns=192.168.0.2 iface=enp3s0
