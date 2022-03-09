@@ -30,7 +30,7 @@ ssh: handshake failed: ssh: unable to authenticate, attempted methods [none publ
 
 - create default pool:
 ```
-virsh pool-define-as default dir - - - - /virtualki
+virsh pool-define-as default dir - - - - /virtualki/default
 virsh pool-build default
 virsh pool-start default
 virsh pool-autostart default
