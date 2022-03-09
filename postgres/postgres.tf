@@ -13,7 +13,7 @@ terraform {
 }
 
 provider "libvirt" {
-  uri   = "qemu+ssh://root@192.168.0.3/system"
+  uri   = "qemu+ssh://root@192.168.0.4/system"
 }
 
 #resource "libvirt_pool" "postgres" {
