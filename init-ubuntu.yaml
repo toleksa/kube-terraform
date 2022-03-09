@@ -14,8 +14,11 @@
       autoremove: yes
   - name: install packages
     apt:
-      pkg: ['qemu-kvm','libvirt-daemon-system','bridge-utils','prometheus-node-exporter']
+      pkg: ['qemu-kvm','libvirt-daemon-system','bridge-utils','prometheus-node-exporter','python3-libvirt','python3-lxml']
       state: latest
+
+  # get all physical ifaces:
+  # find /sys/class/net -type l -not -lname '*virtual*' -printf '%f\n'
   - name: upload bridge config
     template:
       src: netplan-bridge.j2
@@ -27,6 +30,37 @@
     file:
       path: '/virtualki'
       state: directory
+  - name: gather facts on existing virsh pool
+    virt_pool:
+      command: facts
+  - block:
+    - name: define default pool
+      community.libvirt.virt_pool:
+        command: define
+        name: default
+        xml: '{{ lookup("template", "pool-default.j2") }}'
+    - name: refresh facts on existing virsh pool
+      virt_pool:
+        command: facts
+    when: "'default' not in ansible_libvirt_pools"
+  - block:
+    - name: build default pool
+      virt_pool:
+        command: build
+        name: default
+    - name: start default pool
+      virt_pool:
+        command: create
+        name: default
+    when: ansible_libvirt_pools['default'].state != "active"
+  - name: autostart default pool
+    virt_pool:
+      autostart: yes      
+      name: default
+  - name: ensure that the pool is active
+    virt_pool:
+      state: active
+      name: default
   - name: apparmor profile for libvirt
     lineinfile:
       dest: /etc/apparmor.d/libvirt/TEMPLATE.qemu
