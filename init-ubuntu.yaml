@@ -55,7 +55,7 @@
     when: ansible_libvirt_pools['default'].state != "active"
   - name: autostart default pool
     virt_pool:
-      autostart: yes      
+      autostart: yes
       name: default
   - name: ensure that the pool is active
     virt_pool:
