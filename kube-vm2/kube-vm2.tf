@@ -13,7 +13,7 @@ terraform {
 }
 
 provider "libvirt" {
-  uri   = "qemu+ssh://root@192.168.0.3/system"
+  uri   = "qemu+ssh://root@192.168.0.4/system"
 }
 
 #resource "libvirt_pool" "kube" {
@@ -99,5 +99,5 @@ resource "libvirt_domain" "virtkubes" {
 }
 
 output "ip" {
-  value = "${libvirt_domain.virtkubes[0].network_interface.0.addresses.0}"
+  value = "${libvirt_domain.virtkubes[*].network_interface.0.addresses.0}"
 }
