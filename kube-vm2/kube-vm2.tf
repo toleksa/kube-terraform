@@ -98,6 +98,6 @@ resource "libvirt_domain" "virtkubes" {
   qemu_agent = true
 }
 
-#output "ip" {
-#  value = "${libvirt_domain.virtkubes[*].network_interface.0.addresses.0}"
-#}
+output "ip" {
+  value = "${libvirt_domain.virtkubes[*].network_interface.0.addresses.0}"
+}
