@@ -100,7 +100,6 @@ resource "libvirt_domain" "virtkubes" {
 }
 
 output "ip" {
-  #count = "${var.host_count}"
   value = "${libvirt_domain.virtkubes.*.network_interface.0.addresses.0}"
 }
 
