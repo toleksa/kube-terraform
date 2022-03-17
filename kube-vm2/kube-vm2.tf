@@ -99,5 +99,5 @@ resource "libvirt_domain" "virtkubes" {
 }
 
 output "ip" {
-  value = "${libvirt_domain.virtkubes[*].network_interface.0.addresses.0}"
+  value = "${libvirt_domain.virtkubes.*.network_interface.0.addresses.0}"
 }
