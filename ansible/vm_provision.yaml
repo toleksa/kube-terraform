@@ -1,0 +1,25 @@
+# vim: syntax=yaml
+- name: Deploys VM based on cloud image
+  hosts: server
+  gather_facts: yes
+  vars:
+    pool_dir: "/virtualki/default"
+    vm: vm
+    vcpus: 4
+    ram_mb: 4096
+    cleanup: no
+    net: default
+    ssh_pub_key: "/root/.ssh/id_rsa.pub"
+
+  tasks:
+    - name: KVM Provision role
+      include_role:
+        name: vm
+      vars:
+        libvirt_pool_dir: "{{ pool_dir }}"
+        vm_name: "{{ vm }}"
+        vm_vcpus: "{{ vcpus }}"
+        vm_ram_mb: "{{ ram_mb }}"
+        vm_net: "{{ net }}"
+        cleanup_tmp: "{{ cleanup }}"
+        ssh_key: "{{ ssh_pub_key }}"
