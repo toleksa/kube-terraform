@@ -9,6 +9,7 @@
     ram_mb: 4096
     cleanup: no
     net: default
+    root_pass: root
     ssh_pub_key: "/root/.ssh/id_rsa.pub"
 
   tasks:
@@ -23,3 +24,4 @@
         vm_net: "{{ net }}"
         cleanup_tmp: "{{ cleanup }}"
         ssh_key: "{{ ssh_pub_key }}"
+        vm_root_pass: "{{ root_pass }}"
