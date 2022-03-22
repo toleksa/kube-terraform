@@ -8,6 +8,14 @@
       - python3-libvirt
     state: present
 
+- name: Default netplan config
+  template:
+    src: 00-netplan.yaml
+    dest: /virtualki/00-netplan.yaml
+    owner: root
+    group: root
+    mode: '0600'
+
 - name: Get VMs list
   community.libvirt.virt:
     command: list_vms
@@ -34,10 +42,22 @@
   - name: Configure the image
     command: |
       virt-customize -a {{ libvirt_pool_dir }}/{{ vm_name }}.qcow2 \
-      --hostname {{ vm_name }} \
+      --hostname {{ vm_name }}.kube.ac \
+      --run-command 'ssh-keygen -A'
+      --upload /virtualki/00-netplan.yaml:/etc/netplan/00-netplan.yaml
+      --run-command 'netplan apply'
       --root-password password:{{ vm_root_pass }} \
       --ssh-inject 'root:file:{{ ssh_key }}' \
+      --run-command 'curl http://192.168.0.2:8765/dns-update.sh > /etc/cron.hourly/dns-update.sh' \
+      --run-command 'chmod +x /etc/cron.hourly/dns-update.sh' \
+      --run-command 'echo "@reboot /etc/cron.hourly/dns-update.sh" | crontab -' \
       --uninstall cloud-init
+    when: copy_results is changed
+    register: customize
+
+  - name: print customize
+    debug:
+      msg: "{{ customize.stdout_lines }}"
     when: copy_results is changed
 
   - name: Define vm
