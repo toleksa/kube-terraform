@@ -1,0 +1,96 @@
+---
+- name: upgrade-postgres-no-clone-only-primary-revert-no-reverse
+  hosts: postgres
+  any_errors_fatal: true
+
+  tasks:
+
+  - name: stop primary postgresql-12
+    systemd:
+      name: postgresql-12
+      state: stopped
+    when: "'1' in inventory_hostname"
+
+  - name: stop secondry postgresql-11 just in case
+    systemd:
+      name: postgresql-11
+      state: stopped
+    when: "'2' in inventory_hostname"
+
+  - name: remove psql-12 PATH
+    lineinfile:
+      path: /var/lib/pgsql/.bash_profile
+      regexp: 'export PATH=.PATH:/usr/pgsql-12/bin/'
+      state: absent
+    when: "'1' in inventory_hostname"
+
+  - name: add psql-11 PATH
+    lineinfile:
+      path: /var/lib/pgsql/.bash_profile
+      line: export PATH=$PATH:/usr/pgsql-11/bin/
+    when: "'1' in inventory_hostname"
+
+  - name: revert PDGATA
+    lineinfile:
+      path: /var/lib/pgsql/.bash_profile
+      regexp: "^PGDATA="
+      line: PGDATA=/var/lib/pgsql/11/data
+    when: "'1' in inventory_hostname"
+
+  - name: rsync
+    shell: |
+      rsync -v --archive --delete --hard-links --size-only --no-inc-recursive postgres@postgres2.kube.ac:/var/lib/pgsql/11 /var/lib/pgsql &> /tmp/rsync.log
+    become_user: postgres
+    become_method: su
+    become: true
+    when: "'1' in inventory_hostname"
+
+  - name: Locating logs from secondary
+    find:
+      path: "/var/lib/pgsql/11/data/log/"
+    register: cleanup
+    ignore_errors: true
+    when: "'1' in inventory_hostname"
+
+  - name: Removing logs from secondary
+    file:
+      path: "{{ item.path }}"
+      state: absent
+    with_items: "{{ cleanup.files }}"
+    ignore_errors: true
+    when: "'1' in inventory_hostname"
+
+  - name: start sec
+    systemd:
+      name: postgresql-11
+      state: restarted
+    when: "'2' in inventory_hostname"
+
+  - name: start pri
+    systemd:
+      name: postgresql-11
+      state: restarted
+    when: "'1' in inventory_hostname"
+
+  - name: promote primary
+    shell: . ~/.bash_profile ; pg_ctl promote
+    args:
+      executable: /bin/bash
+    become_user: postgres
+    become_method: su
+    become: true
+    when: "'1' in inventory_hostname"
+
+  - name: check new postgres is working
+    shell: . ~/.bash_profile ; psql -c "select version();" -d postgres
+    args:
+      executable: /bin/bash
+    become_user: postgres
+    become_method: su
+    become: true
+    register: pg_version
+
+  - name: print postgres version
+    debug:
+      msg: '{{ pg_version.stdout }}'
+
