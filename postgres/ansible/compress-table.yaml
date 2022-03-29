@@ -10,12 +10,18 @@
     become: true
     when: "'1' in inventory_hostname"
 
-  - name: create extension
+  - name: create extension main
     command: psql -c "CREATE EXTENSION IF NOT EXISTS timescaledb;"
     become_user: postgres
     become_method: su
     become: true
-    register: create_result
+    when: "'1' in inventory_hostname"
+
+  - name: create extension base
+    command: psql -c "CREATE EXTENSION IF NOT EXISTS timescaledb; -d test1"
+    become_user: postgres
+    become_method: su
+    become: true
     when: "'1' in inventory_hostname"
 
   - name: compress-table
