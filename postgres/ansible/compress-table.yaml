@@ -20,6 +20,6 @@
 
   - name: print result
     debug:
-      msg: {{ create_result.stdout }}
+      msg: "{{ create_result.stdout }}"
     when: "'1' in inventory_hostname"
 
