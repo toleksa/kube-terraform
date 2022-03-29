@@ -3,13 +3,6 @@
   hosts: postgres
 
   tasks:
-  - name: create table
-    command: psql -c "CREATE TABLE compress (id VARCHAR(20) PRIMARY KEY, num VARCHAR(20), data VARCHAR(20), time TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP);" -d test1
-    become_user: postgres
-    become_method: su
-    become: true
-    when: "'1' in inventory_hostname"
-
   - name: create extension main
     command: psql -c "CREATE EXTENSION IF NOT EXISTS timescaledb;"
     become_user: postgres
@@ -17,8 +10,15 @@
     become: true
     when: "'1' in inventory_hostname"
 
-  - name: create extension base
-    command: psql -c "CREATE EXTENSION IF NOT EXISTS timescaledb;" -d test1
+  - name: create table
+    command: psql -c "CREATE TABLE compress (id VARCHAR(20) PRIMARY KEY, num VARCHAR(20), data VARCHAR(20), time TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP);" -d test1
+    become_user: postgres
+    become_method: su
+    become: true
+    when: "'1' in inventory_hostname"
+
+  - name: create hypertable
+    command: psql -c "SELECT create_hypertable('compress','id',chunk_time_interval => 600);" -d test1
     become_user: postgres
     become_method: su
     become: true
