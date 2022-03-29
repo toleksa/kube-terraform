@@ -19,14 +19,14 @@
     when: "'1' in inventory_hostname"
 
   - name: create hypertable
-    command: psql -c "SELECT create_hypertable('compress','id',chunk_time_interval => 600);" -d test1
+    command: psql -c "SELECT create_hypertable('compress','time',chunk_time_interval => 600);" -d test1
     become_user: postgres
     become_method: su
     become: true
     when: "'1' in inventory_hostname"
 
   - name: compress-table
-    command: psql -c "ALTER TABLE compress SET (timescaledb.compress, timescaledb.compress_segmentby = 'time, data, num', timescaledb.compress_orderby = 'id');" -d test1
+    command: psql -c "ALTER TABLE compress SET (timescaledb.compress, timescaledb.compress_segmentby = 'data, num', timescaledb.compress_orderby = 'time');" -d test1
     become_user: postgres
     become_method: su
     become: true
@@ -35,7 +35,7 @@
 
   - name: print compress_result
     debug:
-      msg: "{{ compress_result }}"
+      msg: "{{ compress_result.stderr_lines }}"
     when: "'1' in inventory_hostname"
 
   - name: add compression policy
