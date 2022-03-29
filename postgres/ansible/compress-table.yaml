@@ -11,7 +11,7 @@
     when: "'1' in inventory_hostname"
 
   - name: compress-table
-    command: psql -c "ALTER TABLE test1.compress SET (timescaledb.compress, timescaledb.compress_segmentby = 'time, data, num', timescaledb.compress_orderby = 'id');" -d test1
+    command: psql -c "ALTER TABLE compress SET (timescaledb.compress, timescaledb.compress_segmentby = 'time, data, num', timescaledb.compress_orderby = 'id');" -d test1
     become_user: postgres
     become_method: su
     become: true
