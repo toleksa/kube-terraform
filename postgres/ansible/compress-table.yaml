@@ -18,7 +18,7 @@
     when: "'1' in inventory_hostname"
 
   - name: create extension base
-    command: psql -c "CREATE EXTENSION IF NOT EXISTS timescaledb; -d test1"
+    command: psql -c "CREATE EXTENSION IF NOT EXISTS timescaledb;" -d test1
     become_user: postgres
     become_method: su
     become: true
