@@ -30,11 +30,31 @@
     become_user: postgres
     become_method: su
     become: true
-    register: create_result
+    register: compress_result
     when: "'1' in inventory_hostname"
 
-  - name: print result
+  - name: print compress_result
     debug:
-      msg: "{{ create_result.stdout }}"
+      msg: "{{ compress_result }}"
+    when: "'1' in inventory_hostname"
+
+  - name: add compression policy
+    command: psql -c "SELECT add_compress_chunks_policy('compress', INTERVAL '10 mins');" -d test1
+    become_user: postgres
+    become_method: su
+    become: true
+    when: "'1' in inventory_hostname"
+
+  - name: select compression policy
+    command: psql -c "SELECT job_id, table_name FROM _timescaledb_config.bgw_policy_compress_chunks p INNER JOIN _timescaledb_catalog.hypertable h ON (h.id = p.hypertable_id);"
+    become_user: postgres
+    become_method: su
+    become: true
+    register: select_result
+    when: "'1' in inventory_hostname"
+
+  - name: print select_result
+    debug:
+      msg: "{{ select_result }}"
     when: "'1' in inventory_hostname"
 
