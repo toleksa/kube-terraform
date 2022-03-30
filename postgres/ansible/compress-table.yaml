@@ -58,4 +58,16 @@
       msg: "{{ select_result.stdout_lines }}"
     when: "'1' in inventory_hostname"
 
-  
+  - name: create spam.sh
+    copy:
+      dest: ~/spam.sh
+      content: |
+        #!/bin/bash
+        while true ; do
+          psql -c "insert into compress values (default,$(openssl rand 7 | od -DAn | tr -d ' '),'$(($RANDOM % 10))A0B0C0D0E0F',now());" -d test1;
+        done
+      mode: '0755'
+    become_user: postgres
+    become_method: su
+    become: true
+
