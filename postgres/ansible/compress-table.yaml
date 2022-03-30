@@ -12,7 +12,7 @@
     when: "'1' in inventory_hostname"
 
   - name: create table
-    command: psql -c "CREATE TABLE IF NOT EXISTS compress (id SERIAL PRIMARY KEY, num VARCHAR(20), data VARCHAR(20), time TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP);" -d test1
+    command: psql -c "CREATE TABLE IF NOT EXISTS compress (id SERIAL PRIMARY KEY, num bigint, data VARCHAR(20), time TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP);" -d test1
     become_user: postgres
     become_method: su
     become: true
