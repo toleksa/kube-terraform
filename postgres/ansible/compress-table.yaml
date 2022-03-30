@@ -19,14 +19,14 @@
     when: "'1' in inventory_hostname"
 
   - name: create hypertable
-    command: psql -c "SELECT create_hypertable('compress','time',chunk_time_interval => INTERVAL '10 mins', if_not_exists => TRUE`);" -d test1
+    command: psql -c "SELECT create_hypertable('compress','time',chunk_time_interval => INTERVAL '1 hour', if_not_exists => TRUE`);" -d test1
     become_user: postgres
     become_method: su
     become: true
     when: "'1' in inventory_hostname"
 
   - name: compress-table
-    command: psql -c "ALTER TABLE compress SET (timescaledb.compress, timescaledb.compress_segmentby = 'data, num', timescaledb.compress_orderby = 'time');" -d test1
+    command: psql -c "ALTER TABLE compress SET (timescaledb.compress, timescaledb.compress_segmentby = 'data', timescaledb.compress_orderby = 'time');" -d test1
     become_user: postgres
     become_method: su
     become: true
@@ -39,7 +39,7 @@
     when: "'1' in inventory_hostname"
 
   - name: add compression policy
-    command: psql -c "SELECT add_compress_chunks_policy('compress', INTERVAL '10 mins');" -d test1
+    command: psql -c "SELECT add_compress_chunks_policy('compress', INTERVAL '3 hours');" -d test1
     become_user: postgres
     become_method: su
     become: true
