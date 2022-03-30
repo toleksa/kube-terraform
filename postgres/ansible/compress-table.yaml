@@ -55,7 +55,7 @@
 
   - name: print select_result
     debug:
-      msg: "{{ select_result }}"
+      msg: "{{ select_result.stdout_lines }}"
     when: "'1' in inventory_hostname"
 
   
