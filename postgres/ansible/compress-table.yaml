@@ -46,7 +46,7 @@
     when: "'1' in inventory_hostname"
 
   - name: select compression policy
-    command: psql -c "SELECT job_id, table_name FROM _timescaledb_config.bgw_policy_compress_chunks p INNER JOIN _timescaledb_catalog.hypertable h ON (h.id = p.hypertable_id);"
+    command: psql -c "SELECT job_id, table_name FROM _timescaledb_config.bgw_policy_compress_chunks p INNER JOIN _timescaledb_catalog.hypertable h ON (h.id = p.hypertable_id);" -d test1
     become_user: postgres
     become_method: su
     become: true
