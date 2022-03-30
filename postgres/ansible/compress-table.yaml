@@ -77,6 +77,7 @@
 # SELECT alter_job_schedule((SELECT job_id FROM timescaledb_information.drop_chunks_policies WHERE hypertable = 'compress'::regclass), schedule_interval => INTERVAL '1 hour');
 # select show_chunks('compress');
 # select * from _timescaledb_catalog.hypertable;
+# select hypertable_name,chunk_name,compression_status,uncompressed_total_bytes,compressed_total_bytes from timescaledb_information.compressed_chunk_stats order by hypertable_name,chunk_name asc;
 # !!! valid only for timescale 1.7 !!!
 
 
