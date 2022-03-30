@@ -19,7 +19,7 @@
     when: "'1' in inventory_hostname"
 
   - name: create hypertable
-    command: psql -c "SELECT create_hypertable('compress','time',chunk_time_interval => INTERVAL '10 mins');" -d test1
+    command: psql -c "SELECT create_hypertable('compress','time',chunk_time_interval => INTERVAL '10 mins', if_not_exists => TRUE`);" -d test1
     become_user: postgres
     become_method: su
     become: true
