@@ -5,6 +5,7 @@
       name: Europe/Zurich
   - name: Set 24h date
     command: localectl set-locale LC_TIME="en_GB.UTF-8"
+    changed_when: False
   - name: remove unneeded packages
     apt:
       pkg: ['eject','nano','xauth']
