@@ -23,6 +23,9 @@
       pkg: ['qemu-kvm','libvirt-daemon-system','bridge-utils','prometheus-node-exporter','python3-libvirt','python3-lxml']
       state: latest
 
+  - name: get mac address
+    set_fact:
+      mac: "{{ hostvars[inventory_hostname]['ansible_' + iface]['macaddress'] }}"
   # get all physical ifaces:
   # find /sys/class/net -type l -not -lname '*virtual*' -printf '%f\n'
   - name: upload bridge config

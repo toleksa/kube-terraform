@@ -6,6 +6,9 @@ network:
     {{ iface }}:
       dhcp4: no
       dhcp6: no
+      match:
+        macaddress: {{ mac }}
+      wakeonlan: true
 
   bridges:
     br0:
