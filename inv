@@ -1,4 +1,4 @@
 [server]
-#192.168.0.3 ansible_user=root ip=192.168.0.3 gw=192.168.0.1 ns=192.168.0.2 iface=enp3s0
+192.168.0.3 ansible_user=root ip=192.168.0.3 gw=192.168.0.1 ns=192.168.0.2 iface=enp3s0
 192.168.0.4 ansible_user=root ip=192.168.0.4 gw=192.168.0.1 ns=192.168.0.2 iface=enp0s3
 #192.168.0.5 ansible_user=root ip=192.168.0.5 gw=192.168.0.1 ns=192.168.0.2 iface=eno1
