@@ -132,6 +132,10 @@
 #        [Install]
 #        WantedBy=basic.target
 #    notify: restart wol.service
+  - name: remove wol.service
+    file:
+      path: /etc/systemd/system/wol.service
+      state: absent
 
   handlers:
   - name: restart netplan
