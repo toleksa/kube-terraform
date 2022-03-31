@@ -1,5 +1,8 @@
 - hosts: all
   tasks:
+  - name: Set timezone to Europe/Zurich
+    community.general.timezone:
+      name: Europe/Zurich
   - name: remove unneeded packages
     apt:
       pkg: ['eject','nano','xauth']
