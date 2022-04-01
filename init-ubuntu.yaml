@@ -118,20 +118,6 @@
       name: dns-update.sh
       special_time: reboot
       job: '/etc/cron.hourly/dns-update.sh'
-#  - name: deploy wol.service
-#    copy:
-#      dest: /etc/systemd/system/wol.service
-#      content: |
-#        [Unit]
-#        Description=Enable Wake On Lan
-#        
-#        [Service]
-#        Type=oneshot
-#        ExecStart = /sbin/ethtool --change {{ iface }} wol g
-#        
-#        [Install]
-#        WantedBy=basic.target
-#    notify: restart wol.service
   - name: remove wol.service
     file:
       path: /etc/systemd/system/wol.service
@@ -156,10 +142,4 @@
       state: restarted
   - name: update dns
     shell: /etc/cron.hourly/dns-update.sh
-#  - name: restart wol.service
-#    systemd:
-#      name: wol
-#      state: restarted
-#      daemon_reload: yes
-#      enabled: yes
 
