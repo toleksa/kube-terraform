@@ -96,7 +96,7 @@
       line: export PATH=$PATH:/usr/pgsql-11/bin/
 
   - name: set postgress password
-    command: psql "ALTER USER postgres WITH PASSWORD 'postgres';"
+    command: psql -c "ALTER USER postgres WITH PASSWORD 'postgres';"
     become: true
     become_user: postgres
     become_method: su

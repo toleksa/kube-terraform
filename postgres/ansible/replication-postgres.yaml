@@ -40,7 +40,7 @@
       backup: yes
     loop:
       - { line: 'host    replication     all             all                     md5' }
-      - { line: 'host    postgres        postgres        all                     md5' }
+      - { line: 'host    all             all             all                     md5' }
     become_user: postgres
     become_method: su
     become: true
