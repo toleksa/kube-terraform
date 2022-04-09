@@ -20,7 +20,7 @@
       autoremove: yes
   - name: install packages
     apt:
-      pkg: ['qemu-kvm','libvirt-daemon-system','bridge-utils','prometheus-node-exporter','python3-libvirt','python3-lxml']
+      pkg: ['qemu-kvm','libvirt-daemon-system','bridge-utils','prometheus-node-exporter','python3-libvirt','python3-lxml','libguestfs-tools']
       state: latest
 
   - name: get mac address
