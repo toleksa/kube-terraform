@@ -1,0 +1,11 @@
+---
+- name: sequence
+  hosts: postgres1.kube.ac
+
+  tasks:
+  - name: create sequence
+    postgresql_sequence:
+      name: sequence1
+      data_type: integer
+      start: 0
+      owner: test1
