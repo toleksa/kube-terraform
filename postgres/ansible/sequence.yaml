@@ -1,11 +1,19 @@
 ---
 - name: sequence
-  hosts: postgres1.kube.ac
+  hosts: postgres
 
   tasks:
+  - name: install python3-psycopg2
+    dnf:
+      name:
+        - python3-psycopg2
+      state: latest
+    tags: package
+
   - name: create sequence
     postgresql_sequence:
       name: sequence1
       data_type: integer
       start: 0
       owner: test1
+
