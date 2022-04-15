@@ -16,4 +16,5 @@
       data_type: integer
       start: 0
       owner: test1
+    when: "'1' in inventory_hostname"
 
