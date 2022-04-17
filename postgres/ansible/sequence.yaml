@@ -15,7 +15,7 @@
       name: sequence1
       data_type: integer
       start: 0
-      owner: test1
+      db: test1
     become: true
     become_user: postgres
     become_method: su
