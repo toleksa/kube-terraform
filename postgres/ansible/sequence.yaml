@@ -14,7 +14,7 @@
     postgresql_sequence:
       name: sequence1
       data_type: integer
-      start: 0
+      start: 1
       db: test1
     become: true
     become_user: postgres
