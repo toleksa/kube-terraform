@@ -21,3 +21,14 @@
     become_method: su
     when: "'1' in inventory_hostname"
 
+  - name: select sequence 1
+    postgresql_query:
+      db: test1
+      query: select * from sequence1;
+    register: select1
+    when: "'1' in inventory_hostname"
+
+  - name: print sequence 1
+    debug:
+      msg: "{{ select1.stdout }}"
+    when: "'1' in inventory_hostname"
