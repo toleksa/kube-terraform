@@ -33,5 +33,5 @@
 
   - name: print sequence 1
     debug:
-      msg: "{{ select1 }}"
+      msg: "{{ select1.query_result.0.last_value }}"
     when: "'1' in inventory_hostname"
