@@ -35,3 +35,28 @@
     debug:
       msg: "{{ select1.query_result.0.last_value }}"
     when: "'1' in inventory_hostname"
+
+  - name: next_val x3
+    postgresql_query:
+      db: test1
+      query: select nextval('sequence1');
+    become: true
+    become_user: postgres
+    become_method: su
+    when: "'1' in inventory_hostname"
+
+  - name: select sequence 2
+    postgresql_query:
+      db: test1
+      query: select * from sequence1;
+    register: select1
+    become: true
+    become_user: postgres
+    become_method: su
+    when: "'1' in inventory_hostname"
+
+  - name: print sequence 2
+    debug:
+      msg: "{{ select1.query_result.0.last_value }}"
+    when: "'1' in inventory_hostname"
+
