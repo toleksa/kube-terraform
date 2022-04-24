@@ -43,6 +43,7 @@
     become: true
     become_user: postgres
     become_method: su
+    with_sequence: start=1 end=3
     when: "'1' in inventory_hostname"
 
   - name: select sequence 2
