@@ -33,17 +33,7 @@
 
   - name: print sequence 1
     debug:
-      msg: "{{ select1.query_result.0.last_value }}"
-    when: "'1' in inventory_hostname"
-
-  - name: next_val x3
-    postgresql_query:
-      db: test1
-      query: select nextval('sequence1');
-    become: true
-    become_user: postgres
-    become_method: su
-    with_sequence: start=1 end=3
+      msg: "last_val: {{ select1.query_result.0.last_value }}"
     when: "'1' in inventory_hostname"
 
   - name: select sequence 2
@@ -58,6 +48,31 @@
 
   - name: print sequence 2
     debug:
-      msg: "{{ select1.query_result.0.last_value }}"
+      msg: "check again: {{ select1.query_result.0.last_value }}"
+    when: "'1' in inventory_hostname"
+
+  - name: next_val x3
+    postgresql_query:
+      db: test1
+      query: select nextval('sequence1');
+    become: true
+    become_user: postgres
+    become_method: su
+    with_sequence: start=1 end=3
+    when: "'1' in inventory_hostname"
+
+  - name: select sequence 3
+    postgresql_query:
+      db: test1
+      query: select * from sequence1;
+    register: select1
+    become: true
+    become_user: postgres
+    become_method: su
+    when: "'1' in inventory_hostname"
+
+  - name: print sequence 3
+    debug:
+      msg: "last_val: {{ select1.query_result.0.last_value }}"
     when: "'1' in inventory_hostname"
 
