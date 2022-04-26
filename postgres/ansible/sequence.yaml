@@ -76,3 +76,13 @@
       msg: "last_val: {{ select1.query_result.0.last_value }}"
     when: "'1' in inventory_hostname"
 
+  - name: get sequence description 1
+    postrgresql_query:
+      db: test1
+      query: select * from information_schema.sequences where sequence_name='sequence1';
+    register: desc1
+    become: true
+    become_user: postgres
+    become_method: su
+    when: "'1' in inventory_hostname"
+
