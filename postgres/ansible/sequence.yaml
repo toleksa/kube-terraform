@@ -77,7 +77,7 @@
     when: "'1' in inventory_hostname"
 
   - name: get sequence description 1
-    postrgresql_query:
+    postgresql_query:
       db: test1
       query: select * from information_schema.sequences where sequence_name='sequence1';
     register: desc1
