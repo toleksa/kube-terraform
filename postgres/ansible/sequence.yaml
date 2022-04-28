@@ -86,3 +86,8 @@
     become_method: su
     when: "'1' in inventory_hostname"
 
+  - name: print sequence description
+    debug:
+      msg: "{{ desc1 }}"
+    when: "'1' in inventory_hostname"
+
