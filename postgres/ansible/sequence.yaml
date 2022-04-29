@@ -86,8 +86,32 @@
     become_method: su
     when: "'1' in inventory_hostname"
 
-  - name: print sequence description
+  - name: print sequence description 1
     debug:
-      msg: "{{ desc1 }}"
+      msg: "{{ desc1.query_result.0.last_value }}"
+    when: "'1' in inventory_hostname"
+
+  - name: alter sequence
+    postgresql_query:
+      db: test1
+      query: alter sequence sequence1 as bigint cycle;
+    become: true
+    become_user: postgres
+    become_method: su
+    when: "'1' in inventory_hostname"
+
+  - name: get sequence description 2
+    postgresql_query:
+      db: test1
+      query: select * from information_schema.sequences where sequence_name='sequence1';
+    register: desc1
+    become: true
+    become_user: postgres
+    become_method: su
+    when: "'1' in inventory_hostname"
+
+  - name: print sequence description 2
+    debug:
+      msg: "{{ desc1.query_result.0.last_value }}"
     when: "'1' in inventory_hostname"
 
