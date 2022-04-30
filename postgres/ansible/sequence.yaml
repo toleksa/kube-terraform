@@ -88,7 +88,7 @@
 
   - name: print sequence description 1
     debug:
-      msg: "{{ desc1.query_result.0.last_value }}"
+      msg: "{{ desc1.query_result.0 }}"
     when: "'1' in inventory_hostname"
 
   - name: alter sequence
@@ -112,6 +112,6 @@
 
   - name: print sequence description 2
     debug:
-      msg: "{{ desc1.query_result.0.last_value }}"
+      msg: "{{ desc1.query_result.0 }}"
     when: "'1' in inventory_hostname"
 
