@@ -101,6 +101,13 @@ resource "libvirt_domain" "virtkubes" {
 }
 
 output "ip" {
-  value = "${libvirt_domain.virtkubes.*.network_interface.0.addresses.0}"
+  value = {
+    for host in libvirt_domain.virtkubes:
+    host.name => host.network_interface.0.addresses.*
+  }
 }
+
+#output "ip" {
+#  value = "${libvirt_domain.virtkubes.*.network_interface.0.addresses.0}"
+#}
 
