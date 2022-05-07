@@ -107,6 +107,11 @@
       url: 'https://raw.githubusercontent.com/toleksa/configs/main/.bash_profile'
       dest: '/root/.bash_profile'
       mode: '0700'
+  - name: .bashrc
+    get_url:
+      url: 'https://raw.githubusercontent.com/toleksa/configs/main/.bashrc'
+      dest: '/root/.bashrc'
+      mode: '0700'
   - name: get dns-update.sh
     get_url: 
       url: 'http://192.168.0.2:8765/dns-update.sh'
