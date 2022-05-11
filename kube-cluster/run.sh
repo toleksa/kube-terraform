@@ -1,4 +1,4 @@
 #!/bin/bash
 
-terraform apply -var="host_count=3"
+terraform apply -var-file=variables.tfvars
 
