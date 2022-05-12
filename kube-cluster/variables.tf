@@ -3,6 +3,10 @@ variable "cluster_name" {
   description = "name of cluster"
   default = "c0"
 }
+variable "cluster_domain" {
+  description = "domain for cluster and nodes"
+  default = "kube.ac"
+}
 variable "server_count" {
   description = "number of server nodes"
   default = 3

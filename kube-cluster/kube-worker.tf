@@ -18,8 +18,8 @@ data "template_file" "worker_user_data" {
   count = "${var.worker_count}"
   template = format("%s%s",file("${path.module}/../user_data_base.cfg"),file("${path.module}/user_data_kube.cfg"))
   vars = {
-    HOSTNAME = "w${count.index}.${var.cluster_name}.kube.ac",
-    JOIN_ADDR = "s0.${var.cluster_name}.kube.ac"
+    HOSTNAME = "w${count.index}.${var.cluster_name}.${var.cluster_domain}",
+    JOIN_ADDR = "s0.${var.cluster_name}.${var.cluster_domain}"
     JOIN_TOKEN = "${var.join_token}"
     PREFIX = ""
     RKE2_TYPE = "agent"
@@ -37,7 +37,7 @@ resource "libvirt_domain" "kube-worker" {
     network_id = "${libvirt_network.kube.id}"
     wait_for_lease = true
     mac = "44:8a:5b:00:03:1${count.index}"
-    hostname = "s${count.index}.${var.cluster_name}.kube.ac"
+    hostname = "s${count.index}.${var.cluster_name}.${var.cluster_domain}"
   }
 
   disk {

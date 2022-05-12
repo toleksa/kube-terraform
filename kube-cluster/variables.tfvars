@@ -1,4 +1,5 @@
 cluster_name = "c0"
+cluster_domain = "kube.ac"
 server_count = 1
 server_vcpu = 3
 server_mem = 4000
