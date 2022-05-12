@@ -22,11 +22,12 @@ data "template_file" "server_user_data" {
     JOIN_ADDR = "s0.${var.cluster_name}.kube.ac"
     JOIN_TOKEN = "${var.join_token}"
     PREFIX = count.index == 0 ? "#" : ""
+    RKE2_TYPE = "server"
   }
 }
 
 # Define KVM domain to create
-resource "libvirt_domain" "kube" {
+resource "libvirt_domain" "kube-server" {
   count = "${var.server_count}"
   name   = "${var.cluster_name}.s${count.index}"
   memory = "${var.server_mem}"
@@ -59,9 +60,9 @@ resource "libvirt_domain" "kube" {
   qemu_agent = true
 }
 
-output "ip" {
+output "ip-servers" {
   value = {
-    for host in libvirt_domain.kube:
+    for host in libvirt_domain.kube-server:
     host.name => host.network_interface.0.addresses.*
   }
 }
