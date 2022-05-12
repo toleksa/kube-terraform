@@ -19,15 +19,16 @@ data "template_file" "server_user_data" {
   template = format("%s%s",file("${path.module}/../user_data_base.cfg"),file("${path.module}/user_data_kube.cfg"))
   vars = {
     HOSTNAME = "s${count.index}.${var.cluster_name}.kube.ac",
-    JOIN_ADDR = "s1.${var.cluster_name}.kube.ac"
+    JOIN_ADDR = "s0.${var.cluster_name}.kube.ac"
     JOIN_TOKEN = "${var.join_token}"
+    PREFIX = count.index == 0 ? "#" : ""
   }
 }
 
 # Define KVM domain to create
 resource "libvirt_domain" "kube" {
   count = "${var.server_count}"
-  name   = "v${count.index}"
+  name   = "${var.cluster_name}.s${count.index}"
   memory = "${var.server_mem}"
   vcpu   = "${var.server_vcpu}"
 
