@@ -7,6 +7,10 @@ variable "cluster_domain" {
   description = "domain for cluster and nodes"
   default = "kube.ac"
 }
+variable "cluster_ip" {
+  description = "IP range for metallb - currently only single ip range supported"
+  default = "192.168.0.200-192.168.0.200"
+}
 variable "server_count" {
   description = "number of server nodes"
   default = 3

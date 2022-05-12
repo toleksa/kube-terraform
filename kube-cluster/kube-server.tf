@@ -24,6 +24,7 @@ data "template_file" "server_user_data" {
     PREFIX = count.index == 0 ? "#" : ""
     RKE2_TYPE = "server"
     ARGO_DOMAIN = "${var.cluster_name}.${var.cluster_domain}"
+    ARGO_IP = "${var.cluster_ip}"
   }
 }
 

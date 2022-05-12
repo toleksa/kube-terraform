@@ -1,5 +1,6 @@
 cluster_name = "c0"
 cluster_domain = "kube.ac"
+cluster_ip = "192.168.0.200-192.168.0.200"
 server_count = 1
 server_vcpu = 3
 server_mem = 4000
