@@ -22,7 +22,10 @@ data "template_file" "worker_user_data" {
     JOIN_ADDR = "s0.${var.cluster_name}.${var.cluster_domain}"
     JOIN_TOKEN = "${var.join_token}"
     PREFIX = ""
+    INV_PREFIX = "#"
     RKE2_TYPE = "agent"
+    ARGO_DOMAIN = ""
+    ARGO_IP = ""
   }
 }
 
