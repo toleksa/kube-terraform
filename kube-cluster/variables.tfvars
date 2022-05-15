@@ -1,11 +1,11 @@
 cluster_name = "c0"
 cluster_domain = "kube.ac"
 cluster_ip = "192.168.0.200-192.168.0.200"
-server_count = 1
+server_count = 3
 server_vcpu = 3
 server_mem = 4000
 
-worker_count = 3
+worker_count = 0
 worker_vcpu = 3
 worker_mem = 4000
 
