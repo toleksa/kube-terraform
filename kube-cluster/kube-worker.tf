@@ -39,7 +39,7 @@ resource "libvirt_domain" "kube-worker" {
   network_interface {
     network_id = "${libvirt_network.kube.id}"
     wait_for_lease = true
-    mac = "44:8a:5b:00:03:1${count.index}"
+    mac = "${var.mac_prefix}:1${count.index}"
     hostname = "s${count.index}.${var.cluster_name}.${var.cluster_domain}"
   }
 

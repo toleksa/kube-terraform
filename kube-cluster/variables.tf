@@ -16,6 +16,10 @@ variable "cluster_ip" {
   description = "IP range for metallb - currently only single ip range supported"
   default = "192.168.0.200-192.168.0.200"
 }
+variable "mac_prefix" {
+  description = "prefix for network card mac addr"
+  default = "44:8a:5b:00:03"
+}
 variable "server_count" {
   description = "number of server nodes"
   default = 3

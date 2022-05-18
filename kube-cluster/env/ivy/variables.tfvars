@@ -2,6 +2,7 @@ env = "ivy"
 cluster_name = "c1"
 cluster_domain = "kube.ac"
 cluster_ip = "192.168.0.210-192.168.0.210"
+mac_prefix = "44:8a:5b:00:04"
 server_count = 1
 server_vcpu = 3
 server_mem = 4000
