@@ -1,4 +1,9 @@
 # vim: syntax=yaml
+
+variable "env" {
+  description = "set environment"
+  default = "virtbox"
+}
 variable "cluster_name" {
   description = "name of cluster"
   default = "c0"
