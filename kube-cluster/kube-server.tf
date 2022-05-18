@@ -22,7 +22,6 @@ data "template_file" "server_user_data" {
     JOIN_ADDR = "s0.${var.cluster_name}.${var.cluster_domain}"
     JOIN_TOKEN = "${var.join_token}"
     PREFIX = count.index == 0 ? "#" : ""
-    INV_PREFIX = count.index == 0 ? "" : "#"
     RKE2_TYPE = "server"
     ARGO_DOMAIN = "${var.cluster_name}.${var.cluster_domain}"
     ARGO_IP = "${var.cluster_ip}"
