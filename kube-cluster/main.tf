@@ -34,3 +34,7 @@ resource "libvirt_volume" "kube" {
   format = "qcow2"
 }
 
+terraform {
+  backend "local" {}
+}
+
