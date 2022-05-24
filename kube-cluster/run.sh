@@ -15,6 +15,11 @@ fi
 if [ ! -d "env/$ENV_DIR/.terraform" ]; then
   echo "INFO: env/$ENV_DIR/.terraform not found, initializing terraform"
   TF_DATA_DIR=env/$ENV_DIR/.terraform terraform init --backend-config="path=env/$ENV_DIR/terraform.tfstate"
+  RC=$?
+  if [ $RC -ne 0 ]; then
+    echo "ERR: terraform init RC=$RC"
+    exit 2
+  fi
   echo "INFO: init finished"
 fi
 
