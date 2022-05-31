@@ -41,26 +41,19 @@ resource "libvirt_volume" "volume" {
   format = "qcow2"
 }
 
-data "template_file" "meta_data" {
+data "template_file" "user_data" {
   count = "${var.host_count}"
-  template = file("${path.module}/meta_data.cfg")
+  template = format("%s%s",file("${path.module}/../user_data_base.cfg"),file("${path.module}/user_data_rke2.cfg"))
   vars = {
     HOSTNAME = "r${count.index + 1}.kube.ac"
-    FQDN = "r${count.index + 1}.kube.ac" 
-    ID = "ID-r${count.index + 1}"
   }
-}
-
-data "template_file" "user_data" {
-  template = format("%s%s",file("${path.module}/../user_data_base.cfg"),file("${path.module}/user_data_rke2.cfg"))
 }
 
 # Use CloudInit to add the instance
 resource "libvirt_cloudinit_disk" "cloudinit" {
   count = "${var.host_count}"
   name = "cloudinit-r${count.index + 1}.iso"
-  meta_data  = "${data.template_file.meta_data[count.index].rendered}"
-  user_data  = "${data.template_file.user_data.rendered}"
+  user_data  = "${data.template_file.user_data[count.index].rendered}"
   #pool = "kube"
   pool = "default"
 }
