@@ -40,27 +40,20 @@ resource "libvirt_volume" "volume" {
   format = "qcow2"
 }
 
-data "template_file" "meta_data" {
-  count = "${var.host_count}"
-  template = file("${path.module}/meta_data.cfg")
-  vars = {
-    HOSTNAME = "postgres${count.index + 1}"
-    FQDN = "postgres${count.index + 1}" 
-    ID = "ID-${count.index + 1}"
-  }
-}
-
 data "template_file" "user_data" {
+  count = "${var.host_count}"
   template = format("%s%s",file("${path.module}/../user_data_base.cfg"),file("${path.module}/user_data_postgres.cfg"))
+  vars = {
+    HOSTNAME = "r${count.index + 1}.kube.ac"
+  }
 }
 
 # Use CloudInit to add the instance
 resource "libvirt_cloudinit_disk" "cloudinit" {
   count = "${var.host_count}"
-  name = "cloudinit-postgres${count.index + 1}.iso"
-  meta_data  = "${data.template_file.meta_data[count.index].rendered}"
-  user_data  = "${data.template_file.user_data.rendered}"
-  #pool = "postgres"
+  name = "cloudinit-r${count.index + 1}.iso"
+  user_data  = "${data.template_file.user_data[count.index].rendered}"
+  #pool = "kube"
   pool = "default"
 }
 
