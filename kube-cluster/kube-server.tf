@@ -60,6 +60,8 @@ resource "libvirt_domain" "kube-server" {
     autoport = true
   }
   qemu_agent = true
+
+  description = "cluster: ${var.cluster_name}\nroles: server"
 }
 
 output "ip-servers" {
