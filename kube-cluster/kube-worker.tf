@@ -60,6 +60,8 @@ resource "libvirt_domain" "kube-worker" {
     autoport = true
   }
   qemu_agent = true
+
+  description = "cluster: ${var.cluster_name}\nroles: worker"
 }
 
 output "ip-workers" {
