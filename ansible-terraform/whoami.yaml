@@ -1,0 +1,10 @@
+---
+- hosts: all
+  tasks:
+  - name: whoami
+    shell: whoami
+    register: whoami
+  - name: print
+    debug:
+      msg: "{{ whoami.stdout }}"
+
