@@ -44,7 +44,7 @@ data "template_file" "user_data" {
   count = "${var.host_count}"
   template = format("%s%s",file("${path.module}/../user_data_base.cfg"),file("${path.module}/user_data_postgres.cfg"))
   vars = {
-    HOSTNAME = "r${count.index + 1}.kube.ac"
+    HOSTNAME = "postgres${count.index + 1}.kube.ac"
   }
 }
 
