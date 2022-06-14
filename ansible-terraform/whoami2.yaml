@@ -1,0 +1,26 @@
+---
+- hosts: server
+  tasks:
+  - name: whoami
+    shell: whoami
+    register: whoami
+  - name: print
+    debug:
+      msg: "{{ whoami.stdout }}"
+
+- hosts: worker
+  tasks:
+  - name: id
+    shell: id
+    register: id
+  - name: print
+    debug:
+      msg: "{{ id.stdout }}"
+
+- hosts: all
+  tasks:
+  - name: install python3
+    apt:
+      name: python3
+      state: present
+

@@ -1,6 +1,10 @@
+#better use IVY, virtbox is very slow with clusters
+
 ansible-inventory -i ivy.yaml --list
 QEMU_URI='qemu+ssh://root@192.168.0.3/system' ./libvirt-inventory.py
+QEMU_URI='qemu+ssh://root@192.168.0.4/system' ./libvirt-inventory.py
 ansible-console -i ivy.yaml
   shell executable=/bin/bash . /root/.bashrc ; k get nodes
 ansible-playbook -i ivy.yaml whoami.yaml
 
+QEMU_URI='qemu+ssh://root@192.168.0.4/system' ansible-playbook -i ./libvirt-inventory.py whoami2.yaml
