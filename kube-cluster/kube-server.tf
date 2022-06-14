@@ -31,7 +31,7 @@ data "template_file" "server_user_data" {
 # Define KVM domain to create
 resource "libvirt_domain" "kube-server" {
   count = "${var.server_count}"
-  name   = "${var.cluster_name}.s${count.index}"
+  name   = "s${count.index}.${var.cluster_name}"
   memory = "${var.server_mem}"
   vcpu   = "${var.server_vcpu}"
 

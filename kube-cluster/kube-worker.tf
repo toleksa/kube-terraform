@@ -31,7 +31,7 @@ data "template_file" "worker_user_data" {
 # Define KVM domain to create
 resource "libvirt_domain" "kube-worker" {
   count = "${var.worker_count}"
-  name   = "${var.cluster_name}.w${count.index}"
+  name   = "w${count.index}.${var.cluster_name}"
   memory = "${var.worker_mem}"
   vcpu   = "${var.worker_vcpu}"
 
