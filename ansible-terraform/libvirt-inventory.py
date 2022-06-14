@@ -23,7 +23,7 @@ URI = jinja2.Template("{{ lookup('env', 'QEMU_URI')|default('qemu:///system', tr
 #with open("group_vars/all/iac.yml", "r") as f:
 #    iac = yaml.safe_load(f)
 #    CLUSTER_NAME = jinja2.Template(iac['iac']['name']).render(lookup=lookup)
-CLUSTER_NAME='c1'
+CLUSTER_NAME='c0'
 
 def libvirt_callback(userdata, err):
     pass
@@ -70,7 +70,10 @@ for domain in conn.listAllDomains():
             inventory['_meta'] = {'hostvars': {}}
         if domain not in inventory['_meta']['hostvars']:
             inventory["_meta"]['hostvars'][hostname] = {}
-        inventory['_meta']['hostvars'][hostname]['ansible_host'] = ip_address
+        #inventory['_meta']['hostvars'][hostname]['ansible_host'] = ip_address
+        inventory['_meta']['hostvars'][hostname]['ansible_user'] = "root"
+        inventory['_meta']['hostvars'][hostname]['ansible_connection'] = "community.libvirt.libvirt_qemu"
+        inventory['_meta']['hostvars'][hostname]['ansible_libvirt_uri'] = "qemu+ssh://root@192.168.0.4/system"
     except libvirt.libvirtError:
         pass
 
