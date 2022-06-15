@@ -2,7 +2,7 @@
 - hosts: server
   tasks:
   - name: whoami
-    shell: whoami
+    ansible.builtin.shell: whoami
     register: whoami
   - name: print
     debug:
@@ -11,7 +11,7 @@
 - hosts: worker
   tasks:
   - name: id
-    shell: id
+    ansible.builtin.shell: id
     register: id
   - name: print
     debug:
@@ -20,7 +20,7 @@
 - hosts: all
   tasks:
   - name: install python3
-    apt:
+    ansible.builtin.apt:
       name: python3
       state: present
 

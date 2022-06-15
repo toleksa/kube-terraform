@@ -2,9 +2,17 @@
 - hosts: all
   tasks:
   - name: whoami
-    shell: whoami
+    ansible.builtin.shell: hostname -f
     register: whoami
   - name: print
-    debug:
+    ansible.builtin.debug:
       msg: "{{ whoami.stdout }}"
+  - name: facts
+    setup:
+  - name: Dump
+    delegate_to: localhost
+    run_once: true
+    copy:
+      content: "{{ hostvars[inventory_hostname] | to_nice_json }}"
+      dest: /tmp/setup-dump.json
 
