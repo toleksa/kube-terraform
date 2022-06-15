@@ -3,6 +3,8 @@
 ansible-inventory -i ivy.yaml --list
 QEMU_URI='qemu+ssh://root@192.168.0.3/system' ./libvirt-inventory.py
 QEMU_URI='qemu+ssh://root@192.168.0.4/system' ./libvirt-inventory.py
+QEMU_URI='qemu+ssh://root@192.168.0.4/system' ansible-inventory -i ./libvirt-inventory.py --list
+
 ansible-console -i ivy.yaml
   shell executable=/bin/bash . /root/.bashrc ; k get nodes
 ansible-playbook -i ivy.yaml whoami.yaml
