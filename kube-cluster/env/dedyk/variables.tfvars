@@ -1,5 +1,5 @@
 env = "dedyk"
-cluster_name = "torgiren_ssie_xD"
+cluster_name = "dedyk"
 cluster_domain = "lol"
 cluster_ip = "192.168.0.200-192.168.0.200"
 mac_prefix = "44:8a:5b:00:03"
