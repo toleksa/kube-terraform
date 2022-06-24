@@ -5,6 +5,7 @@ resource "libvirt_volume" "kube-worker" {
   base_volume_id  = libvirt_volume.kube.id
   pool            = libvirt_volume.kube.pool
   format          = "qcow2"
+  size            = "53687091200"
 }
 
 resource "libvirt_cloudinit_disk" "worker-init" {

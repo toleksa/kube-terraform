@@ -14,7 +14,7 @@ worker_mem = 4000
 network_bridge = "br0"
 
 libvirt_host = "qemu+ssh://root@192.168.0.3/system"
-os_image = "http://192.168.0.2:8765/jammy-server-cloudimg-amd64-disk-kvm-50G.img"
+os_image = "http://192.168.0.2:8765/jammy-server-cloudimg-amd64-disk-kvm.img"
 
 join_token = "changeMePlz1234567890"
 
