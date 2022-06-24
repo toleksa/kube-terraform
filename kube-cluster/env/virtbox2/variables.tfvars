@@ -7,7 +7,7 @@ server_count = 1
 server_vcpu = 3
 server_mem = 4000
 
-worker_count = 2
+worker_count = 1
 worker_vcpu = 3
 worker_mem = 4000
 
