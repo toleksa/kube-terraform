@@ -44,6 +44,10 @@ variable "worker_mem" {
   description = "memory assigned to worker node"
   default = 4000
 }
+variable "network_bridge" {
+  description = "network for domain - 'default' for default network, any other variable will create bridged network based on given interface"
+  default = "br0"
+}
 variable "libvirt_host" {
   description = "machine with libvirt"
   default = "qemu+ssh://root@192.168.0.4/system"

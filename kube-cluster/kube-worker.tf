@@ -36,7 +36,8 @@ resource "libvirt_domain" "kube-worker" {
   vcpu   = "${var.worker_vcpu}"
 
   network_interface {
-    network_id = "${libvirt_network.kube.id}"
+    #network_id = "${libvirt_network.kube.id}"
+    network_name = (var.network_bridge == "default" ? "default" : libvirt_network.kube.0.name)
     wait_for_lease = true
     mac = "${var.mac_prefix}:1${count.index}"
     hostname = "s${count.index}.${var.cluster_name}.${var.cluster_domain}"

@@ -5,6 +5,7 @@ resource "libvirt_volume" "kube-server" {
   base_volume_id  = libvirt_volume.kube.id
   pool            = libvirt_volume.kube.pool
   format          = "qcow2"
+  #size            = "53687091200"
 }
 
 resource "libvirt_cloudinit_disk" "server-init" {
@@ -36,7 +37,8 @@ resource "libvirt_domain" "kube-server" {
   vcpu   = "${var.server_vcpu}"
 
   network_interface {
-    network_id = "${libvirt_network.kube.id}"
+    #network_id = "${libvirt_network.kube.id}"
+    network_name = (var.network_bridge == "default" ? "default" : libvirt_network.kube.0.name)
     wait_for_lease = true
     mac = "${var.mac_prefix}:0${count.index}"
     hostname = "s${count.index}.${var.cluster_name}.${var.cluster_domain}"
