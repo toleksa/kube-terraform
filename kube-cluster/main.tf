@@ -15,7 +15,7 @@ provider "libvirt" {
 
 resource "libvirt_pool" "kube" {
   count = (var.pool_name == "default" ? 0 : 1)
-  name = "kube-cluster"
+  name = "${var.pool_name}"
   type = "dir"
   path = "${var.pool_path}"
 }
