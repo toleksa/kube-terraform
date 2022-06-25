@@ -30,7 +30,7 @@ resource "libvirt_network" "kube" {
 
 resource "libvirt_volume" "kube" {
   name = "kube-${var.cluster_name}-base"
-  pool = (var.pool_name == 'default' ? 'default' : libvirt_pool.kube.0.name)
+  pool = (var.pool_name == "default" ? "default" : libvirt_pool.kube.0.name)
   source = "${var.os_image}"
   format = "qcow2"
 }
