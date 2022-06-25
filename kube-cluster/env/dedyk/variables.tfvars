@@ -12,6 +12,8 @@ worker_vcpu = 3
 worker_mem = 4000
 
 network_bridge = "default"
+pool_name = "default"
+pool_path = "/virtualki/kube-cluster"
 
 libvirt_host = "qemu+ssh://devops_together@65.108.231.102:2233/system"
 #os_image = "http://192.168.0.2:8765/jammy-server-cloudimg-amd64-disk-kvm.img"

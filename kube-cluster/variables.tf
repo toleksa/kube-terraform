@@ -48,6 +48,14 @@ variable "network_bridge" {
   description = "network for domain - 'default' for default network, any other variable will create bridged network based on given interface"
   default = "br0"
 }
+variable "pool_name" {
+  description = "disk pool - 'default' for default pool, any other variable will create new pool for cluster"
+  default = "default"
+}
+variable "pool_path" {
+  description = "path used for creating new pool - ignored when pool_name = 'default'"
+  default = "/virtualki/kube-cluster"
+}
 variable "libvirt_host" {
   description = "machine with libvirt"
   default = "qemu+ssh://root@192.168.0.4/system"

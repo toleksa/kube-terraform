@@ -13,14 +13,15 @@ provider "libvirt" {
   uri   = var.libvirt_host
 }
 
-#resource "libvirt_pool" "kube" {
-#  name = "kube-cluster"
-#  type = "dir"
-#  path = "/virtualki/kube-cluster"
-#}
+resource "libvirt_pool" "kube" {
+  count = (var.pool_name == "default" ? 0 : 1)
+  name = "kube-cluster"
+  type = "dir"
+  path = "${var.pool_path}"
+}
 
 resource "libvirt_network" "kube" {
-  count = (var.network_bridge != "default" ? 1 : 0)
+  count = (var.network_bridge == "default" ? 0 : 1)
   name = "kube-${var.cluster_name}"
   mode = "bridge"
   bridge = "${var.network_bridge}"
@@ -29,8 +30,7 @@ resource "libvirt_network" "kube" {
 
 resource "libvirt_volume" "kube" {
   name = "kube-${var.cluster_name}-base"
-  #pool = libvirt_pool.kube.name
-  pool = "default"
+  pool = (var.pool_name == 'default' ? 'default' : libvirt_pool.kube.0.name)
   source = "${var.os_image}"
   format = "qcow2"
 }
