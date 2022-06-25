@@ -12,7 +12,7 @@ worker_vcpu = 3
 worker_mem = 4000
 
 network_bridge = "br0"
-pool_name = "default"
+pool_name = "c2"
 pool_path = "/virtualki/c2"
 
 libvirt_host = "qemu+ssh://root@192.168.0.4/system"
