@@ -1,7 +1,7 @@
 # vim: syntax=yaml
 resource "libvirt_volume" "kube-server" {
   count           = var.server_count
-  name            = "kube-${var.cluster_name}-server-${count.index}-disk"
+  name            = "kube-${var.cluster_name}-s${count.index}-disk"
   base_volume_id  = libvirt_volume.kube.id
   pool            = libvirt_volume.kube.pool
   format          = "qcow2"
@@ -10,7 +10,7 @@ resource "libvirt_volume" "kube-server" {
 
 resource "libvirt_cloudinit_disk" "server-init" {
   count          = var.server_count
-  name           = "kube-${var.cluster_name}-server-${count.index}-init.iso"
+  name           = "kube-${var.cluster_name}-s${count.index}-init"
   user_data      = data.template_file.server_user_data[count.index].rendered
   pool           = libvirt_volume.kube.pool
 }
