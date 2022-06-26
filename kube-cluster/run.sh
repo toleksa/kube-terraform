@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [ $# -lt 1 ]; then
-  echo "usage: $0 <env> [apply|destroy]"
+  echo "usage: $0 <env> [apply|destroy] [terraform args]"
   exit 0
 fi
 
@@ -21,7 +21,7 @@ CMD="terraform workspace select $1"
 echo "EXEC: $CMD"
 eval $CMD || exit 1
 
-CMD="terraform ${2:-apply} -var-file=env/$ENV_DIR/variables.tfvars"
+CMD="terraform ${2:-apply} ${@:3} -var-file=env/$ENV_DIR/variables.tfvars"
 echo "EXEC: $CMD"
 eval $CMD
 
