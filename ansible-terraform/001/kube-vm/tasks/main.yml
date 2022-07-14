@@ -1,0 +1,9 @@
+---
+# tasks file for kube-vm
+
+- name: debug
+  debug:
+    var: instance
+
+- include_tasks: terraform.yaml
+

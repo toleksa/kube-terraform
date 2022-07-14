@@ -1,0 +1,25 @@
+---
+- block:
+  - name: create project dir
+    file:
+      path: "{{ item }}"
+      state: directory
+    with_items:
+      - "{{ terraform_tmp_path }}/{{ instance }}"
+
+  - name: copy terraform manifest
+    template:
+      src: "{{ item }}"
+      dest: "{{ terraform_tmp_path }}/{{ instance }}/{{ item }}"
+    with_items:
+    - kube-vm.tf
+    - user_data_base.cfg
+    - user_data_kube.cfg
+
+  - name: apply terraform
+    terraform:
+      binary_path: "{{ terraform_path }}"
+      project_path: "{{ terraform_tmp_path }}/{{ instance }}"
+      force_init: true
+
+  delegate_to: localhost

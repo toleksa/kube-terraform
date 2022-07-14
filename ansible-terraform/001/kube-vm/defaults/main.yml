@@ -1,0 +1,5 @@
+---
+# defaults file for kube-vm
+terraform_path: /usr/bin/terraform
+terraform_tmp_path: "{{FABSIBLE_CWD|default('/tmp')}}/terraform_tmp"
+instance: "001"
