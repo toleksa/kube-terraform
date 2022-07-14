@@ -1,0 +1,8 @@
+iac:
+  name: "002"
+  hosts:
+    kube_vm:
+      count: 1
+      provider: 
+        name: libvirt
+        config: "QEMU_URI"
