@@ -61,7 +61,7 @@ resource "libvirt_cloudinit_disk" "cloudinit" {
 # Define KVM domain to create
 resource "libvirt_domain" "virtkubes" {
   count = "${var.host_count}"
-  name   = "v${count.index + 1}"
+  name   = "{{ instance.key }}-{{ instance.value.count }}"
   memory = "6000"
   vcpu   = 4
 
