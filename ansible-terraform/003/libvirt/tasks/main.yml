@@ -1,0 +1,21 @@
+---
+# tasks file for kube-vm
+
+#- name: show iac
+#  debug:
+#    var: iac
+
+- name: debug
+  debug:
+    var: instance
+
+- include_tasks: terraform.yaml
+
+#- name: manager instance
+#  include_tasks:
+#  - terraform.yaml
+#  loop: "{{ iac.hosts|dict2items }}"
+#  loop_control:
+#    label: 'to jest label {{ instance.key }}'
+#    loop_var: instance
+
