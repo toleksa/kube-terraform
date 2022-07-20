@@ -1,9 +1,16 @@
 #!/bin/bash
 
-if [ $# -ne 1 ]; then
-  echo "ERR: usage: $0 <cluster>"
+if [ $# -lt 1 ]; then
+  echo "ERR: usage: $0 <cluster> [apply|destroy]"
   exit 1
 fi
 
-ansible-playbook -i inventory deploy.yaml --extra-vars "variable_host=$1"
+if [ "$2" == "destroy" ]; then
+  echo "not implemented"
+  exit 2
+elif [ "$2" == "apply" ] || [ $# -eq 1 ]; then
+  ansible-playbook -i inventory deploy.yaml --extra-vars "variable_host=$1"
+else
+  echo "unrecognized command parameter"
+fi
 
