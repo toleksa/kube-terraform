@@ -23,6 +23,8 @@ iac:
   hosts:
     s:
       count: 1
+      roles:
+      - rke2
       provider:
         name: libvirt
       disks:

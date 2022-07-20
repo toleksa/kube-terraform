@@ -92,7 +92,7 @@ EOF
 # Define KVM domain to create
 resource "libvirt_domain" "{{iac.name}}-{{instance.key}}{{count}}" {
   name   = "{{iac.name}}-{{instance.key}}{{count}}"
-  description = "cluster: {{iac.name}}\nhostname: {{instance.key}}{{count}}"
+  description = "cluster: {{iac.name}}\nhostname: {{instance.key}}{{count}}\nroles: {{instance.value.roles|default([])|join(',')}}\n"
   memory = "{{ instance.value.resources.mem|default(1024) }}"
   vcpu   = "{{ instance.value.resources.cpu|default(1) }}"
 
