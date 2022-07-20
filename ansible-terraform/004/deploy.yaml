@@ -1,5 +1,5 @@
 ---
-- hosts: virtbox
+- hosts: "{{ variable_host }}"
   gather_facts: no
   tasks:
   - name: show iac
