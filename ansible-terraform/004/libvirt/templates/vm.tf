@@ -67,7 +67,7 @@ resource "libvirt_volume" "{{iac.name}}-{{instance.key}}{{count}}-{{disk.name}}"
   pool = "{{iac.name}}-{{disk.pool}}"
 {%     endif %}
 {%     if disk.base_volume|default(False) %}
-  base_volume_name = "{{iac.name}}-{{disk.base_volume}}"
+  base_volume_id = libvirt_volume.{{iac.name}}-{{disk.base_volume}}.id
 {%     elif disk.source|default(False) %}
   source = "{{disk.source}}"
 {%     endif %}
