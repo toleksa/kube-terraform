@@ -14,10 +14,10 @@
     with_items:
     - vm.tf
 
-#  - name: apply terraform
-#    terraform:
-#      binary_path: "{{ terraform_path }}"
-#      project_path: "{{ terraform_tmp_path }}/{{ instance.key }}"
-#      force_init: true
+  - name: apply terraform
+    terraform:
+      binary_path: "{{ terraform_path }}"
+      project_path: "{{ terraform_tmp_path }}/{{ instance.key }}"
+      force_init: true
 
   delegate_to: localhost
