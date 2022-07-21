@@ -25,3 +25,7 @@
   roles:
   - rke2
 
+- hosts: argocd
+  roles:
+  - argocd
+

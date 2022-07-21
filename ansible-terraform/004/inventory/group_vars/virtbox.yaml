@@ -22,10 +22,11 @@ iac:
     pool: "default"
   hosts:
     s:
-      count: 2
+      count: 1
       roles:
       - base
       - rke2
+      - argocd
       provider:
         name: libvirt
       disks:
