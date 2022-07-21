@@ -19,6 +19,7 @@ def lookup(type, key):
     return None
 
 URI = jinja2.Template("{{ lookup('env', 'QEMU_URI')|default('qemu:///system', true) }}").render(lookup=lookup)
+URI = "qemu+ssh://root@192.168.0.4/system"
 
 #with open("group_vars/all/iac.yml", "r") as f:
 #    iac = yaml.safe_load(f)
