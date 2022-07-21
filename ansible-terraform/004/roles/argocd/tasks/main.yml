@@ -1,2 +1,15 @@
 ---
 # tasks file for argocd
+
+- ansible.builtin.include_role: 
+    name: rke2
+
+- name: Waiting for kubernetes to start
+  ansible.builtin.shell: |
+    until kubectl get nodes | grep -i `hostname` | grep " Ready " ; do
+      sleep 5s
+      echo -n .
+    done
+  changed_when: false
+
+
