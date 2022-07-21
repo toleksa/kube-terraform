@@ -63,7 +63,8 @@
     mode: 0700
 
 - name: install helm
-  ansible.builitin.command: /tmp/get-helm-3
+  ansible.builtin.command: |
+    /tmp/get-helm-3
   args:
     creates: /usr/local/bin/helm
 
