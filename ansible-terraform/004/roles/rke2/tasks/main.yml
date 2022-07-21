@@ -1,5 +1,9 @@
 ---
 # tasks file for rke2
+
+- ansible.builtin.include_role:
+    name: base
+
 - name: install python3-kubernetes
   apt:
     pkg: python3-kubernetes
@@ -25,6 +29,7 @@
 
 - name: Set ingress as LoadBalancer
   kubernetes.core.k8s:
+    kubeconfig: /etc/rancher/rke2/rke2.yaml
     state: present
     definition:
       apiVersion: helm.cattle.io/v1
