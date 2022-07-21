@@ -22,8 +22,9 @@ iac:
     pool: "default"
   hosts:
     s:
-      count: 1
+      count: 2
       roles:
+      - base
       - rke2
       provider:
         name: libvirt
@@ -51,33 +52,8 @@ iac:
             ssh_import_id:
               - gh:toleksa
 
-        final_message: |
-          cloud-init has finished
-          version: $version
-          timestamp: $timestamp
-          datasource: $datasource
-          uptime: $uptime
-
         packages:
           - qemu-guest-agent
 
         runcmd:
-          - echo "starting user_data_base"
           - systemctl start qemu-guest-agent
-          - curl http://192.168.0.2:8765/dns-update.sh > /etc/cron.hourly/dns-update.sh
-          - chmod +x /etc/cron.hourly/dns-update.sh
-          - /etc/cron.hourly/dns-update.sh
-          - export HOME=/root ; cd
-          - echo "tail -f /var/log/cloud-init-output.log -n +0" >> ~/.bash_history
-          - if [ -d /etc/update-motd.d ]; then chmod -x /etc/update-motd.d/* ; fi
-          - sed -i 's/#UseDNS no/UseDNS no/' /etc/ssh/sshd_config ; systemctl restart ssh*
-          - printf "nameserver 192.168.0.2" > /etc/resolv.conf
-          - if [ -f /etc/resolv.conf ] && [ ! -L /etc/resolv.conf ]; then chattr +i /etc/resolv.conf ; fi
-          - printf "[Resolve]\nDNS=192.168.0.2" > /etc/systemd/resolved.conf
-          - systemctl restart systemd-resolved
-          - printf "Host *\nStrictHostKeyChecking no" > /etc/ssh/ssh_config.d/99-disable-strict-checking.conf
-          - sed -i 's/return/echo ""/' /root/.bashrc
-          - timedatectl set-timezone Europe/Zurich
-          - if [ -f /usr/bin/apt ]; then apt install atop python-is-python3 ; fi
-          - echo "finished user_data_base" | tee /cloud-init-base-ready.txt
-
