@@ -1,5 +1,10 @@
 ---
 # tasks file for rke2
+- name: install python3-kubernetes
+  apt:
+    pkg: python3-kubernetes
+    state: present
+
 - name: get rke2 installer
   ansible.builtin.get_url:
     url: https://get.rke2.io
@@ -18,11 +23,36 @@
     state: started
     enabled: yes
 
-- name: .bashrc variables
-  lineinfile:
+- name: Set ingress as LoadBalancer
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: helm.cattle.io/v1
+      kind: HelmChartConfig
+      metadata:
+        name: rke2-ingress-nginx
+        namespace: kube-system
+      spec:
+        valuesContent: |-
+          controller:
+            publishService:
+              enabled: true
+              pathOverride: kube-system/rke2-ingress-nginx-controller
+            service:
+              enabled: true
+              type: LoadBalancer
+
+- name: .bash_kube
+  ansible.builtin.get_url:
+    url: 'https://raw.githubusercontent.com/toleksa/configs/main/.bash_kube'
+    dest: '/root/.bash_kube'
+    mode: '0700'
+
+- name: add .bash_kube to .bashrc
+  ansible.builtin.blockinfile:
     path: /root/.bashrc
-    line: "{{ item }}"
-  with_items:
-  - "export PATH=$PATH:/var/lib/rancher/rke2/bin"
-  - "export KUBECONFIG=/etc/rancher/rke2/rke2.yaml"
+    block: |
+      if [ -f ~/.bash_kube ]; then
+          . ~/.bash_kube
+      fi
 
