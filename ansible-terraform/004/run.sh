@@ -6,11 +6,13 @@ if [ $# -lt 1 ]; then
 fi
 
 if [ "$2" == "destroy" ]; then
-  echo "not implemented"
-  exit 2
+  terraform_action="destroy"
 elif [ "$2" == "apply" ] || [ $# -eq 1 ]; then
-  ansible-playbook -i inventory deploy.yaml --extra-vars "variable_host=$1"
+  terraform_action="apply"
 else
   echo "unrecognized command parameter"
+  exit 2
 fi
+
+ansible-playbook -i inventory deploy.yaml --extra-vars "variable_host=$1" --extra-vars "terraform_action=$terraform_action"
 

@@ -1,0 +1,11 @@
+---
+- block:
+  - name: destroy
+    terraform:
+      binary_path: "{{ terraform_path }}"
+      project_path: "{{ terraform_tmp_path }}/{{ iac.name }}"
+      state: absent
+
+  - meta: end_play
+
+  delegate_to: localhost
