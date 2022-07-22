@@ -15,7 +15,20 @@
     loop_control:
       label: 'to jest label {{ instance.key }}'
       loop_var: instance
+
+- hosts: all
+  gather_facts: no
+  tasks:
+  - meta: end_play
+    when: terraform_action == "destroy"
+
   - meta: refresh_inventory
+
+  - name: print inventory
+    debug:
+      var: hostvars
+#    delegate_to: localhost
+    run_once: true
 
 - hosts: base
   roles:
