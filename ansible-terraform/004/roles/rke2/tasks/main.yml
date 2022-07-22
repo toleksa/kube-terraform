@@ -54,12 +54,10 @@
     mode: '0700'
 
 - name: add .bash_kube to .bashrc
-  ansible.builtin.blockinfile:
+  ansible.builtin.lineinfile:
     path: /root/.bashrc
-    block: |
-      if [ -f ~/.bash_kube ]; then
-          . ~/.bash_kube
-      fi
+    regexp: ". ~/.bash_kube"
+    line: "    . ~/.bash_kube"
 
 - name: get helm installer
   ansible.builtin.get_url:
