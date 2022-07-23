@@ -19,16 +19,20 @@
 - hosts: all
   gather_facts: no
   tasks:
-  - meta: end_play
-    when: terraform_action == "destroy"
-
   - meta: refresh_inventory
 
   - name: print inventory
     debug:
-      var: hostvars
-#    delegate_to: localhost
+      var: hostvars | list
     run_once: true
+
+#  - name: stop here after terraform destroy
+#    fail:
+#      msg: "stop here after terraform destroy"
+#    when: terraform_action == "destroy"
+
+#  - meta: end_batch
+#    when: terraform_action == "destroy"
 
 - hosts: base
   roles:
