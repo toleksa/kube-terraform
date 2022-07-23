@@ -22,7 +22,7 @@ iac:
     pool: "default"
   hosts:
     s:
-      count: 1
+      count: 3
       roles:
       - argocd
       provider:

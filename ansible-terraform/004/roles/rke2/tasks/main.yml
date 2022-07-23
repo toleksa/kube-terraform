@@ -1,13 +1,49 @@
 ---
 # tasks file for rke2
 
+- name: set JOIN_ADDR
+  ansible.builtin.set_fact:
+    JOIN_ADDR: "s0.c0.kube.ac"
+
+- name: debug
+  ansible.builtin.debug:
+    var: JOIN_ADDR
+
+#- name: debug
+#  ansible.builtin.debug:
+#    var: ansible_fqdn
+
+#- name: halt
+#  fail:
+#    msg: "stop"
+
 - ansible.builtin.include_role:
     name: base
 
 - name: install python3-kubernetes
-  apt:
+  ansible.builtin.apt:
     pkg: python3-kubernetes
     state: present
+
+- name: create rke2 config dir
+  ansible.builtin.file:
+    path: /etc/rancher/rke2
+    state: directory
+
+- name: rke2 master config
+  ansible.builtin.copy:
+    dest: "/etc/rancher/rke2/config.yaml"
+    content: |
+      token: "{{JOIN_TOKEN}}"
+      tls-san:
+      - "{{JOIN_ADDR}}"
+  when: ansible_fqdn == JOIN_ADDR
+
+- name: rke2 config
+  ansible.builtin.template:
+    src: "config.yaml"
+    dest: "/etc/rancher/rke2/config.yaml"
+  when: ansible_fqdn != JOIN_ADDR
 
 - name: get rke2 installer
   ansible.builtin.get_url:
@@ -21,11 +57,43 @@
   args:
     creates: /var/lib/rancher/rke2/bin/kubectl
 
-- name: start rke2
-  ansible.builtin.systemd:
-    name: rke2-server.service
-    state: started
-    enabled: yes
+- block:
+  - name: start master rke2
+    ansible.builtin.systemd:
+      name: rke2-server.service
+      state: started
+      enabled: yes
+
+  - name: wait for master to be ready
+    vars:
+      _kubectl: "/var/lib/rancher/rke2/bin/kubectl --kubeconfig /etc/rancher/rke2/rke2.yaml"
+    ansible.builtin.shell: "{{ _kubectl }} get nodes {{ ansible_fqdn }}|cat"
+    changed_when: false
+    ignore_errors: "{{ _ignore_errors|default(false) }}"
+    register: _get_nodes
+    check_mode: false
+    until: '" Ready" in _get_nodes.stdout|default("")'
+    retries: 120
+  when: ansible_fqdn == JOIN_ADDR
+
+- block:
+  - name: start rke2
+    ansible.builtin.systemd:
+      name: rke2-server.service
+      state: started
+      enabled: yes
+
+  - name: wait for nodes to be ready
+    vars:
+      _kubectl: "/var/lib/rancher/rke2/bin/kubectl --kubeconfig /etc/rancher/rke2/rke2.yaml"
+    ansible.builtin.shell: "{{ _kubectl }} get nodes {{ ansible_fqdn }}|cat"
+    changed_when: false
+    ignore_errors: "{{ _ignore_errors|default(false) }}"
+    register: _get_nodes
+    check_mode: false
+    until: '" Ready" in _get_nodes.stdout|default("")'
+    retries: 120
+  when: ansible_fqdn != JOIN_ADDR
 
 - name: Set ingress as LoadBalancer
   kubernetes.core.k8s:
@@ -46,6 +114,7 @@
             service:
               enabled: true
               type: LoadBalancer
+  run_once: true
 
 - name: .bash_kube
   ansible.builtin.get_url:

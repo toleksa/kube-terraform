@@ -1,0 +1,5 @@
+server: "https://{{JOIN_ADDR}}:9345"
+token: "{{JOIN_TOKEN}}"
+tls-san:
+- "{{JOIN_ADDR}}"
+
