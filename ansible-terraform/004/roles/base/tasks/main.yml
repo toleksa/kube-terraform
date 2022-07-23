@@ -66,3 +66,4 @@
     path: /etc/update-motd.d/
     state: absent
 
+- meta: flush_handlers
