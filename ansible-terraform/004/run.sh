@@ -14,5 +14,7 @@ else
   exit 2
 fi
 
-ansible-playbook -i inventory deploy.yaml --extra-vars "variable_host=$1" --extra-vars "terraform_action=$terraform_action"
+CMD="ansible-playbook -i inventory deploy.yaml --extra-vars \"variable_host=$1\" --extra-vars \"terraform_action=$terraform_action\""
+echo $CMD
+eval $CMD
 
