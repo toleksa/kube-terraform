@@ -12,4 +12,28 @@
     done
   changed_when: false
 
+- name: helm install argocd
+  kubernetes.core.helm:
+    name: argocd
+    chart_ref: argo-cd/argo-cd
+    release_namespace: argocd
+    create_namespace: true
+  run_once: true
+
+- name: set argocd password
+  kubernetes.core.k8s:
+    state: patched
+    name: argocd
+    kind: secret
+    definition:
+      stringData:
+        admin.password: "$2a$10$rRyBsGSHK6.uc8fntPwVIuLVHgsAhAX7TcdrqW/RADU0uh7CaChLa"
+        admin.passwordMtime: "'$(date +%FT%T%Z)'"
+  run_once: true
+
+- name: get argocd binary
+  ansible.builtin.get_url:
+    url: 'https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64'
+    dest: '/usr/local/bin/argocd'
+    mode: '0777'
 
