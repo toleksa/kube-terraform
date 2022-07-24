@@ -76,12 +76,17 @@
     retries: 120
   when: ansible_fqdn == JOIN_ADDR
 
+- name: wait 60s just in case
+  ansible.builtin.pause:
+    seconds: 60
+
 - block:
   - name: start rke2
     ansible.builtin.systemd:
       name: rke2-server.service
       state: started
       enabled: yes
+    ignore_errors: yes
 
   - name: wait for nodes to be ready
     vars:
