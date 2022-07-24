@@ -23,12 +23,23 @@
 - name: set argocd password
   kubernetes.core.k8s:
     state: patched
-    name: argocd
+    name: argocd-secret
+    namespace: argocd
     kind: secret
     definition:
-      stringData:
-        admin.password: "$2a$10$rRyBsGSHK6.uc8fntPwVIuLVHgsAhAX7TcdrqW/RADU0uh7CaChLa"
-        admin.passwordMtime: "'$(date +%FT%T%Z)'"
+      data:
+        admin.password: "JDJhJDEwJHJSeUJzR1NISzYudWM4Zm50UHdWSXVMVkhnc0FoQVg3VGNkcnFXL1JBRFUwdWg3Q2FDaExh" #password
+  run_once: true
+
+- name: set argocd password - json way
+  kubernetes.core.k8s_json_patch:
+    kind: secret
+    namespace: argocd
+    name: argocd-secret
+    patch:
+      - op: replace
+        path: /data/admin.password 
+        value: "JDJhJDEwJHJSeUJzR1NISzYudWM4Zm50UHdWSXVMVkhnc0FoQVg3VGNkcnFXL1JBRFUwdWg3Q2FDaExh" #password
   run_once: true
 
 - name: get argocd binary
@@ -37,3 +48,15 @@
     dest: '/usr/local/bin/argocd'
     mode: '0777'
 
+- name: login to argocd
+  ansible.builtin.shell: echo "argocd login $(kubectl -n argocd get svc | grep "argocd-server " | gawk '{ print $3 }'):443 --username admin --password password --insecure"
+  args:
+    executable: /bin/bash
+  run_once: true
+  changed_when: false
+  register: argocd_login_cmd
+
+- name: echo argocd login
+  ansible.builtin.debug:
+    var: argocd_login_cmd.stdout
+  run_once: true
