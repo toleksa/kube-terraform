@@ -60,3 +60,23 @@
   ansible.builtin.debug:
     var: argocd_login_cmd.stdout
   run_once: true
+
+- name: Waiting for argocd project
+  ansible.builtin.shell: |
+    until argocd proj list | grep default ; do
+      sleep 5s
+      echo -n .
+    done
+  changed_when: false
+  run_once: true
+
+#- name: debug argocd
+#  debug:
+#    var: hostvars.localhost.iac
+
+- name: argocd-main.yaml
+  template:
+    src: argocd-main.yaml
+    dest: /argocd-main.yaml
+
+

@@ -20,6 +20,14 @@ iac:
     source: "http://192.168.0.2:8765/jammy-server-cloudimg-amd64-disk-kvm.img"
     format: "qcow2"
     pool: "default"
+  argocd:
+    dns:
+      enabled: false
+      host: 127.0.0.1
+      zone: example.com
+      secret: "secret"
+    metallb:
+      addresses: "127.0.0.1"
   hosts:
     s:
       count: 3
