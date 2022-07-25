@@ -9,9 +9,13 @@
   ansible.builtin.debug:
     var: JOIN_ADDR
 
-#- name: debug
-#  ansible.builtin.debug:
-#    var: ansible_fqdn
+- name: debug
+  ansible.builtin.debug:
+    var: ansible_fqdn
+
+- name: debug
+  ansible.builtin.debug:
+    var: hostvars
 
 #- name: halt
 #  fail:
