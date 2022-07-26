@@ -8,6 +8,9 @@
   - name: show iac
     debug:
       var: iac
+  - name: print qemu
+    debug:
+      var: iac.providers[0].config
   - name: manager instance
     include_role:
       name: "{{ instance.value.provider.name }}"
