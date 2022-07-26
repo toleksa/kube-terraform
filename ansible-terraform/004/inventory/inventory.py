@@ -20,13 +20,19 @@ def lookup(type, key):
         return os.environ.get(key)
     return None
 
-URI = jinja2.Template("{{ lookup('env', 'QEMU_URI')|default('qemu:///system', true) }}").render(lookup=lookup)
-URI = "qemu+ssh://root@192.168.0.4/system"
+IAC_PROFILE = os.getenv('IAC_PROFILE') 
 
-#with open("group_vars/all/iac.yml", "r") as f:
-#    iac = yaml.safe_load(f)
-#    CLUSTER_NAME = jinja2.Template(iac['iac']['name']).render(lookup=lookup)
-CLUSTER_NAME='c0'
+if IAC_PROFILE == None:
+    print("ERR: $IAC_PROFILE is empty")
+    exit(1)
+
+with open("inventory/group_vars/" + IAC_PROFILE + "/iac.yaml", "r") as f:
+    iac = yaml.safe_load(f)
+    CLUSTER_NAME = jinja2.Template(iac['iac']['name']).render(lookup=lookup)
+    URI = jinja2.Template(iac['iac']['providers'][0]['config']).render(lookup=lookup)
+
+#URI = "qemu+ssh://root@192.168.0.4/system"
+#CLUSTER_NAME='c0'
 
 def libvirt_callback(userdata, err):
     pass

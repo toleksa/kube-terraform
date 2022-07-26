@@ -5,6 +5,20 @@ if [ $# -lt 1 ]; then
   exit 1
 fi
 
+if [ ! -d "inventory/group_vars/$1" ]; then
+  echo "ERR: group_vars for $1 not found"
+  exit 4
+fi
+
+export IAC_PROFILE="$1"
+
+if [ ! -f .env ]; then
+  echo "ERR: .env file missing"
+  exit 3
+fi
+
+. .env
+
 if [ "$2" == "destroy" ]; then
   terraform_action="destroy"
 elif [ "$2" == "apply" ] || [ $# -eq 1 ]; then
