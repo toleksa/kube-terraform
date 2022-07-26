@@ -22,15 +22,19 @@ iac:
     pool: "default"
   argocd:
     dns:
-      enabled: false
-      host: 127.0.0.1
-      zone: example.com
-      secret: "secret"
+      #enabled: false
+      #host: 127.0.0.1
+      #zone: "example.com"
+      #secret: "secret"
+      enabled: true
+      host: 192.168.0.2
+      zone: "kube.ac"
+      secret: "{{ lookup('ansible.builtin.env', 'DNS_KEY')|default() }}"
     metallb:
-      addresses: "127.0.0.1"
+      #addresses: "127.0.0.1"
   hosts:
     s:
-      count: 3
+      count: 1
       roles:
       - argocd
       provider:
