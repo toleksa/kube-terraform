@@ -48,21 +48,32 @@
     dest: '/usr/local/bin/argocd'
     mode: '0777'
 
-- name: login to argocd
-  ansible.builtin.shell: echo "argocd login $(kubectl -n argocd get svc | grep "argocd-server " | gawk '{ print $3 }'):443 --username admin --password password --insecure"
-  args:
-    executable: /bin/bash
-  run_once: true
+- name: get argocd ip
+  ansible.builtin.shell: kubectl -n argocd get svc | grep "argocd-server " | gawk '{ print $3 }'
+  register: argocd_ip
   changed_when: false
-  register: argocd_login_cmd
+  run_once: yes
 
-- name: echo argocd login
+- name: login to argocd
   ansible.builtin.debug:
-    var: argocd_login_cmd.stdout
+    msg:  "argocd login {{ argocd_ip.stdout }}:443 --username admin --password password --insecure"
   run_once: true
+
+- name: waiting for argocd:443
+  uri:
+    url: "http://{{ argocd_ip.stdout }}:443"
+    return_content: no
+    validate_certs: no
+    status_code:
+      - 200
+  until: uri_output.status == 200
+  retries: 48 # Retries for 48 * 5 seconds = 240 seconds = 4 minutes
+  delay: 5 # Every 5 seconds
+  register: uri_output
 
 - name: Waiting for argocd project
   ansible.builtin.shell: |
+    argocd login {{ argocd_ip.stdout }}:443 --username admin --password password --insecure ;
     until argocd proj list | grep default ; do
       sleep 5s
       echo -n .
@@ -70,13 +81,38 @@
   changed_when: false
   run_once: true
 
-#- name: debug argocd
-#  debug:
-#    var: hostvars.localhost.iac
+- name: debug argocd
+  debug:
+    var: hostvars.localhost.iac
 
 - name: argocd-main.yaml
   template:
     src: argocd-main.yaml
     dest: /argocd-main.yaml
+
+- name: deploy argocd-main
+  kubernetes.core.k8s:
+    state: present
+    src: /argocd-main.yaml
+  run_once: true
+
+- name: remove argocd entry from helm, now it's selfmanaged
+  kubernetes.core.k8s:
+    state: absent
+    kind: secret
+    namespace: argocd
+    label_selectors:
+    - owner=helm
+    - name=argocd
+
+- name: sync proj
+  ansible.builtin.shell: |
+    argocd app sync argocd-main
+  retries: 5
+  delay: 3
+  register: result
+  until: result.rc == 0
+  changed_when: false
+  run_once: true
 
 
