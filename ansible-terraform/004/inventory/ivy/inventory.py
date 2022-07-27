@@ -26,7 +26,7 @@ if IAC_PROFILE == None:
     print("ERR: $IAC_PROFILE is empty")
     exit(1)
 
-with open("inventory/group_vars/" + IAC_PROFILE + "/iac.yaml", "r") as f:
+with open("inventory/" + IAC_PROFILE + "/group_vars/" + IAC_PROFILE + "/iac.yaml", "r") as f:
     iac = yaml.safe_load(f)
     CLUSTER_NAME = jinja2.Template(iac['iac']['name']).render(lookup=lookup)
     URI = jinja2.Template(iac['iac']['providers'][0]['config']).render(lookup=lookup)

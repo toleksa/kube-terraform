@@ -32,6 +32,8 @@ iac:
       secret: "{{ lookup('ansible.builtin.env', 'DNS_KEY')|default() }}"
     metallb:
       #addresses: "127.0.0.1"
+  rke2:
+    join_token: virtbox-123456
   hosts:
     s:
       count: 1
