@@ -3,7 +3,7 @@
 
 - name: set JOIN_ADDR
   ansible.builtin.set_fact:
-    JOIN_ADDR: "s0.c0.kube.ac"
+    JOIN_ADDR: "{{ play_hosts | sort | first }}"
 
 - name: debug
   ansible.builtin.debug:
@@ -13,9 +13,9 @@
   ansible.builtin.debug:
     var: ansible_fqdn
 
-- name: debug
-  ansible.builtin.debug:
-    var: hostvars
+#- name: debug
+#  ansible.builtin.debug:
+#    var: hostvars
 
 #- name: halt
 #  fail:
@@ -80,9 +80,9 @@
     retries: 120
   when: ansible_fqdn == JOIN_ADDR
 
-- name: wait 60s just in case
-  ansible.builtin.pause:
-    seconds: 60
+#- name: wait 60s just in case
+#  ansible.builtin.pause:
+#    seconds: 60
 
 - block:
   - name: start rke2
