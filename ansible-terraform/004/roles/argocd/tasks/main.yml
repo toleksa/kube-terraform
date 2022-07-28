@@ -12,6 +12,22 @@
     done
   changed_when: false
 
+- name: Get Cluster information
+  kubernetes.core.k8s_cluster_info:
+  register: api_status
+
+#- name: debug
+#  debug:
+#    var: api_status
+#  run_once: true
+
+- name: check argocd presence
+  ansible.builtin.set_fact:
+    argocd_installed: true
+  when: '"argoproj.io/" in item.key'
+  loop: "{{ api_status.apis | dict2items | selectattr('key', 'match', '^argoproj.io') }}"
+  run_once: true
+
 - name: helm install argocd
   kubernetes.core.helm:
     name: argocd
@@ -19,6 +35,7 @@
     release_namespace: argocd
     create_namespace: true
   run_once: true
+  when: argocd_installed is not defined or argocd_installed == false
 
 - name: set argocd password
   kubernetes.core.k8s:
@@ -56,7 +73,7 @@
 
 - name: login to argocd
   ansible.builtin.debug:
-    msg:  "argocd login {{ argocd_ip.stdout }}:443 --username admin --password password --insecure"
+    msg:  "argocd login {{ argocd_ip.stdout }}:443 --username admin --password password --insecure --plaintext"
   run_once: true
 
 - name: waiting for argocd:443
@@ -73,7 +90,7 @@
 
 - name: Waiting for argocd project
   ansible.builtin.shell: |
-    argocd login {{ argocd_ip.stdout }}:443 --username admin --password password --insecure ;
+    argocd login {{ argocd_ip.stdout }}:443 --username admin --password password --insecure --plaintext;
     until argocd proj list | grep default ; do
       sleep 5s
       echo -n .
@@ -81,9 +98,9 @@
   changed_when: false
   run_once: true
 
-- name: debug argocd
-  debug:
-    var: hostvars.localhost.iac
+#- name: debug argocd
+#  debug:
+#    var: hostvars.localhost.iac
 
 - name: argocd-main.yaml
   template:
@@ -104,6 +121,7 @@
     label_selectors:
     - owner=helm
     - name=argocd
+  run_once: true
 
 - name: sync proj
   ansible.builtin.shell: |
