@@ -5,7 +5,7 @@
     name: rke2
 
 - name: Waiting for kubernetes to start
-  ansible.builtin.shell: |
+  ansible.builtin.shell: >
     until kubectl get nodes | grep -i `hostname` | grep " Ready " ; do
       sleep 5s
       echo -n .
@@ -36,6 +36,57 @@
     create_namespace: true
   run_once: true
   when: argocd_installed is not defined or argocd_installed == false
+
+#- name: debug
+#  debug:
+#    var: hostvars
+
+- name: check argocd-cert secret
+  kubernetes.core.k8s_info:
+    api_version: v1
+    kind: Secret
+    name: argocd-cert
+    namespace: argocd
+  register: argocd_cert_installed
+
+#- name: debug
+#  debug:
+#    var: argocd_cert_installed
+#  when: argocd_cert_installed.resources != []
+
+- block:
+  - name: create cert dir
+    ansible.builtin.file:
+      path: "{{ item }}"
+      state: directory
+    with_items:
+      - "{{ certs_path }}/{{ hostvars.localhost.iac.name }}/certs"
+    delegate_to: localhost
+
+  - name: generate argocd key and cert
+    command: >
+      openssl req -x509 -nodes -days 365 -newkey rsa:2048 
+      -keyout "{{ certs_path }}/{{ hostvars.localhost.iac.name }}/certs/argocd.key" 
+      -out "{{ certs_path }}/{{ hostvars.localhost.iac.name }}/certs/argocd.crt" 
+      -subj "/CN=argocd.{{ hostvars.localhost.iac.name }}.{{ hostvars.localhost.iac.domain }}/O=argocd.{{ hostvars.localhost.iac.name }}.{{ hostvars.localhost.iac.domain }}"
+    args:
+      creates:
+      - "{{ certs_path }}/{{ hostvars.localhost.iac.name }}/certs/argocd.key"
+      - "{{ certs_path }}/{{ hostvars.localhost.iac.name }}/certs/argocd.crt"
+    delegate_to: localhost
+
+  - name: generate argocd-cert secret
+    template:
+      src: argocd-cert.yaml
+      dest: argocd-cert.yaml
+
+  - name: deploy argocd-cert secret
+    kubernetes.core.k8s:
+      namespace: argocd
+      state: present
+      src: argocd-cert.yaml
+    run_once: true                                         
+  when: argocd_cert_installed.resources == []
 
 - name: set argocd password
   kubernetes.core.k8s:
@@ -71,9 +122,9 @@
   changed_when: false
   run_once: yes
 
-- name: login to argocd
+- name: print login to argocd
   ansible.builtin.debug:
-    msg:  "argocd login {{ argocd_ip.stdout }}:443 --username admin --password password --insecure --plaintext"
+    msg:  "argocd login {{ argocd_ip.stdout }}:443 --username admin --password password --insecure"
   run_once: true
 
 - name: waiting for argocd:443
@@ -88,10 +139,18 @@
   delay: 5 # Every 5 seconds
   register: uri_output
 
+- name: argocd login
+  ansible.builtin.shell: >
+    . ~/.bashrc
+    && argocd login {{ argocd_ip.stdout }}:443 --username admin --password password --insecure
+  args:
+    executable: /bin/bash
+  changed_when: false
+
 - name: Waiting for argocd project
-  ansible.builtin.shell: |
-    argocd login {{ argocd_ip.stdout }}:443 --username admin --password password --insecure --plaintext;
-    until argocd proj list | grep default ; do
+  ansible.builtin.shell: >
+    argocd login {{ argocd_ip.stdout }}:443 --username admin --password password --insecure
+    && until argocd proj list | grep default ; do
       sleep 5s
       echo -n .
     done
@@ -124,12 +183,13 @@
   run_once: true
 
 - name: sync proj
-  ansible.builtin.shell: |
-    argocd app sync argocd-main
-  retries: 5
-  delay: 3
-  register: result
-  until: result.rc == 0
+  ansible.builtin.shell: >
+    argocd login {{ argocd_ip.stdout }}:443 --username admin --password password --insecure
+    && argocd app sync argocd-main
+#  retries: 5
+#  delay: 3
+#  register: result
+#  until: result.rc == 0
   changed_when: false
   run_once: true
 

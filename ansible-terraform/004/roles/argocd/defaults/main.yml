@@ -1,2 +1,3 @@
 ---
 # defaults file for argocd
+certs_path: "{{playbook_dir}}/storage/certs"

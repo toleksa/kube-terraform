@@ -36,7 +36,7 @@ iac:
     join_token: virtbox2-123456
   hosts:
     s:
-      count: 3
+      count: 1
       roles:
       - argocd
       provider:
