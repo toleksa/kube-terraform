@@ -60,7 +60,7 @@
       path: "{{ item }}"
       state: directory
     with_items:
-      - "{{ certs_path }}/{{ hostvars.localhost.iac.name }}/certs"
+      - "{{ storage_path }}/{{ hostvars.localhost.iac.name }}/certs"
     delegate_to: localhost
 
   #TODO: if creates is not working, or skipping entire block if cert is already placed, then consider community.crypto.openssl_privatekey: instead of shell
@@ -68,14 +68,14 @@
   - name: generate argocd key and cert
     command: >
       openssl req -x509 -nodes -days 3650 -newkey rsa:4096 
-      -keyout "{{ certs_path }}/{{ hostvars.localhost.iac.name }}/certs/argocd.key" 
-      -out "{{ certs_path }}/{{ hostvars.localhost.iac.name }}/certs/argocd.crt" 
+      -keyout "{{ storage_path }}/{{ hostvars.localhost.iac.name }}/certs/argocd.key" 
+      -out "{{ storage_path }}/{{ hostvars.localhost.iac.name }}/certs/argocd.crt" 
       -subj "/CN=argocd.{{ hostvars.localhost.iac.name }}.{{ hostvars.localhost.iac.domain }}/O=argocd.{{ hostvars.localhost.iac.name }}.{{ hostvars.localhost.iac.domain }}"
     args:
       #TODO: test this
       creates:
-      - "{{ certs_path }}/{{ hostvars.localhost.iac.name }}/certs/argocd.key"
-      - "{{ certs_path }}/{{ hostvars.localhost.iac.name }}/certs/argocd.crt"
+      - "{{ storage_path }}/{{ hostvars.localhost.iac.name }}/certs/argocd.key"
+      - "{{ storage_path }}/{{ hostvars.localhost.iac.name }}/certs/argocd.crt"
     delegate_to: localhost
 
   - name: generate argocd-cert secret

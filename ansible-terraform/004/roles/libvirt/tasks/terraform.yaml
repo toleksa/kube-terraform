@@ -5,19 +5,19 @@
       path: "{{ item }}"
       state: directory
     with_items:
-      - "{{ terraform_tmp_path }}/{{ iac.name }}"
+      - "{{ storage_path }}/{{ iac.name }}/terraform"
 
   - name: copy terraform manifest
     template:
       src: "{{ item }}"
-      dest: "{{ terraform_tmp_path }}/{{ iac.name }}/{{ instance.key }}.tf"
+      dest: "{{ storage_path }}/{{ iac.name }}/terraform/{{ instance.key }}.tf"
     with_items:
     - vm.tf
 
   - name: apply terraform
     terraform:
       binary_path: "{{ terraform_path }}"
-      project_path: "{{ terraform_tmp_path }}/{{ iac.name }}"
+      project_path: "{{ storage_path }}/{{ iac.name }}/terraform"
       force_init: true
 
   delegate_to: localhost
