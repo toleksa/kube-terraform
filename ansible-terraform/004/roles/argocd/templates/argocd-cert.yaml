@@ -4,6 +4,6 @@ metadata:
   name: argocd-cert
   namespace: argocd
 data:
-  tls.key: "{{ lookup('file', certs_path + '/' + hostvars.localhost.iac.name + '/certs/argocd.key') | b64encode }}"
-  tls.crt: "{{ lookup('file', certs_path + '/' + hostvars.localhost.iac.name + '/certs/argocd.crt') | b64encode }}"
+  tls.key: "{{ lookup('file', storage_path + '/' + hostvars.localhost.iac.name + '/certs/argocd.key') | b64encode }}"
+  tls.crt: "{{ lookup('file', storage_path + '/' + hostvars.localhost.iac.name + '/certs/argocd.crt') | b64encode }}"
 type: kubernetes.io/tls
