@@ -63,13 +63,16 @@
       - "{{ certs_path }}/{{ hostvars.localhost.iac.name }}/certs"
     delegate_to: localhost
 
+  #TODO: if creates is not working, or skipping entire block if cert is already placed, then consider community.crypto.openssl_privatekey: instead of shell
+  # https://docs.ansible.com/ansible/latest/collections/community/crypto/docsite/guide_selfsigned.html
   - name: generate argocd key and cert
     command: >
-      openssl req -x509 -nodes -days 365 -newkey rsa:2048 
+      openssl req -x509 -nodes -days 3650 -newkey rsa:4096 
       -keyout "{{ certs_path }}/{{ hostvars.localhost.iac.name }}/certs/argocd.key" 
       -out "{{ certs_path }}/{{ hostvars.localhost.iac.name }}/certs/argocd.crt" 
       -subj "/CN=argocd.{{ hostvars.localhost.iac.name }}.{{ hostvars.localhost.iac.domain }}/O=argocd.{{ hostvars.localhost.iac.name }}.{{ hostvars.localhost.iac.domain }}"
     args:
+      #TODO: test this
       creates:
       - "{{ certs_path }}/{{ hostvars.localhost.iac.name }}/certs/argocd.key"
       - "{{ certs_path }}/{{ hostvars.localhost.iac.name }}/certs/argocd.crt"
@@ -147,6 +150,7 @@
     executable: /bin/bash
   changed_when: false
 
+#TODO: change it to ansible way with retry
 - name: Waiting for argocd project
   ansible.builtin.shell: >
     argocd login {{ argocd_ip.stdout }}:443 --username admin --password password --insecure
