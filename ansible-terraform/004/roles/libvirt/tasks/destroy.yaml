@@ -3,7 +3,7 @@
   - name: destroy
     terraform:
       binary_path: "{{ terraform_path }}"
-      project_path: "{{ terraform_tmp_path }}/{{ iac.name }}"
+      project_path: "{{ storage_path }}/{{ iac.name }}/terraform"
       state: absent
 
 #  - meta: end_play
