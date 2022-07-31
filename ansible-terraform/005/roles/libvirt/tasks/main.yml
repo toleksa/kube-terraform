@@ -1,0 +1,59 @@
+---
+# tasks file for libvirt
+
+- name: debug show iac
+  debug:
+    var: iac
+
+- name: debug terraform_action
+  debug:
+    var: terraform_action
+
+- block:
+
+  - name: create project dir
+    file:
+      path: "{{ item }}"
+      state: directory
+    with_items:
+      - "{{ storage_path }}/{{ iac.name }}/terraform"
+
+  - name: generate main.tf
+    template:
+      src: "{{ item }}"
+      dest: "{{ storage_path }}/{{ iac.name }}/terraform/main.tf"
+    with_items:
+    - main.tf
+
+  - name: generate instance TFs
+    template:
+      src: vm.tf
+      dest: "{{ storage_path }}/{{ iac.name }}/terraform/{{ instance.key }}.tf"
+    loop: "{{ iac.hosts|dict2items }}"
+    loop_control:
+      label: '{{ instance.key }}'
+      loop_var: instance
+
+  - name: apply terraform
+    terraform:
+      binary_path: "{{ terraform_path }}"
+      project_path: "{{ storage_path }}/{{ iac.name }}/terraform"
+      force_init: true
+
+  delegate_to: localhost
+  when: terraform_action == "apply"
+
+
+- block:
+  - name: terraform destroy
+    terraform:
+      binary_path: "{{ terraform_path }}"
+      project_path: "{{ storage_path }}/{{ iac.name }}/terraform"
+      state: absent
+
+#  - meta: end_play
+
+  delegate_to: localhost
+  when: terraform_action == "destroy"
+
+

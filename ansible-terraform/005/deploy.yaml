@@ -1,0 +1,38 @@
+---
+- hosts: "{{ variable_host }}"
+  gather_facts: no
+  tasks:
+  - name: call terraform
+    include_role: 
+      name: "{{ iac.providers[0].name }}"
+
+- hosts: all
+  gather_facts: no
+  tasks:
+  - meta: refresh_inventory
+
+  - name: print inventory
+    debug:
+      var: hostvars | list
+    run_once: true
+
+#  - name: stop here after terraform destroy
+#    fail:
+#      msg: "stop here after terraform destroy"
+#    when: terraform_action == "destroy"
+
+#  - meta: end_batch
+#    when: terraform_action == "destroy"
+
+- hosts: base
+  roles:
+  - base
+ 
+- hosts: rke2
+  roles:
+  - rke2
+
+- hosts: argocd
+  roles:
+  - argocd
+
