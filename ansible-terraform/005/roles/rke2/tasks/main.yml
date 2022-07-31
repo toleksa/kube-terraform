@@ -76,9 +76,22 @@
     dest: /tmp/rke2.sh
     mode: 0700
 
+- name: set worker flag for installation
+  ansible.builtin.set_fact:
+    rke2_worker_flag: 'INSTALL_RKE2_TYPE="agent"'
+  when: "'rke2-worker' in group_names"
+
+#- name: debug rke2_worker_flag
+#  debug:
+#    var: rke2_worker_flag
+
+#- name: debug rke2 install command
+#  debug:
+#    msg: "/tmp/rke2.sh {{ rke2_worker_flag|default() }}"
+
 - name: install rke2
   ansible.builtin.command: |
-    /tmp/rke2.sh
+    /tmp/rke2.sh "{{ rke2_worker_flag|default() }}"
   args:
     creates: /var/lib/rancher/rke2/bin/kubectl
 
@@ -112,6 +125,15 @@
       state: started
       enabled: yes
     ignore_errors: yes
+    when: "'rke2-worker' not in group_names"
+
+  - name: start rke2 workers
+    ansible.builtin.systemd:
+      name: rke2-agent.service
+      state: started
+      enabled: yes
+    ignore_errors: yes
+    when: "'rke2-worker' in group_names"
 
   - name: wait for server nodes to be ready
     vars:
