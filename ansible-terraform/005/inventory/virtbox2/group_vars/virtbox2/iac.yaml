@@ -74,7 +74,7 @@ iac:
       count: 1
       roles:
       - argocd
-      - rke2-worker
+      - rke2_worker
       provider:
         name: libvirt
       disks:

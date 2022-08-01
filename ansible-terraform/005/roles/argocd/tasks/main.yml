@@ -11,8 +11,8 @@
       echo -n .
     done
   changed_when: false
-  when: "'rke2-worker' not in group_names"
+  when: "'rke2_worker' not in group_names"
 
 - include_tasks: install.yaml
-  when: "'rke2-worker' not in group_names"
+  when: "'rke2_worker' not in group_names"
 

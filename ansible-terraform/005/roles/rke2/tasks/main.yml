@@ -92,7 +92,7 @@
 - name: set worker flag for installation
   ansible.builtin.set_fact:
     rke2_worker_flag: 'INSTALL_RKE2_TYPE="agent"'
-  when: "'rke2-worker' in group_names"
+  when: "'rke2_worker' in group_names"
 
 #- name: debug rke2_worker_flag
 #  debug:
@@ -138,7 +138,7 @@
       state: started
       enabled: yes
     ignore_errors: yes
-    when: "'rke2-worker' not in group_names"
+    when: "'rke2_worker' not in group_names"
 
   - name: start rke2 workers
     ansible.builtin.systemd:
@@ -146,7 +146,7 @@
       state: started
       enabled: yes
     ignore_errors: yes
-    when: "'rke2-worker' in group_names"
+    when: "'rke2_worker' in group_names"
 
   when: ansible_fqdn != JOIN_ADDR
 
@@ -171,7 +171,7 @@
               type: LoadBalancer
 #TODO: those two together doesn't work, possible include_task - https://stackoverflow.com/questions/57465088/in-combination-with-when-and-run-once-in-ansible-it-will-accidentally-skip-the
   #run_once: true
-  #when: "'rke2-worker' not in group_names"
+  #when: "'rke2_worker' not in group_names"
   when: ansible_fqdn == JOIN_ADDR
 
 - name: get helm installer
@@ -207,6 +207,6 @@
   check_mode: false
   until: '" Ready" in _get_nodes.stdout|default("")'
   retries: 120
-  when: "'rke2-worker' not in group_names"
+  when: "'rke2_worker' not in group_names"
 
 

@@ -166,7 +166,7 @@
       - owner=helm
       - name=argocd
 
-  - name: sync proj
+  - name: argocd app sync argocd-main
     ansible.builtin.shell: >
       argocd login {{ argocd_ip.stdout }}:443 --username admin --password password --insecure
       && argocd app sync argocd-main
