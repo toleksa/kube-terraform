@@ -25,6 +25,8 @@
 - name: set JOIN_ADDR
   ansible.builtin.set_fact:
     JOIN_ADDR: "{{ rke2_servers | sort | first }}"
+  run_once: true
+  delegate_to: localhost
 
 - name: debug JOIN_ADDR
   ansible.builtin.debug:
@@ -147,16 +149,6 @@
     ignore_errors: yes
     when: "'rke2-worker' in group_names"
 
-  - name: wait for server nodes to be ready
-    vars:
-      _kubectl: "/var/lib/rancher/rke2/bin/kubectl --kubeconfig /etc/rancher/rke2/rke2.yaml"
-    ansible.builtin.shell: "{{ _kubectl }} get nodes {{ ansible_fqdn }}|cat"
-    changed_when: false
-    ignore_errors: "{{ _ignore_errors|default(false) }}"
-    register: _get_nodes
-    check_mode: false
-    until: '" Ready" in _get_nodes.stdout|default("")'
-    retries: 120
   when: ansible_fqdn != JOIN_ADDR
 
 - name: Set ingress as LoadBalancer
@@ -202,4 +194,17 @@
   - { name: "argo-cd",    url: "https://argoproj.github.io/argo-helm" }
   - { name: "longhorn",   url: "https://charts.longhorn.io" }
   - { name: "monitoring", url: "https://prometheus-community.github.io/helm-charts" }
+
+- name: check if all nodes are online
+  vars:
+    _kubectl: "/var/lib/rancher/rke2/bin/kubectl --kubeconfig /etc/rancher/rke2/rke2.yaml"
+  ansible.builtin.shell: "{{ _kubectl }} get nodes {{ ansible_fqdn }}|cat"
+  changed_when: false
+  ignore_errors: "{{ _ignore_errors|default(false) }}"
+  register: _get_nodes
+  check_mode: false
+  until: '" Ready" in _get_nodes.stdout|default("")'
+  retries: 120
+  when: "'rke2-worker' not in group_names"
+
 
