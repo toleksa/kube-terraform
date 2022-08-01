@@ -50,6 +50,18 @@
     pkg: python3-kubernetes
     state: present
 
+- name: .bash_kube
+  ansible.builtin.get_url:
+    url: 'https://raw.githubusercontent.com/toleksa/configs/main/.bash_kube'
+    dest: '/root/.bash_kube'
+    mode: '0700'
+
+- name: add .bash_kube to .bashrc
+  ansible.builtin.lineinfile:
+    path: /root/.bashrc
+    regexp: ". ~/.bash_kube"
+    line: "    . ~/.bash_kube"
+
 - name: create rke2 config dir
   ansible.builtin.file:
     path: /etc/rancher/rke2
@@ -167,18 +179,6 @@
               enabled: true
               type: LoadBalancer
   run_once: true
-
-- name: .bash_kube
-  ansible.builtin.get_url:
-    url: 'https://raw.githubusercontent.com/toleksa/configs/main/.bash_kube'
-    dest: '/root/.bash_kube'
-    mode: '0700'
-
-- name: add .bash_kube to .bashrc
-  ansible.builtin.lineinfile:
-    path: /root/.bashrc
-    regexp: ". ~/.bash_kube"
-    line: "    . ~/.bash_kube"
 
 - name: get helm installer
   ansible.builtin.get_url:
