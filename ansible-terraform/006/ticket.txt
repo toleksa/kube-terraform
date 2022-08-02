@@ -1,0 +1,10 @@
+1. rke2 install check version - https://github.com/lablabs/ansible-role-rke2/blob/main/tasks/rke2.yml
+#2. inventory.py - hardcoded cluster
+#3. inventory.py - hardcoded QEMU_URI
+#4. finish argocd role
+5. apply terraform - always changes
+#6. rke2 - JOIN_ADDR is hardcoded
+#7. support for rke2 worker role
+8. multiple providers
+9. argocd apps
+10. iac default values

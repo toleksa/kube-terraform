@@ -1,0 +1,9 @@
+---
+# handlers file for base
+- name: restart resolved
+  ansible.builtin.systemd:
+    name: systemd-resolved.service
+    state: restarted
+- name: update dns
+  ansible.builtin.shell: /etc/cron.hourly/dns-update.sh
+

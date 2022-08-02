@@ -1,0 +1,180 @@
+---
+# tasks file for argocd/install.yaml
+
+- name: get argocd binary
+  ansible.builtin.get_url:
+    url: 'https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64'
+    dest: '/usr/local/bin/argocd'
+    mode: '0777'
+
+- name: argocd-main.yaml
+  template:
+    src: argocd-main.yaml
+    dest: /argocd-main.yaml
+
+- block:
+  - name: Get Cluster information
+    kubernetes.core.k8s_cluster_info:
+    register: api_status
+
+  #- name: debug
+  #  debug:
+  #    var: api_status
+  #  run_once: true
+
+  - name: check argocd presence
+    ansible.builtin.set_fact:
+      argocd_installed: true
+    when: '"argoproj.io/" in item.key'
+    loop: "{{ api_status.apis | dict2items | selectattr('key', 'match', '^argoproj.io') }}"
+
+  - name: helm install argocd
+    kubernetes.core.helm:
+      name: argocd
+      chart_ref: argo-cd/argo-cd
+      release_namespace: argocd
+      create_namespace: true
+    when: argocd_installed is not defined or argocd_installed == false
+
+#- name: debug
+#  debug:
+#    var: hostvars
+
+  - name: check argocd-cert secret
+    kubernetes.core.k8s_info:
+      api_version: v1
+      kind: Secret
+      name: argocd-cert
+      namespace: argocd
+    register: argocd_cert_installed
+
+#- name: debug
+#  debug:
+#    var: argocd_cert_installed
+#  when: argocd_cert_installed.resources != []
+
+  - block:
+    - name: create cert dir
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+      with_items:
+        - "{{ storage_path }}/{{ hostvars.localhost.iac.name }}/certs"
+      delegate_to: localhost
+
+    #TODO: if creates is not working, or skipping entire block if cert is already placed, then consider community.crypto.openssl_privatekey: instead of shell
+    # https://docs.ansible.com/ansible/latest/collections/community/crypto/docsite/guide_selfsigned.html
+    - name: generate argocd key and cert
+      command: >
+        openssl req -x509 -nodes -days 3650 -newkey rsa:4096 
+        -keyout "{{ storage_path }}/{{ hostvars.localhost.iac.name }}/certs/argocd.key" 
+        -out "{{ storage_path }}/{{ hostvars.localhost.iac.name }}/certs/argocd.crt" 
+        -subj "/CN=argocd.{{ hostvars.localhost.iac.name }}.{{ hostvars.localhost.iac.domain }}/O=argocd.{{ hostvars.localhost.iac.name }}.{{ hostvars.localhost.iac.domain }}"
+      args:
+        #TODO: test this
+        creates:
+        - "{{ storage_path }}/{{ hostvars.localhost.iac.name }}/certs/argocd.key"
+        - "{{ storage_path }}/{{ hostvars.localhost.iac.name }}/certs/argocd.crt"
+      delegate_to: localhost
+
+    - name: generate argocd-cert secret
+      template:
+        src: argocd-cert.yaml
+        dest: argocd-cert.yaml
+
+    - name: deploy argocd-cert secret
+      kubernetes.core.k8s:
+        namespace: argocd
+        state: present
+        src: argocd-cert.yaml
+    when: argocd_cert_installed.resources == []
+
+  - name: set argocd password
+    kubernetes.core.k8s:
+      state: patched
+      name: argocd-secret
+      namespace: argocd
+      kind: secret
+      definition:
+        data:
+          admin.password: "JDJhJDEwJHJSeUJzR1NISzYudWM4Zm50UHdWSXVMVkhnc0FoQVg3VGNkcnFXL1JBRFUwdWg3Q2FDaExh" #password
+
+  - name: set argocd password - json way
+    kubernetes.core.k8s_json_patch:
+      kind: secret
+      namespace: argocd
+      name: argocd-secret
+      patch:
+        - op: replace
+          path: /data/admin.password 
+          value: "JDJhJDEwJHJSeUJzR1NISzYudWM4Zm50UHdWSXVMVkhnc0FoQVg3VGNkcnFXL1JBRFUwdWg3Q2FDaExh" #password
+
+  - name: get argocd ip
+    ansible.builtin.shell: kubectl -n argocd get svc | grep "argocd-server " | gawk '{ print $3 }'
+    register: argocd_ip
+    changed_when: false
+
+  - name: print login to argocd
+    ansible.builtin.debug:
+      msg:  "argocd login {{ argocd_ip.stdout }}:443 --username admin --password password --insecure"
+
+  - name: waiting for argocd:443
+    uri:
+      url: "http://{{ argocd_ip.stdout }}:443"
+      return_content: no
+      validate_certs: no
+      status_code:
+        - 200
+    until: uri_output.status == 200
+    retries: 48 # Retries for 48 * 5 seconds = 240 seconds = 4 minutes
+    delay: 5 # Every 5 seconds
+    register: uri_output
+
+  - name: argocd login
+    ansible.builtin.shell: >
+      . ~/.bashrc
+      && argocd login {{ argocd_ip.stdout }}:443 --username admin --password password --insecure
+    args:
+      executable: /bin/bash
+    changed_when: false
+
+  #TODO: change it to ansible way with retry
+  - name: Waiting for argocd project
+    ansible.builtin.shell: >
+      argocd login {{ argocd_ip.stdout }}:443 --username admin --password password --insecure
+      && until argocd proj list | grep default ; do
+        sleep 5s
+        echo -n .
+      done
+    changed_when: false
+
+#- name: debug argocd
+#  debug:
+#    var: hostvars.localhost.iac
+
+  - name: deploy argocd-main
+    kubernetes.core.k8s:
+      state: present
+      src: /argocd-main.yaml
+
+  - name: remove argocd entry from helm, now it's selfmanaged
+    kubernetes.core.k8s:
+      state: absent
+      kind: secret
+      namespace: argocd
+      label_selectors:
+      - owner=helm
+      - name=argocd
+
+  - name: argocd app sync argocd-main
+    ansible.builtin.shell: >
+      argocd login {{ argocd_ip.stdout }}:443 --username admin --password password --insecure
+      && argocd app sync argocd-main
+  #  retries: 5
+  #  delay: 3
+  #  register: result
+  #  until: result.rc == 0
+    changed_when: false
+  run_once: true
+
+
