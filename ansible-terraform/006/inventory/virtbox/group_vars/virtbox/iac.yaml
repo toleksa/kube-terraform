@@ -7,7 +7,8 @@ iac:
   name: "c0"
   domain: "kube.ac"
   providers:
-  - name: "libvirt"
+  - name: "virtbox"
+    type: "libvirt"
     config: "qemu+ssh://root@192.168.0.4/system"
   pools:
   - name: "default"
@@ -40,7 +41,7 @@ iac:
       roles:
       - argocd
       provider:
-        name: libvirt
+        name: virtbox
       disks:
       - name: "root"
         size: "53687091200"

@@ -7,7 +7,8 @@ iac:
   name: "c1"
   domain: "kube.ac"
   providers:
-  - name: "libvirt"
+  - name: "ivy"
+    type: "libvirt"
     config: "qemu+ssh://root@192.168.0.3/system"
   pools:
   - name: "default"
@@ -40,7 +41,7 @@ iac:
       roles:
       - argocd
       provider:
-        name: libvirt
+        name: ivy
       disks:
       - name: "root"
         size: "53687091200"
@@ -76,7 +77,7 @@ iac:
       - argocd
       - rke2_worker
       provider:
-        name: libvirt
+        name: ivy
       disks:
       - name: "root"
         size: "53687091200"
