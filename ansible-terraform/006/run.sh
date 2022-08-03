@@ -29,7 +29,7 @@ else
 fi
 
 CMD="ansible-playbook -i inventory/$1 deploy.yaml --extra-vars \"variable_host=$1\" --extra-vars \"terraform_action=$terraform_action\""
-#CMD="ansible-playbook -i inventory/$1 deploy.yaml --extra-vars \"variable_host=$1\" --extra-vars \"terraform_action=$terraform_action\" --start-at-task=\"helm install argocd\""
+#CMD="ansible-playbook -i inventory/$1 deploy.yaml --extra-vars \"variable_host=$1\" --extra-vars \"terraform_action=$terraform_action\" --start-at-task=\"tagged task\""
 echo $CMD
 eval $CMD
 
