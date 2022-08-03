@@ -1,0 +1,24 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: python-rest-api-main
+  namespace: argocd
+spec:
+  destination:
+    namespace: python-rest-api
+    server: 'https://kubernetes.default.svc'
+  project: default
+  source:
+    repoURL: 'https://github.com/toleksa/python-rest-api'
+    targetRevision: HEAD
+    path: 'argo/python-rest-api'
+    helm:
+      values: |
+        domain: "{{ hostvars.localhost.iac.name }}.{{ hostvars.localhost.iac.domain|default('example.com') }}"
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - PruneLast=false

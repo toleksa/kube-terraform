@@ -16,3 +16,10 @@
 - include_tasks: install.yaml
   when: "'rke2_worker' not in group_names"
 
+- name: tagged task
+  debug:
+    msg: "tag here"
+
+- include_tasks: apps.yaml
+  when: "'rke2_worker' not in group_names"
+

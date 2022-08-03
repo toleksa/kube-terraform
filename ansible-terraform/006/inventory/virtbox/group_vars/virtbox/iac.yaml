@@ -31,6 +31,10 @@ iac:
       host: 192.168.0.2
       zone: "kube.ac"
       secret: "{{ lookup('ansible.builtin.env', 'DNS_KEY')|default() }}"
+    apps:
+    - kaboom-games-main.yaml
+    - python-rest-api-main.yaml
+    - wordpress-main.yaml
     metallb:
       #addresses: "127.0.0.1"
   rke2:
