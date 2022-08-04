@@ -1,0 +1,6 @@
+001 - init, build machine
+002 - iac introduction
+003 - proper iac config
+004 - iac profiles
+005 - support rke2-worker
+006 - multiple providers, argocd apps
