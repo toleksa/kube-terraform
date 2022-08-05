@@ -1,0 +1,18 @@
+iac:
+  name: "c4"
+  #domain: "kube.ac"
+  providers:
+  - name: "virtbox"
+    type: "libvirt"
+    config: "qemu+ssh://root@192.168.0.4/system"
+  hosts:
+    mymachine:
+      provider:
+        name: virtbox
+    #count: 1
+    #roles:
+    #- base
+    #- argocd
+    #resources:
+    #  cpu: 1
+    #  mem: 1000

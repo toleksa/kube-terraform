@@ -14,7 +14,7 @@ spec:
     path: 'argo/python-rest-api'
     helm:
       values: |
-        domain: "{{ hostvars.localhost.iac.name }}.{{ hostvars.localhost.iac.domain|default('example.com') }}"
+        domain: "{{ hostvars.localhost.iac.name }}.{{ hostvars.localhost.iac.domain|default(default.iac.domain) }}"
   syncPolicy:
     automated:
       prune: true

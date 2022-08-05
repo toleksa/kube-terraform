@@ -1,6 +1,6 @@
 # vim: syntax=yaml
-{% for count in range(instance.value.count) %}
-{%   for disk in instance.value.disks|default([]) %}
+{% for count in range(instance.value.count|default(default.instance.count)) %}
+{%   for disk in instance.value.disks|default(default.instance.disks) %}
 resource "libvirt_volume" "{{iac.name}}-{{instance.key}}{{count}}-{{disk.name}}" {
   #TODO: hardcoded libvirt
   provider = libvirt.{{instance.value.provider.name}}
@@ -21,26 +21,24 @@ resource "libvirt_volume" "{{iac.name}}-{{instance.key}}{{count}}-{{disk.name}}"
 }
 {%   endfor %}
 
-{%   if instance.value.user_data|default(False) %}
 resource "libvirt_cloudinit_disk" "{{iac.name}}-{{instance.key}}{{count}}-cloudinit" {
   provider = libvirt.{{instance.value.provider.name}}
   name           = "{{iac.name}}-{{instance.key}}{{count}}-cloudinit.iso"
-  pool = "{{ instance.value.user_data_pool|default(instance.value.disks[0].pool) }}"
+  pool = "{{ instance.value.user_data_pool|default(instance.value.disks[0].pool|default('default')) }}"
   user_data      = <<EOF
 #cloud-config
-fqdn: "{{instance.key}}{{count}}.{{iac.name}}.{{iac.domain}}"
-{{instance.value.user_data|default('')|to_nice_yaml(indent=2)}}
+fqdn: "{{instance.key}}{{count}}.{{iac.name}}.{{iac.domain|default(default.iac.domain)}}"
+{{instance.value.user_data|default(default.instance.user_data)|to_nice_yaml(indent=2)}}
 EOF
 }
-{%   endif %}
 
 # Define KVM domain to create
 resource "libvirt_domain" "{{iac.name}}-{{instance.key}}{{count}}" {
   provider = libvirt.{{instance.value.provider.name}}
   name   = "{{iac.name}}-{{instance.key}}{{count}}"
-  description = "cluster: {{iac.name}}\nhostname: {{instance.key}}{{count}}.{{iac.name}}.{{iac.domain}}\nroles: {{instance.value.roles|default([])|join(',')}}\n"
-  memory = "{{ instance.value.resources.mem|default(1024) }}"
-  vcpu   = "{{ instance.value.resources.cpu|default(1) }}"
+  description = "cluster: {{iac.name}}\nhostname: {{instance.key}}{{count}}.{{iac.name}}.{{iac.domain|default(default.iac.domain)}}\nroles: {{instance.value.roles|default(['base'])|join(',')}}\n"
+  memory = "{{ instance.value.resources.mem|default(default.instance.resources.mem) }}"
+  vcpu   = "{{ instance.value.resources.cpu|default(default.instance.resources.cpu) }}"
 
   cpu {
       mode = "host-passthrough" 
@@ -59,11 +57,11 @@ resource "libvirt_domain" "{{iac.name}}-{{instance.key}}{{count}}" {
   }
   qemu_agent = true
 
-{%   if instance.value.user_data|default(False) %}
+{%   if instance.value.user_data|default(default.instance.user_data) %}
   cloudinit = libvirt_cloudinit_disk.{{iac.name}}-{{instance.key}}{{count}}-cloudinit.id
 {%   endif %}
 
-{%   for disk in instance.value.disks|default([]) %}
+{%   for disk in instance.value.disks|default(default.instance.disks) %}
   disk {
     volume_id = libvirt_volume.{{iac.name}}-{{instance.key}}{{count}}-{{disk.name}}.id
     scsi      = "true"
@@ -72,15 +70,17 @@ resource "libvirt_domain" "{{iac.name}}-{{instance.key}}{{count}}" {
 {%   endfor %}
 
 
-{%   for network in instance.value.networks|default([]) %}
+{%   for network in instance.value.networks|default(default.instance.networks) %}
   network_interface {
-{%     if network.name|default(false) %}
+{%     if network.name!="default" %}
     network_name = "{{iac.name}}-{{instance.value.provider.name}}-{{network.name}}"
+{%     else %}
+    network_name = "default"
 {%     endif %}
 {%     if network.mac_prefix|default(false) %}
-{%       if instance.value.count < 10 %}
+{%       if count < 10 %}
     mac            = "{{network.mac_prefix}}:0{{count}}"
-{%       elif instance.value.count < 100 %}
+{%       elif count < 100 %}
     mac            = "{{network.mac_prefix}}:{{ '%02d' % count}}"
 {%       endif %}
 {%     endif %}

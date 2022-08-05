@@ -15,7 +15,7 @@ spec:
     helm:
       values: |
         website: wordpress
-        domain: "{{ hostvars.localhost.iac.name }}.{{ hostvars.localhost.iac.domain|default('example.com') }}"
+        domain: "{{ hostvars.localhost.iac.name }}.{{ hostvars.localhost.iac.domain|default(default.iac.domain) }}"
         adminPassword: password
   syncPolicy:
     automated:

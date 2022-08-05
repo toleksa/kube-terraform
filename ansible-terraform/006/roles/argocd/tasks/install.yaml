@@ -69,7 +69,7 @@
         openssl req -x509 -nodes -days 3650 -newkey rsa:4096 
         -keyout "{{ storage_path }}/{{ hostvars.localhost.iac.name }}/certs/argocd.key" 
         -out "{{ storage_path }}/{{ hostvars.localhost.iac.name }}/certs/argocd.crt" 
-        -subj "/CN=argocd.{{ hostvars.localhost.iac.name }}.{{ hostvars.localhost.iac.domain }}/O=argocd.{{ hostvars.localhost.iac.name }}.{{ hostvars.localhost.iac.domain }}"
+        -subj "/CN=argocd.{{ hostvars.localhost.iac.name }}.{{ hostvars.localhost.iac.domain|default(default.iac.domain) }}/O=argocd.{{ hostvars.localhost.iac.name }}.{{ hostvars.localhost.iac.domain|default(default.iac.domain) }}"
       args:
         #TODO: test this
         creates:

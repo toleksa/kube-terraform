@@ -14,7 +14,7 @@ spec:
     path: 'argocd'
     helm:
       values: |
-        domain: "{{ hostvars.localhost.iac.name }}.{{ hostvars.localhost.iac.domain|default('example.com') }}"
+        domain: "{{ hostvars.localhost.iac.name }}.{{ hostvars.localhost.iac.domain|default(default.iac.domain) }}"
 
         longhorn:
           defaultClassReplicaCount: 1

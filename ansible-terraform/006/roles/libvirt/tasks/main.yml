@@ -9,6 +9,14 @@
   debug:
     var: terraform_action
 
+- name: debug hostvars
+  debug:
+    var: hostvars
+
+#- name: default
+#  debug:
+#    var: default.instance.count
+
 - block:
 
   - name: create project dir
@@ -44,9 +52,9 @@
       label: '{{ instance.key }}'
       loop_var: instance
 
-#  - name: halt
-#    fail:
-#      msg: "stop"
+  - name: halt
+    fail:
+      msg: "stop"
 
   - name: apply terraform
     terraform:

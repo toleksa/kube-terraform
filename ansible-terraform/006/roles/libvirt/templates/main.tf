@@ -29,7 +29,7 @@ resource "libvirt_network" "{{iac.name}}-{{provider['name']}}-{{ network['name']
 {%   endif %}
 {% endfor %}
 
-{% for volume in iac.volumes|default([]) %}
+{% for volume in iac.volumes|default(default.iac.volumes) %}
 
 resource "libvirt_volume" "{{iac.name}}-{{provider['name']}}-{{ volume['name'] }}" {
   provider = {{ provider['type'] }}.{{ provider['name'] }}
