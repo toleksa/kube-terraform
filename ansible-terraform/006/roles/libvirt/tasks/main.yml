@@ -52,9 +52,9 @@
       label: '{{ instance.key }}'
       loop_var: instance
 
-  - name: halt
-    fail:
-      msg: "stop"
+#  - name: halt
+#    fail:
+#      msg: "stop"
 
   - name: apply terraform
     terraform:

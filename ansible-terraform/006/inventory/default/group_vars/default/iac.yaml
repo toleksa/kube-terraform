@@ -7,8 +7,8 @@ iac:
     config: "qemu+ssh://root@192.168.0.4/system"
   hosts:
     mymachine:
-      provider:
-        name: virtbox
+    #  provider:
+    #    name: virtbox
     #count: 1
     #roles:
     #- base

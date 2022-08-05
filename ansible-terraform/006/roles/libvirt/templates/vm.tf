@@ -3,15 +3,15 @@
 {%   for disk in instance.value.disks|default(default.instance.disks) %}
 resource "libvirt_volume" "{{iac.name}}-{{instance.key}}{{count}}-{{disk.name}}" {
   #TODO: hardcoded libvirt
-  provider = libvirt.{{instance.value.provider.name}}
+  provider = libvirt.{{instance.value.provider.name|default(iac.providers[0].name)}}
   name = "{{iac.name}}-{{instance.key}}{{count}}-{{disk.name}}"
 {%     if disk.pool=="default" %}
   pool = "default"
 {%     else %}
-  pool = "{{iac.name}}-{{instance.value.provider.name}}-{{disk.pool}}"
+  pool = "{{iac.name}}-{{instance.value.provider.name|default(iac.providers[0].name)}}-{{disk.pool}}"
 {%     endif %}
 {%     if disk.base_volume|default(False) %}
-  base_volume_id = libvirt_volume.{{iac.name}}-{{instance.value.provider.name}}-{{disk.base_volume}}.id
+  base_volume_id = libvirt_volume.{{iac.name}}-{{instance.value.provider.name|default(iac.providers[0].name)}}-{{disk.base_volume}}.id
 {%     elif disk.source|default(False) %}
   source = "{{disk.source}}"
 {%     endif %}
@@ -22,7 +22,7 @@ resource "libvirt_volume" "{{iac.name}}-{{instance.key}}{{count}}-{{disk.name}}"
 {%   endfor %}
 
 resource "libvirt_cloudinit_disk" "{{iac.name}}-{{instance.key}}{{count}}-cloudinit" {
-  provider = libvirt.{{instance.value.provider.name}}
+  provider = libvirt.{{instance.value.provider.name|default(iac.providers[0].name)}}
   name           = "{{iac.name}}-{{instance.key}}{{count}}-cloudinit.iso"
   pool = "{{ instance.value.user_data_pool|default(instance.value.disks[0].pool|default('default')) }}"
   user_data      = <<EOF
@@ -34,7 +34,7 @@ EOF
 
 # Define KVM domain to create
 resource "libvirt_domain" "{{iac.name}}-{{instance.key}}{{count}}" {
-  provider = libvirt.{{instance.value.provider.name}}
+  provider = libvirt.{{instance.value.provider.name|default(iac.providers[0].name)}}
   name   = "{{iac.name}}-{{instance.key}}{{count}}"
   description = "cluster: {{iac.name}}\nhostname: {{instance.key}}{{count}}.{{iac.name}}.{{iac.domain|default(default.iac.domain)}}\nroles: {{instance.value.roles|default(['base'])|join(',')}}\n"
   memory = "{{ instance.value.resources.mem|default(default.instance.resources.mem) }}"
@@ -73,7 +73,7 @@ resource "libvirt_domain" "{{iac.name}}-{{instance.key}}{{count}}" {
 {%   for network in instance.value.networks|default(default.instance.networks) %}
   network_interface {
 {%     if network.name!="default" %}
-    network_name = "{{iac.name}}-{{instance.value.provider.name}}-{{network.name}}"
+    network_name = "{{iac.name}}-{{instance.value.provider.name|default(iac.providers[0].name)}}-{{network.name}}"
 {%     else %}
     network_name = "default"
 {%     endif %}
