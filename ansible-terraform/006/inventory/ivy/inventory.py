@@ -32,20 +32,14 @@ if IAC_PROFILE == None:
 with open(os.path.dirname(__file__) + "/group_vars/" + IAC_PROFILE + "/iac.yaml", "r") as f:
     iac = yaml.safe_load(f)
     CLUSTER_NAME = jinja2.Template(iac['iac']['name']).render(lookup=lookup)
-    #URI = [jinja2.Template(iac['iac']['providers'][0]['config']).render(lookup=lookup)]
     URI = []
 
     for provider in iac['iac']['providers']:
         if provider['type'] == 'libvirt':
             URI.append(provider['config'])
 
-#URI = "qemu+ssh://root@192.168.0.4/system"
-#URI = ["qemu+ssh://root@192.168.0.4/system","URI2"]
+#URI = ["qemu+ssh://root@192.168.0.4/system"]
 #CLUSTER_NAME='c0'
-
-#for u in URI:
-#    print(u)
-#exit(0)
 
 def libvirt_callback(userdata, err):
     pass
