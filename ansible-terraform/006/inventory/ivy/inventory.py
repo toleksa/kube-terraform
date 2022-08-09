@@ -5,7 +5,9 @@ STATE_MASK = None
 STATE_MASK = [0,1,2,3,4,5,6,7,8]
 #NAME_FILTER = '^exphost-.*'
 #CLUSTER_NAME= 'exphost-dev'
+#TODO: doesn't work with default, non-bridge network
 OUTPUT_FORMAT='ssh'
+#TODO: doesn't work with ansible.builtin.template task
 #OUTPUT_FORMAT='libvirt'
 
 import libvirt
@@ -23,10 +25,11 @@ def lookup(type, key):
 IAC_PROFILE = os.getenv('IAC_PROFILE') 
 
 if IAC_PROFILE == None:
-    print("ERR: $IAC_PROFILE is empty")
-    exit(1)
+    print("INFO: $IAC_PROFILE is empty, getting CWD name")
+    IAC_PROFILE = os.path.dirname(__file__).split(os.sep)[-1]
+    print(IAC_PROFILE)
 
-with open("inventory/" + IAC_PROFILE + "/group_vars/" + IAC_PROFILE + "/iac.yaml", "r") as f:
+with open(os.path.dirname(__file__) + "/group_vars/" + IAC_PROFILE + "/iac.yaml", "r") as f:
     iac = yaml.safe_load(f)
     CLUSTER_NAME = jinja2.Template(iac['iac']['name']).render(lookup=lookup)
     #URI = [jinja2.Template(iac['iac']['providers'][0]['config']).render(lookup=lookup)]
@@ -68,7 +71,7 @@ for u in URI:
                 if desc.startswith("cluster:"):
                     if desc.split("cluster:")[1].strip() == CLUSTER_NAME:
                         this_cluster = True
-                if desc.startswith("hostname:"):
+                if desc.startswith("hostname:") and OUTPUT_FORMAT != 'libvirt':
                     hostname = desc.split("hostname:")[1].strip()
             if not this_cluster:
                 continue

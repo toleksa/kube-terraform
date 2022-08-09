@@ -7,7 +7,8 @@ STATE_MASK = [0,1,2,3,4,5,6,7,8]
 #CLUSTER_NAME= 'exphost-dev'
 #TODO: doesn't work with default, non-bridge network
 OUTPUT_FORMAT='ssh'
-OUTPUT_FORMAT='libvirt'
+#TODO: doesn't work with ansible.builtin.template task
+#OUTPUT_FORMAT='libvirt'
 
 import libvirt
 import re
