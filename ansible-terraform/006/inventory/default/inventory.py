@@ -24,8 +24,9 @@ def lookup(type, key):
 IAC_PROFILE = os.getenv('IAC_PROFILE') 
 
 if IAC_PROFILE == None:
-    print("ERR: $IAC_PROFILE is empty")
-    exit(1)
+    print("INFO: $IAC_PROFILE is empty, getting CWD name")
+    IAC_PROFILE = os.path.dirname(__file__).split(os.sep)[-1]
+    print(IAC_PROFILE)
 
 with open(os.path.dirname(__file__) + "/group_vars/" + IAC_PROFILE + "/iac.yaml", "r") as f:
     iac = yaml.safe_load(f)
