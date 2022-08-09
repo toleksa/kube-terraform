@@ -5,8 +5,10 @@ STATE_MASK = None
 STATE_MASK = [0,1,2,3,4,5,6,7,8]
 #NAME_FILTER = '^exphost-.*'
 #CLUSTER_NAME= 'exphost-dev'
+#TODO: doesn't work with default, non-bridge network
 OUTPUT_FORMAT='ssh'
-#OUTPUT_FORMAT='libvirt'
+#TODO: doesn't work at all
+OUTPUT_FORMAT='libvirt'
 
 import libvirt
 import re
@@ -26,7 +28,7 @@ if IAC_PROFILE == None:
     print("ERR: $IAC_PROFILE is empty")
     exit(1)
 
-with open("inventory/" + IAC_PROFILE + "/group_vars/" + IAC_PROFILE + "/iac.yaml", "r") as f:
+with open(os.path.dirname(__file__) + "/group_vars/" + IAC_PROFILE + "/iac.yaml", "r") as f:
     iac = yaml.safe_load(f)
     CLUSTER_NAME = jinja2.Template(iac['iac']['name']).render(lookup=lookup)
     #URI = [jinja2.Template(iac['iac']['providers'][0]['config']).render(lookup=lookup)]
