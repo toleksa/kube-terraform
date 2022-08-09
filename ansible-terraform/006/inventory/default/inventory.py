@@ -7,7 +7,6 @@ STATE_MASK = [0,1,2,3,4,5,6,7,8]
 #CLUSTER_NAME= 'exphost-dev'
 #TODO: doesn't work with default, non-bridge network
 OUTPUT_FORMAT='ssh'
-#TODO: doesn't work at all
 OUTPUT_FORMAT='libvirt'
 
 import libvirt
@@ -70,7 +69,7 @@ for u in URI:
                 if desc.startswith("cluster:"):
                     if desc.split("cluster:")[1].strip() == CLUSTER_NAME:
                         this_cluster = True
-                if desc.startswith("hostname:"):
+                if desc.startswith("hostname:") and OUTPUT_FORMAT != 'libvirt':
                     hostname = desc.split("hostname:")[1].strip()
             if not this_cluster:
                 continue
