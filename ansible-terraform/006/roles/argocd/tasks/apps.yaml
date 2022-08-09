@@ -17,4 +17,9 @@
     when: "hostvars.localhost.iac.argocd.apps is defined"
   run_once: true
 
+- name: clone kube-apps repo
+  ansible.builtin.git:
+    repo: 'https://github.com/toleksa/kube-apps.git'
+    dest: /root/kube-apps
+    version: HEAD
 
