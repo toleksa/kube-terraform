@@ -72,10 +72,14 @@ resource "libvirt_domain" "{{iac.name}}-{{instance.key}}{{count}}" {
 
 {%   for network in instance.value.networks|default(default.instance.networks) %}
   network_interface {
-{%     if network.name!="default" %}
+{%     if network.name is defined %}
+{%       if network.name!="default" %}
     network_name = "{{iac.name}}-{{instance.value.provider.name|default(iac.providers[0].name)}}-{{network.name}}"
-{%     else %}
+{%       else %}
     network_name = "default"
+{%       endif %}
+{%     elif network.bridge is defined %}
+    bridge         = "{{network.bridge}}"
 {%     endif %}
 {%     if network.mac_prefix|default(false) %}
 {%       if count < 10 %}
