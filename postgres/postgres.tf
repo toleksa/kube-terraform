@@ -29,15 +29,23 @@ resource "libvirt_network" "postgres" {
   autostart = "true"
 }
 
+resource "libvirt_volume" "base_image" {
+  name = "base_image"
+#  source = "http://cloud.centos.org/centos/8/x86_64/images/CentOS-8-GenericCloud-8.4.2105-20210603.0.x86_64.qcow2"
+#  source = "http://ftp.linux.cz/pub/linux/almalinux/8.5/cloud/x86_64/images/AlmaLinux-8-GenericCloud-latest.x86_64.qcow2"
+  source = "http://192.168.0.2:8765/AlmaLinux-8-GenericCloud-latest.x86_64.qcow2"
+  format = "qcow2"
+  pool = "default"
+}
+
 resource "libvirt_volume" "volume" {
   count = "${var.host_count}"
   name = "postgres${count.index + 1}"
   #pool = "postgres"
   pool = "default"
-#  source = "http://cloud.centos.org/centos/8/x86_64/images/CentOS-8-GenericCloud-8.4.2105-20210603.0.x86_64.qcow2"
-#  source = "http://ftp.linux.cz/pub/linux/almalinux/8.5/cloud/x86_64/images/AlmaLinux-8-GenericCloud-latest.x86_64.qcow2"
-  source = "http://192.168.0.2:8765/AlmaLinux-8-GenericCloud-latest.x86_64.qcow2"
-  format = "qcow2"
+  base_volume_id = libvirt_volume.base_image.id
+  #size = "53687091200"
+  size = "13687091200"
 }
 
 data "template_file" "user_data" {
