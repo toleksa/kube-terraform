@@ -48,7 +48,8 @@ iac:
         pool: "default"
         base_volume: "ubuntu-jammy"
       networks:
-      - name: "main"
+      #- name: "main"
+      - bridge: "br0"
         mac_prefix: "44:8a:5b:00:03"
       resources:
         cpu: 3
