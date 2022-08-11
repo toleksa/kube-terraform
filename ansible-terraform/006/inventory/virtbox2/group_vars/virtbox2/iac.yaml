@@ -13,9 +13,9 @@ iac:
   pools:
   - name: "default"
     path: "/virtualki"
-  networks:
-  - name: "main"
-    bridge: "br0"
+#  networks:
+#  - name: "main"
+#    bridge: "br0"
   volumes:
   - name: ubuntu-jammy
     source: "http://192.168.0.2:8765/jammy-server-cloudimg-amd64-disk-kvm.img"
@@ -48,7 +48,8 @@ iac:
         pool: "default"
         base_volume: "ubuntu-jammy"
       networks:
-      - name: "main"
+#      - name: "main"
+      - bridge: "br0"
         mac_prefix: "44:8a:5b:00:05"
       resources:
         cpu: 3
@@ -84,7 +85,8 @@ iac:
         pool: "default"
         base_volume: "ubuntu-jammy"
       networks:
-      - name: "main"
+      #- name: "main"
+      - bridge: "br0"
         mac_prefix: "44:8a:5b:00:15"
       resources:
         cpu: 3
