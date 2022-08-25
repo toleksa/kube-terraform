@@ -23,8 +23,9 @@
     pkg:
     - default-jre
     - elasticsearch
-    - logstash
     - kibana
+    - logstash
+    #- beats
     - nginx
     state: present
     update_cache: yes
@@ -33,8 +34,31 @@
   ansible.builtin.template:
     src: "{{ item.file }}"
     dest: "{{ item.dest }}"
+  notify: "restart_{{ item.service }}"
   with_items:
-  - { file: "elasticsearch.yml", dest: "/etc/elasticsearch/elasticsearch.yml" }
+  - { file: "elasticsearch.yml", dest: "/etc/elasticsearch/elasticsearch.yml", service: "elasticsearch" }
+  - { file: "nginx.conf", dest: "/etc/nginx/sites-available/{{ inventory_hostname }}", service: "nginx" }
+  - { file: "logstash-beats.conf", dest: "/etc/logstash/conf.d/02-beats-input.conf", service: "logstash" }
+  - { file: "logstash-elasticsearch.conf", dest: "/etc/logstash/conf.d/30-elasticsearch-output.conf", service: "logstash" }
+
+- name: nginx config sites-enabled
+  file:
+    src: "/etc/nginx/sites-available/{{ inventory_hostname }}"
+    dest: "/etc/nginx/sites-enabled/{{ inventory_hostname }}"
+    state: link
+  notify: "restart_nginx"
+
+- meta: flush_handlers
+
+- name: test logstash
+  ansible.builtin.shell: /usr/share/logstash/bin/logstash --path.settings /etc/logstash -t
+  become: true
+  become_user: logstash
+  vars:
+    ansible_remote_tmp: /tmp
+  register: logstash
+  failed_when: '"Config Validation Result: OK. Exiting Logstash" not in logstash.stdout'
+  changed_when: false
 
 - name: start services
   ansible.builtin.systemd:
@@ -43,6 +67,9 @@
     enabled: yes
   with_items:
   - "elasticsearch"
+  - "kibana"
+  - "nginx"
+  - "logstash"
 
 - name: test elasticsearch
   ansible.builtin.uri:

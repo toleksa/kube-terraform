@@ -1,2 +1,25 @@
 ---
 # handlers file for base
+- name: restart_kibana
+  ansible.builtin.systemd:
+    name: kibana
+    state: restarted
+    enabled: yes
+
+- name: restart_nginx
+  ansible.builtin.systemd:
+    name: nginx
+    state: restarted
+    enabled: yes
+
+- name: restart_elasticsearch
+  ansible.builtin.systemd:
+    name: elasticsearch
+    state: restarted
+    enabled: yes
+
+- name: restart_logstash
+  ansible.builtin.systemd:
+    name: logstash
+    state: restarted
+    enabled: yes
