@@ -52,8 +52,8 @@ iac:
       - bridge: "br0"
         mac_prefix: "44:8a:5b:00:03"
       resources:
-        cpu: 3
-        mem: 4000
+        cpu: 6
+        mem: 8000
       user_data_pool: "default"
       user_data:
         prefer_fqdn_over_hostname: true
