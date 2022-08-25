@@ -1,12 +1,7 @@
 ---
 # tasks file for rke2
-
-#- name: debug hostvars
-#  debug:
-#    var: hostvars
-#- name: debug play_hosts
-#  debug:
-#    var: hostvars['{{ inventory_hostname }}']['group_names']
+- ansible.builtin.include_role:
+    name: base
 
 - block:
   - name: prepare rke2_servers list
@@ -30,21 +25,6 @@
 - name: debug JOIN_ADDR
   ansible.builtin.debug:
     var: JOIN_ADDR
-
-#- name: debug ansible_fqdn
-#  ansible.builtin.debug:
-#    var: ansible_fqdn
-
-#- name: debug
-#  ansible.builtin.debug:
-#    var: hostvars
-
-#- name: halt
-#  fail:
-#    msg: "stop"
-
-- ansible.builtin.include_role:
-    name: base
 
 - name: install python3-kubernetes
   ansible.builtin.apt:
@@ -93,14 +73,6 @@
   ansible.builtin.set_fact:
     rke2_worker_flag: 'INSTALL_RKE2_TYPE="agent"'
   when: "'rke2_worker' in group_names"
-
-#- name: debug rke2_worker_flag
-#  debug:
-#    var: rke2_worker_flag
-
-#- name: debug rke2 install command
-#  debug:
-#    msg: "/tmp/rke2.sh {{ rke2_worker_flag|default() }}"
 
 - name: install rke2
   ansible.builtin.command: |
