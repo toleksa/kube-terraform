@@ -175,6 +175,14 @@
   #  register: result
   #  until: result.rc == 0
     changed_when: false
+    register: result
+    failed_when: 
+    - result.rc!=0
+    - '"rpc error: code = FailedPrecondition desc = another operation is already in progress" not in result.stderr'
+
+  - name: debug print argocd sync result
+    debug:
+      var: result
   run_once: true
 
 
