@@ -29,6 +29,10 @@
 - hosts: base
   roles:
   - base
+
+- hosts: elk
+  roles:
+  - elk
  
 - hosts: rke2
   roles:
