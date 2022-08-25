@@ -1,0 +1,118 @@
+---
+- ansible.builtin.include_role:
+    name: base
+
+- name: elastic.gpg
+  ansible.builtin.get_url:
+    url: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+    dest: /usr/share/keyrings/elastic.old.gpg
+    mode: '0444'
+  register: gpg
+
+- name: elastic.gpg dearmor
+  ansible.builtin.shell: cat /usr/share/keyrings/elastic.old.gpg | gpg --dearmor -o /usr/share/keyrings/elastic.gpg
+  when: gpg.changed
+
+- name: add elasticsearch repo
+  ansible.builtin.apt_repository:
+    repo: deb [signed-by=/usr/share/keyrings/elastic.gpg] https://artifacts.elastic.co/packages/8.x/apt stable main
+    state: present
+
+- name: install packages
+  ansible.builtin.apt:
+    pkg:
+    - default-jre
+    - elasticsearch
+    - logstash
+    - kibana
+    - nginx
+    state: present
+    update_cache: yes
+
+- name: configs
+  ansible.builtin.template:
+    src: "{{ item.file }}"
+    dest: "{{ item.dest }}"
+  with_items:
+  - { file: "elasticsearch.yml", dest: "/etc/elasticsearch/elasticsearch.yml" }
+
+- name: start services
+  ansible.builtin.systemd:
+    name: "{{ item }}"
+    state: started
+    enabled: yes
+  with_items:
+  - "elasticsearch"
+
+- name: test elasticsearch
+  ansible.builtin.uri:
+    url: "http://localhost:9200"
+    status_code: 200
+  register: elastic_uri
+
+- name: debug print elastic_uri
+  debug:
+    var: elastic_uri
+
+- name: halt
+  fail:
+    msg: "halt"
+
+- name: start and enable qemu-guest-agent
+  ansible.builtin.systemd:
+    name: qemu-guest-agent
+    state: started
+    enabled: yes
+
+- name: create /etc/cron.hourly
+  ansible.builtin.file:
+    path: /etc/cron.hourly
+    state: directory
+    mode: '0755'
+
+- name: get dns-update.sh
+  ansible.builtin.get_url:
+    url: 'http://192.168.0.2:8765/dns-update.sh'
+    dest: '/etc/cron.hourly/dns-update.sh'
+    mode: '0700'
+  notify: update dns
+- name: crontab dns-update
+  ansible.builtin.cron:
+    name: dns-update.sh
+    special_time: reboot
+    job: '/etc/cron.hourly/dns-update.sh'
+
+- name: Set timezone to Europe/Zurich
+  community.general.timezone:
+    name: Europe/Zurich
+
+- name: set dns
+  ansible.builtin.lineinfile:
+    dest: /etc/systemd/resolved.conf
+    line: "DNS=192.168.0.2"
+    regexp: "DNS="
+    state: present
+  notify: restart resolved
+
+- name: .bash_profile
+  ansible.builtin.get_url:
+    url: 'https://raw.githubusercontent.com/toleksa/configs/main/.bash_profile'
+    dest: '/root/.bash_profile'
+    mode: '0700'
+- name: .bashrc
+  ansible.builtin.get_url:
+    url: 'https://raw.githubusercontent.com/toleksa/configs/main/.bashrc'
+    dest: '/root/.bashrc'
+    mode: '0700'
+- name: .vimrc
+  ansible.builtin.get_url:
+    url: 'https://raw.githubusercontent.com/toleksa/configs/main/.vimrc'
+    dest: '/root/.vimrc'
+    mode: '0700'
+
+- name: remove /etc/update-motd.d/
+  ansible.builtin.file:
+    path: /etc/update-motd.d/
+    state: absent
+
+- meta: flush_handlers
