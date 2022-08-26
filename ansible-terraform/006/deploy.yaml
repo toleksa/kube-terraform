@@ -30,9 +30,9 @@
   roles:
   - base
 
-- hosts: elk
+- hosts: elkstack
   roles:
-  - elk
+  - elkstack
  
 - hosts: rke2
   roles:
