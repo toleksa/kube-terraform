@@ -25,7 +25,6 @@
     - elasticsearch
     - kibana
     - logstash
-    #- beats
     - nginx
     state: present
     update_cache: yes
