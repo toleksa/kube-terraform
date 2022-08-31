@@ -23,3 +23,10 @@
     name: logstash
     state: restarted
     enabled: yes
+
+- name: restart_filebeat
+  ansible.builtin.systemd:
+    name: filebeat
+    state: restarted
+    enabled: yes
+
