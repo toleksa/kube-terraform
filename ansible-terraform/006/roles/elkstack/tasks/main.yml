@@ -80,65 +80,40 @@
   debug:
     var: elastic_uri
 
-- name: halt
-  fail:
-    msg: "halt"
+- name: install beats
+  ansible.builtin.apt:
+    pkg:
+    - filebeat
+#    - metricbeat
+#    - packetbeat
+#    - auditbeat
+#    - hearthbeat
+    state: present
 
-- name: start and enable qemu-guest-agent
+- name: filebeat config
+  template:
+    src: "filebeat.yml"
+    dest: "/etc/filebeat/filebeat.yml"
+    mode: "0600"
+  notify: restart_filebeat
+
+#- include_tasks: filebeat-modules.yaml
+#  with_items:
+#  - "system.yml"
+#  - "nginx.yml"
+
+#TODO: this
+- name: setup filebeat - dirty workaround
+  ansible.builtin.shell: >
+    filebeat setup -e -E output.logstash.enabled=false -E output.elasticsearch.hosts=['localhost:9200'] -E setup.kibana.host=localhost:5601
+    && filebeat setup -e --pipelines --modules system -M "system.syslog.enabled=true" -M "system.auth.enabled=true"
+    && filebeat setup -e --pipelines --modules nginx -M "nginx.access.enabled=true" -M "nginx.error.enabled=true"
+
+- meta: flush_handlers
+
+- name: start filebeat
   ansible.builtin.systemd:
-    name: qemu-guest-agent
+    name: filebeat
     state: started
     enabled: yes
 
-- name: create /etc/cron.hourly
-  ansible.builtin.file:
-    path: /etc/cron.hourly
-    state: directory
-    mode: '0755'
-
-- name: get dns-update.sh
-  ansible.builtin.get_url:
-    url: 'http://192.168.0.2:8765/dns-update.sh'
-    dest: '/etc/cron.hourly/dns-update.sh'
-    mode: '0700'
-  notify: update dns
-- name: crontab dns-update
-  ansible.builtin.cron:
-    name: dns-update.sh
-    special_time: reboot
-    job: '/etc/cron.hourly/dns-update.sh'
-
-- name: Set timezone to Europe/Zurich
-  community.general.timezone:
-    name: Europe/Zurich
-
-- name: set dns
-  ansible.builtin.lineinfile:
-    dest: /etc/systemd/resolved.conf
-    line: "DNS=192.168.0.2"
-    regexp: "DNS="
-    state: present
-  notify: restart resolved
-
-- name: .bash_profile
-  ansible.builtin.get_url:
-    url: 'https://raw.githubusercontent.com/toleksa/configs/main/.bash_profile'
-    dest: '/root/.bash_profile'
-    mode: '0700'
-- name: .bashrc
-  ansible.builtin.get_url:
-    url: 'https://raw.githubusercontent.com/toleksa/configs/main/.bashrc'
-    dest: '/root/.bashrc'
-    mode: '0700'
-- name: .vimrc
-  ansible.builtin.get_url:
-    url: 'https://raw.githubusercontent.com/toleksa/configs/main/.vimrc'
-    dest: '/root/.vimrc'
-    mode: '0700'
-
-- name: remove /etc/update-motd.d/
-  ansible.builtin.file:
-    path: /etc/update-motd.d/
-    state: absent
-
-- meta: flush_handlers
