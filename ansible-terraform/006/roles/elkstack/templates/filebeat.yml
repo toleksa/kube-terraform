@@ -1,0 +1,143 @@
+# ============================== Filebeat inputs ===============================
+
+filebeat.inputs:
+
+# Each - is an input. Most options can be set at the input level, so
+# you can use different inputs for various configurations.
+# Below are the input specific configurations.
+
+# filestream is an input for collecting log messages from files.
+- type: filestream
+
+  # Unique ID among all inputs, an ID is required.
+  id: my-filestream-id
+
+  # Change to true to enable this input configuration.
+  enabled: true
+
+  # Paths that should be crawled and fetched. Glob based paths.
+  paths: 
+  - /var/log/*.log
+
+# ============================== Filebeat modules ==============================
+
+#TODO: paths are not working
+#- module: nginx
+#  access:
+#    enabled: true
+#    var.paths: ["/var/log/nginx/access.log"]
+#  error:
+#    enabled: true
+#    var.paths: ["/var/log/nginx/error.log"]
+#  ingress_controller:
+#    enabled: false
+#    var.paths: ["/var/log/nginx/ingress.log"]
+
+#- module: system
+#  syslog:
+#    enabled: true
+#    var.paths: ["/var/log/syslog"]
+#  auth:
+#    enabled: true
+#    var.paths: ["/var/log/auth.log"]
+
+filebeat.config.modules:
+  path: ${path.config}/modules.d/*.yml
+  reload.enabled: false
+  #reload.period: 10s
+
+# ======================= Elasticsearch template setting =======================
+
+#setup.template.enabled: false
+setup.template.settings:
+  index.number_of_shards: 1
+  #index.codec: best_compression
+  #_source.enabled: false
+
+
+# ================================== General ===================================
+
+# The name of the shipper that publishes the network data. It can be used to group
+# all the transactions sent by a single shipper in the web interface.
+#name:
+
+# The tags of the shipper are included in their own field with each
+# transaction published.
+#tags: ["service-X", "web-tier"]
+
+# Optional fields that you can specify to add additional information to the
+# output.
+#fields:
+#  env: staging
+
+# ================================= Dashboards =================================
+# These settings control loading the sample dashboards to the Kibana index. Loading
+# the dashboards is disabled by default and can be enabled either by setting the
+# options here or by using the `setup` command.
+#setup.dashboards.enabled: false
+
+# The URL from where to download the dashboards archive. By default this URL
+# has a value which is computed based on the Beat name and version. For released
+# versions, this URL points to the dashboard archive on the artifacts.elastic.co
+# website.
+#setup.dashboards.url:
+
+# =================================== Kibana ===================================
+
+setup.kibana:
+  host: "localhost:5601"
+  #space.id:
+
+# =============================== Elastic Cloud ================================
+
+#cloud.id:
+#cloud.auth:
+
+# ================================== Outputs ===================================
+
+# ---------------------------- Elasticsearch Output ----------------------------
+#output.elasticsearch:
+  # Array of hosts to connect to.
+  #hosts: ["localhost:9200"]
+
+  # Protocol - either `http` (default) or `https`.
+  #protocol: "https"
+
+  # Authentication credentials - either API key or username/password.
+  #api_key: "id:api_key"
+  #username: "elastic"
+  #password: "changeme"
+
+# ------------------------------ Logstash Output -------------------------------
+output.logstash:
+  # The Logstash hosts
+  hosts: ["localhost:5044"]
+
+  # Optional SSL. By default is off.
+  # List of root certificates for HTTPS server verifications
+  #ssl.certificate_authorities: ["/etc/pki/root/ca.pem"]
+
+  # Certificate for SSL client authentication
+  #ssl.certificate: "/etc/pki/client/cert.pem"
+
+  # Client Certificate Key
+  #ssl.key: "/etc/pki/client/cert.key"
+
+# ================================= Processors =================================
+processors:
+  - add_host_metadata:
+      when.not.contains.tags: forwarded
+  - add_cloud_metadata: ~
+  - add_docker_metadata: ~
+  - add_kubernetes_metadata: ~
+
+# ================================== Logging ===================================
+
+# Available log levels are: error, warning, info, debug
+logging.level: error
+
+# At debug level, you can selectively enable logging only for some components.
+# To enable all selectors use ["*"]. Examples of other selectors are "beat",
+# "publisher", "service".
+#logging.selectors: ["*"]
+
