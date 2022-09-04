@@ -1,0 +1,6 @@
+- module: system
+  syslog:
+    enabled: true
+    #var.paths:
+  auth:
+    enabled: true
