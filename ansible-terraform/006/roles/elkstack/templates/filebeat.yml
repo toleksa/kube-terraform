@@ -1,54 +1,44 @@
 # ============================== Filebeat inputs ===============================
 
 filebeat.inputs:
-
-# Each - is an input. Most options can be set at the input level, so
-# you can use different inputs for various configurations.
-# Below are the input specific configurations.
-
-# filestream is an input for collecting log messages from files.
 - type: filestream
 
   # Unique ID among all inputs, an ID is required.
   id: my-filestream-id
-
-  # Change to true to enable this input configuration.
   enabled: true
-
-  # Paths that should be crawled and fetched. Glob based paths.
   paths: 
   - /var/log/*.log
 
 # ============================== Filebeat modules ==============================
 
 #TODO: paths are not working
-#- module: nginx
-#  access:
-#    enabled: true
-#    var.paths: ["/var/log/nginx/access.log"]
-#  error:
-#    enabled: true
-#    var.paths: ["/var/log/nginx/error.log"]
-#  ingress_controller:
-#    enabled: false
-#    var.paths: ["/var/log/nginx/ingress.log"]
-
-#- module: system
-#  syslog:
-#    enabled: true
-#    var.paths: ["/var/log/syslog"]
-#  auth:
-#    enabled: true
-#    var.paths: ["/var/log/auth.log"]
-
 filebeat.config.modules:
+- module: nginx
+  access:
+    enabled: true
+    var.paths: ["/var/log/nginx/access.log"]
+  error:
+    enabled: true
+    var.paths: ["/var/log/nginx/error.log"]
+  ingress_controller:
+    enabled: false
+    var.paths: ["/var/log/nginx/ingress.log"]
+
+- module: system
+  syslog:
+    enabled: true
+    var.paths: ["/var/log/syslog"]
+  auth:
+    enabled: true
+    var.paths: ["/var/log/auth.log"]
+
   path: ${path.config}/modules.d/*.yml
   reload.enabled: false
   #reload.period: 10s
 
 # ======================= Elasticsearch template setting =======================
 
-#setup.template.enabled: false
+setup.template.enabled: false
 setup.template.settings:
   index.number_of_shards: 1
   #index.codec: best_compression
@@ -110,6 +100,7 @@ setup.kibana:
 
 # ------------------------------ Logstash Output -------------------------------
 output.logstash:
+  enabled: true
   # The Logstash hosts
   hosts: ["localhost:5044"]
 
