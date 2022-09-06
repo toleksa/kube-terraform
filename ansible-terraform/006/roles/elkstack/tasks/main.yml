@@ -26,6 +26,7 @@
     - kibana
     - logstash
     - nginx
+    - apache2
     state: present
     update_cache: yes
 
@@ -39,6 +40,7 @@
   - { file: "nginx.conf", dest: "/etc/nginx/sites-available/{{ inventory_hostname }}", service: "nginx" }
   - { file: "logstash-beats.conf", dest: "/etc/logstash/conf.d/02-beats-input.conf", service: "logstash" }
   - { file: "logstash-elasticsearch.conf", dest: "/etc/logstash/conf.d/30-elasticsearch-output.conf", service: "logstash" }
+  - { file: "ports.conf", dest: "/etc/apache2/ports.conf", service: "apache2" }
 
 - name: nginx config sites-enabled
   file:
@@ -69,6 +71,7 @@
   - "kibana"
   - "nginx"
   - "logstash"
+  - "apache2"
 
 - name: test elasticsearch
   ansible.builtin.uri:
@@ -84,7 +87,7 @@
   ansible.builtin.apt:
     pkg:
     - filebeat
-#    - metricbeat
+    - metricbeat
 #    - packetbeat
 #    - auditbeat
 #    - hearthbeat
@@ -96,6 +99,13 @@
     dest: "/etc/filebeat/filebeat.yml"
     mode: "0600"
   notify: restart_filebeat
+
+- name: metricbeat config
+  template:
+    src: "metricbeat.yml"
+    dest: "/etc/metricbeat/metricbeat.yml"
+    mode: "0600"
+  notify: restart_metricbeat
 
 #- include_tasks: filebeat-modules.yaml
 #  with_items:
@@ -109,11 +119,21 @@
     && filebeat setup -e --pipelines --modules system -M "system.syslog.enabled=true" -M "system.auth.enabled=true"
     && filebeat setup -e --pipelines --modules nginx -M "nginx.access.enabled=true" -M "nginx.error.enabled=true"
 
+- name: setup metricbeat - dirty workaround
+  ansible.builtin.shell: >
+    metricbeat setup -e -E output.logstash.enabled=false -E output.elasticsearch.hosts=['localhost:9200'] -E setup.kibana.host=localhost:5601
+
 - meta: flush_handlers
 
 - name: start filebeat
   ansible.builtin.systemd:
     name: filebeat
+    state: started
+    enabled: yes
+
+- name: start metricbeat
+  ansible.builtin.systemd:
+    name: metricbeat
     state: started
     enabled: yes
 

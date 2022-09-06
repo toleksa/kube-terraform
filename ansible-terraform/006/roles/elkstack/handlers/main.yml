@@ -12,6 +12,12 @@
     state: restarted
     enabled: yes
 
+- name: restart_apache2
+  ansible.builtin.systemd:
+    name: apache2
+    state: restarted
+    enabled: yes
+
 - name: restart_elasticsearch
   ansible.builtin.systemd:
     name: elasticsearch
@@ -27,6 +33,12 @@
 - name: restart_filebeat
   ansible.builtin.systemd:
     name: filebeat
+    state: restarted
+    enabled: yes
+
+- name: restart_metricbeat
+  ansible.builtin.systemd:
+    name: metricbeat
     state: restarted
     enabled: yes
 
