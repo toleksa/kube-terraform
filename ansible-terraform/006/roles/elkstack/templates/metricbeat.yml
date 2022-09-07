@@ -7,6 +7,15 @@ metricbeat.config.modules:
   server_status_path: "server-status"
   #username: "user"
   #password: "secret"
+
+- module: nginx
+	metricsets:
+    - stubstatus
+  period: 10s
+  hosts: ["http://127.0.0.1"]
+  server_status_path: "nginx_status"
+  #username: "user"
+  #password: "secret"
   
   path: ${path.config}/modules.d/*.yml
   reload.enabled: false
