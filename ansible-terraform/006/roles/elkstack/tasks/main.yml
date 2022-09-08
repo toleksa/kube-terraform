@@ -98,14 +98,18 @@
     src: "filebeat.yml"
     dest: "/etc/filebeat/filebeat.yml"
     mode: "0600"
-  notify: restart_filebeat
+  notify: 
+  - setup_filebeat
+  - restart_filebeat
 
 - name: metricbeat config
   template:
     src: "metricbeat.yml"
     dest: "/etc/metricbeat/metricbeat.yml"
     mode: "0600"
-  notify: restart_metricbeat
+  notify: 
+  - setup_metricbeat
+  - restart_metricbeat
 
 #- include_tasks: filebeat-modules.yaml
 #  with_items:
@@ -113,15 +117,15 @@
 #  - "nginx.yml"
 
 #TODO: this
-- name: setup filebeat - dirty workaround
-  ansible.builtin.shell: >
-    filebeat setup -e -E output.logstash.enabled=false -E output.elasticsearch.hosts=['localhost:9200'] -E setup.kibana.host=localhost:5601
-    && filebeat setup -e --pipelines --modules system -M "system.syslog.enabled=true" -M "system.auth.enabled=true"
-    && filebeat setup -e --pipelines --modules nginx -M "nginx.access.enabled=true" -M "nginx.error.enabled=true"
+#- name: setup filebeat - dirty workaround
+#  ansible.builtin.shell: >
+#    filebeat setup -e -E output.logstash.enabled=false -E output.elasticsearch.hosts=['localhost:9200'] -E setup.kibana.host=localhost:5601
+#    && filebeat setup -e --pipelines --modules system -M "system.syslog.enabled=true" -M "system.auth.enabled=true"
+#    && filebeat setup -e --pipelines --modules nginx -M "nginx.access.enabled=true" -M "nginx.error.enabled=true"
 
-- name: setup metricbeat - dirty workaround
-  ansible.builtin.shell: >
-    metricbeat setup -e -E output.logstash.enabled=false -E output.elasticsearch.hosts=['localhost:9200'] -E setup.kibana.host=localhost:5601
+#- name: setup metricbeat - dirty workaround
+#  ansible.builtin.shell: >
+#    metricbeat setup -e -E output.logstash.enabled=false -E output.elasticsearch.hosts=['localhost:9200'] -E setup.kibana.host=localhost:5601
 
 - meta: flush_handlers
 
