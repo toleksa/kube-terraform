@@ -9,7 +9,7 @@ metricbeat.config.modules:
   #password: "secret"
 
 - module: nginx
-	metricsets:
+  metricsets:
     - stubstatus
   period: 10s
   hosts: ["http://127.0.0.1"]
