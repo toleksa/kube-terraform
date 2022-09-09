@@ -1,5 +1,15 @@
 ---
-# handlers file for base
+#TODO: this -> dirty workaround
+- name: setup_filebeat
+  ansible.builtin.shell: >
+    filebeat setup -e -E output.logstash.enabled=false -E output.elasticsearch.hosts=['localhost:9200'] -E setup.kibana.host=localhost:5601
+    && filebeat setup -e --pipelines --modules system -M "system.syslog.enabled=true" -M "system.auth.enabled=true"
+    && filebeat setup -e --pipelines --modules nginx -M "nginx.access.enabled=true" -M "nginx.error.enabled=true"
+
+- name: setup_metricbeat
+  ansible.builtin.shell: >
+    metricbeat setup -e -E output.logstash.enabled=false -E output.elasticsearch.hosts=['localhost:9200'] -E setup.kibana.host=localhost:5601
+
 - name: restart_kibana
   ansible.builtin.systemd:
     name: kibana
@@ -41,15 +51,4 @@
     name: metricbeat
     state: restarted
     enabled: yes
-
-#TODO: this -> dirty workaround
-- name: setup_filebeat
-  ansible.builtin.shell: >
-    filebeat setup -e -E output.logstash.enabled=false -E output.elasticsearch.hosts=['localhost:9200'] -E setup.kibana.host=localhost:5601
-    && filebeat setup -e --pipelines --modules system -M "system.syslog.enabled=true" -M "system.auth.enabled=true"
-    && filebeat setup -e --pipelines --modules nginx -M "nginx.access.enabled=true" -M "nginx.error.enabled=true"
-
-- name: setup_metricbeat
-  ansible.builtin.shell: >
-    metricbeat setup -e -E output.logstash.enabled=false -E output.elasticsearch.hosts=['localhost:9200'] -E setup.kibana.host=localhost:5601
 
