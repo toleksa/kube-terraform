@@ -37,7 +37,8 @@
   notify: "restart_{{ item.service }}"
   with_items:
   - { file: "elasticsearch.yml", dest: "/etc/elasticsearch/elasticsearch.yml", service: "elasticsearch" }
-  - { file: "nginx.conf", dest: "/etc/nginx/sites-available/{{ inventory_hostname }}", service: "nginx" }
+  - { file: "nginx-kibana.conf", dest: "/etc/nginx/sites-available/{{ inventory_hostname }}", service: "nginx" }
+  - { file: "nginx-default.conf", dest: "/etc/nginx/sites-available/default", service: "nginx" }
   - { file: "logstash-beats.conf", dest: "/etc/logstash/conf.d/02-beats-input.conf", service: "logstash" }
   - { file: "logstash-elasticsearch.conf", dest: "/etc/logstash/conf.d/30-elasticsearch-output.conf", service: "logstash" }
   - { file: "ports.conf", dest: "/etc/apache2/ports.conf", service: "apache2" }
