@@ -1,4 +1,4 @@
-metricbeat.config.modules:
+metricbeat.modules:
 - module: apache
   metricsets:
     - status
@@ -17,6 +17,7 @@ metricbeat.config.modules:
   #username: "user"
   #password: "secret"
   
+metricbeat.config.modules:
   path: ${path.config}/modules.d/*.yml
   reload.enabled: false
   #reload.period: 10s
