@@ -54,7 +54,7 @@ iac:
       networks:
 #      - name: "main"
       - bridge: "br0"
-        mac_priefix: "44:8a:5b:00:04"
+        mac_priefix: "44:8a:5b:00:01"
       resources:
         cpu: 3
         mem: 3500
@@ -91,7 +91,7 @@ iac:
       networks:
       #- name: "main"
       - bridge: "br0"
-        mac_priefix: "44:8a:5b:01:04"
+        mac_priefix: "44:8a:5b:00:11"
       resources:
         cpu: 3
         mem: 3500

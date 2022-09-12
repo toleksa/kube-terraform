@@ -4,7 +4,7 @@ libvirt:
     version: "0.6.12"
 
 iac:
-  name: "c3"
+  name: "c5"
   domain: "kube.ac"
   providers:
   - name: "virtbox"
@@ -60,7 +60,7 @@ iac:
       networks:
       #- name: "main"
       - bridge: "br0"
-        mac_prefix: "44:8a:5b:00:06"
+        mac_prefix: "44:8a:5b:00:05"
       resources:
         cpu: 3
         mem: 4000
@@ -97,7 +97,7 @@ iac:
       networks:
       #- name: "main"
       - bridge: "br0"
-        mac_prefix: "44:8a:5b:00:16"
+        mac_prefix: "44:8a:5b:00:15"
       resources:
         cpu: 3
         mem: 4000
