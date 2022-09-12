@@ -12,7 +12,7 @@ filebeat.inputs:
 # ============================== Filebeat modules ==============================
 
 #TODO: paths are not working
-filebeat.config.modules:
+filebeat.modules:
 - module: nginx
   access:
     enabled: true
@@ -32,6 +32,7 @@ filebeat.config.modules:
     enabled: true
     var.paths: ["/var/log/auth.log"]
 
+filebeat.config.modules:
   path: ${path.config}/modules.d/*.yml
   reload.enabled: false
   #reload.period: 10s
