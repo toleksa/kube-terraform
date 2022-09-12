@@ -32,11 +32,6 @@ default:
     networks:
     - name: "default"
     #- bridge: "br0"
-    disks:
-    - name: "root"
-      size: "53687091200"
-      pool: "default"
-      base_volume: "ubuntu-jammy"
     user_data_pool: "default"
     user_data:
       prefer_fqdn_over_hostname: true
