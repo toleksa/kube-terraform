@@ -32,6 +32,14 @@ filebeat.modules:
     enabled: true
     var.paths: ["/var/log/auth.log"]
 
+- module: logstash
+  log:
+    enabled: true
+    #var.paths:
+  slowlog:
+    enabled: true
+    #var.paths:
+
 - module: elasticsearch
   server:
     enabled: true
