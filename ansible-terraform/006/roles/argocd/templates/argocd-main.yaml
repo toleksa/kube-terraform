@@ -55,6 +55,10 @@ spec:
             addresses:
             - "{{ hostvars.localhost.iac.argocd.metallb.addresses|default(ansible_host + '-' + ansible_host) }}"
             avoid-buggy-ips: true
+
+        elk:
+          enabled: "{{ hostvars.localhost.iac.argocd.elk.enabled|default('false') }}"
+
   syncPolicy:
     automated:
       prune: true
