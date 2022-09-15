@@ -168,6 +168,7 @@
   - { name: "argo-cd",              url: "https://argoproj.github.io/argo-helm" }
   - { name: "longhorn",             url: "https://charts.longhorn.io" }
   - { name: "prometheus-community", url: "https://prometheus-community.github.io/helm-charts" }
+  - { name: "elastic",              url: "https://helm.elastic.co" }
 
 - name: clone kube-system repo
   ansible.builtin.git:
