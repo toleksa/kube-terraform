@@ -58,6 +58,6 @@ iac:
       - bridge: "br0"
         mac_priefix: "44:8a:5b:00:03"
       resources:
-        cpu: 3
-        mem: 11500
+        cpu: 6
+        mem: 14500
 
