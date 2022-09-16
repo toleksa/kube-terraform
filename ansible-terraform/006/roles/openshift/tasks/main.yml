@@ -74,3 +74,39 @@
   become_method: sudo
   become_user: okd
 
+- name: create /home/okd/.kube directory
+  ansible.builtin.file:
+    path: /home/okd/.kube
+    state: directory
+  become: true
+  become_method: sudo
+  become_user: okd
+
+- name: locate kubeconfig
+  ansible.builtin.find:
+    paths: /home/okd/.crc/cache
+    recurse: yes
+    pattern: kubeconfig
+  register: kubeconfig_location
+
+- name: print kubeconfig location
+  ansible.builtin.debug:
+    var: item['path']
+  with_items: "{{ kubeconfig_location.files }}"
+  loop_control:
+    label: "{{ item['path'] }}"
+
+#- name: fail when more than one kubeconfig found
+#  fail:
+#    msg: more than one kubeconfig found
+#  when: kubeconfig_locount.files|count > 1
+
+- name: link kubeconfig
+  ansible.builtin.file:
+    src: "{{ kubeconfig_location.files[0].path }}"
+    dest: /home/okd/.kube/config
+    state: link
+  become: true
+  become_method: sudo
+  become_user: okd
+
