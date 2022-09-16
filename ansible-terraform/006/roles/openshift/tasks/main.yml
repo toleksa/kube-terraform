@@ -3,6 +3,12 @@
 - ansible.builtin.include_role:
     name: base
 
+- name: install packages
+  ansible.builtin.apt:
+    pkg:
+    - network-manager
+    state: present
+
 - name: create group libvirt
   ansible.builtin.group:
     name: libvirt
