@@ -48,6 +48,7 @@
 - name: run crc
   ansible.builtin.shell: >
     cd ${HOME} && source .bash_profile
+    && crc config set consent-telemetry no
     && crc config set network-mode user
     && crc setup 2>&1 | tee crc.log
   args:
