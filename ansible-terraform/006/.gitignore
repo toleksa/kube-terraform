@@ -1,3 +1,4 @@
 storage/
 .env
 ticket.txt
+roles/openshift/files/pullSecret

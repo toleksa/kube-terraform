@@ -42,3 +42,7 @@
   roles:
   - argocd
 
+- hosts: openshift
+  roles:
+  - openshift
+

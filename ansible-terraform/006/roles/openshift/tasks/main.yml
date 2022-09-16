@@ -1,0 +1,36 @@
+---
+# tasks file for openshift
+- ansible.builtin.include_role:
+    name: base
+
+- name: create group libvirt
+  ansible.builtin.group:
+    name: libvirt
+
+- name: create user okd
+  ansible.builtin.user:
+    name: okd
+    groups: 
+    - sudo
+    - libvirt
+    password: "$y$j9T$C9PtMrU3Ht2H3FM02RgvM.$j.EQzLkPUG/C7QDh1k8NfWqboaO310C/M7a/TDD911A" #pass: okd
+
+- name: download okd files
+  ansible.builtin.get_url:
+    url: "{{ crc_url }}"
+    dest: "/home/okd/{{ crc_url.split('/')[-1] }}"
+    mode: '0666'
+
+- name: unpack okd files
+  ansible.builtin.unarchive:
+    src: "/home/okd/{{ item }}"
+    dest: "/usr/local/bin"
+    include: "*/crc"
+    remote_src: yes
+    mode: 0777
+    extra_opts: 
+    - --wildcards
+    - "--strip-components=1"
+  with_items:
+  - "{{ crc_url.split('/')[-1] }}"
+
