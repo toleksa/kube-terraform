@@ -7,6 +7,14 @@
   ansible.builtin.group:
     name: libvirt
 
+- name: sudoers for okd
+  community.general.sudoers:
+    name: okd
+    state: present
+    user: okd
+    commands: ALL
+    nopassword: true
+
 - name: create user okd
   ansible.builtin.user:
     name: okd
