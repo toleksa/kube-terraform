@@ -13,7 +13,15 @@
     groups: 
     - sudo
     - libvirt
+    shell: /bin/bash
     password: "$y$j9T$C9PtMrU3Ht2H3FM02RgvM.$j.EQzLkPUG/C7QDh1k8NfWqboaO310C/M7a/TDD911A" #pass: okd
+
+- name: okd's .bash_profile
+  ansible.builtin.template:
+    src: okd-bash_profile
+    dest: /home/okd/.bash_profile
+    mode: 0600
+    owner: okd
 
 - name: download okd files
   ansible.builtin.get_url:
