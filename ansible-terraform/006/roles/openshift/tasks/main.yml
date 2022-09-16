@@ -3,12 +3,6 @@
 - ansible.builtin.include_role:
     name: base
 
-- name: install packages
-  ansible.builtin.apt:
-    pkg:
-    - network-manager
-    state: present
-
 - name: create group libvirt
   ansible.builtin.group:
     name: libvirt
@@ -47,4 +41,18 @@
     - "--strip-components=1"
   with_items:
   - "{{ crc_url.split('/')[-1] }}"
+
+- name: enable linger
+  ansible.builtin.command: loginctl enable-linger okd
+
+- name: run crc
+  ansible.builtin.shell: >
+    cd ${HOME} && source .bash_profile
+    && crc config set network-mode user
+    && crc setup 2>&1 | tee crc.log
+  args:
+    executable: /bin/bash
+  become: true
+  become_method: sudo
+  become_user: okd
 
