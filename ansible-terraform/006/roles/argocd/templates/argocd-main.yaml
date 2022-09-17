@@ -42,7 +42,7 @@ spec:
                   url: https://argoproj.github.io/argo-helm
 
         externaldns:
-          enabled: "{{ hostvars.localhost.iac.argocd.dns.enabled|default('false') }}"
+          enabled: {{ hostvars.localhost.iac.argocd.dns.enabled|default('false') }}
           rfc2136:
             host: "{{ hostvars.localhost.iac.argocd.dns.host|default() }}"
             zone: "{{ hostvars.localhost.iac.argocd.dns.zone|default() }}"
@@ -57,7 +57,7 @@ spec:
             avoid-buggy-ips: true
 
         elk:
-          enabled: "{{ hostvars.localhost.iac.argocd.elk.enabled|default('false') }}"
+          enabled: {{ hostvars.localhost.iac.argocd.elk.enabled|default('false') }}
 
   syncPolicy:
     automated:
