@@ -33,6 +33,8 @@ iac:
       secret: "{{ lookup('ansible.builtin.env', 'DNS_KEY')|default() }}"
     metallb:
       #addresses: "127.0.0.1"
+    elk:
+      enabled: false
     apps:
     - kaboom-games-main.yaml
     - python-rest-api-main.yaml
@@ -58,24 +60,6 @@ iac:
       resources:
         cpu: 3
         mem: 3500
-      user_data_pool: "default"
-      user_data:
-        prefer_fqdn_over_hostname: true
-        ssh_pwauth: True
-        chpasswd:
-          list: root:root
-          expire: False
-
-        users:
-          - name: root
-            ssh_import_id:
-              - gh:toleksa
-
-        packages:
-          - qemu-guest-agent
-
-        runcmd:
-          - systemctl start qemu-guest-agent
     w:
       count: 1
       roles:
@@ -95,22 +79,4 @@ iac:
       resources:
         cpu: 3
         mem: 3500
-      user_data_pool: "default"
-      user_data:
-        prefer_fqdn_over_hostname: true
-        ssh_pwauth: True
-        chpasswd:
-          list: root:root
-          expire: False
-
-        users:
-          - name: root
-            ssh_import_id:
-              - gh:toleksa
-
-        packages:
-          - qemu-guest-agent
-
-        runcmd:
-          - systemctl start qemu-guest-agent
 
