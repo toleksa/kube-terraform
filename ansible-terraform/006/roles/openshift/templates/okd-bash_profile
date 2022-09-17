@@ -1,5 +1,7 @@
 export XDG_RUNTIME_DIR=/run/user/$(id -u)
 export PATH="/home/okd/.crc/bin/oc:$PATH"
 
+alias oclogin="oc login -u kubeadmin https://api.crc.testing:6443"
+
 [[ -f ~/.bashrc ]] && . ~/.bashrc
 
