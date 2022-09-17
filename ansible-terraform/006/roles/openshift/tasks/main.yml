@@ -110,3 +110,18 @@
   become_method: sudo
   become_user: okd
 
+- name: download odo
+  ansible.builtin.get_url:
+    url: "https://mirror.openshift.com/pub/openshift-v4/clients/odo/latest/odo-linux-amd64.tar.gz"
+    dest: "/home/okd/odo-linux-amd64.tar.gz"
+    owner: okd
+    mode: 0600
+
+- name: unpack odo
+  ansible.builtin.unarchive:
+    src: "/home/okd/odo-linux-amd64.tar.gz"
+    dest: "/usr/local/bin"
+    include: "odo"
+    remote_src: yes
+    mode: 0777
+
