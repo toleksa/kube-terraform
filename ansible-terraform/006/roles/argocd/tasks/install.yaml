@@ -89,6 +89,8 @@
         src: argocd-cert.yaml
     when: argocd_cert_installed.resources == []
 
+  - include_tasks: ingress-patch.yml
+
   - name: set argocd password
     kubernetes.core.k8s:
       state: patched
