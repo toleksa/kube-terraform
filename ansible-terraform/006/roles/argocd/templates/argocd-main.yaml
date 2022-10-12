@@ -40,7 +40,8 @@ spec:
                 - type: helm
                   name: argo-cd
                   url: https://argoproj.github.io/argo-helm
-
+        monitoring:
+          enabled: {{ hostvars.localhost.iac.argocd.monitoring.enabled|default('false') }}
         externaldns:
           enabled: {{ hostvars.localhost.iac.argocd.dns.enabled|default('false') }}
           rfc2136:
