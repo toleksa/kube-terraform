@@ -36,7 +36,7 @@ iac:
       networks:
 #      - name: "main"
       - bridge: "br0"
-        mac_priefix: "44:8a:5b:00:07"
+        mac_prefix: "44:8a:5b:00:07"
       resources:
         cpu: 2
         mem: 2000

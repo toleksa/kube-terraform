@@ -36,7 +36,7 @@ iac:
     monitoring:
       enabled: true
     elk:
-      enabled: false
+      enabled: true
     apps:
     - kaboom-games-main.yaml
     - python-rest-api-main.yaml
@@ -57,9 +57,9 @@ iac:
         pool: "default"
         base_volume: "ubuntu-jammy"
       networks:
-#      - name: "main"
+#     - name: "main"
       - bridge: "br0"
-        mac_priefix: "44:8a:5b:00:03"
+        mac_prefix: "44:8a:5b:00:03"
       resources:
         cpu: 6
         mem: 14500
