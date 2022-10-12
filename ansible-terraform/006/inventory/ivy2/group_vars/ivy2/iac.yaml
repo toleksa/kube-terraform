@@ -33,12 +33,14 @@ iac:
       secret: "{{ lookup('ansible.builtin.env', 'DNS_KEY')|default() }}"
     metallb:
       #addresses: "127.0.0.1"
-    elk:
+    monitoring:
       enabled: true
-    #apps:
-    #- kaboom-games-main.yaml
-    #- python-rest-api-main.yaml
-    #- wordpress-main.yaml
+    elk:
+      enabled: false
+    apps:
+    - kaboom-games-main.yaml
+    - python-rest-api-main.yaml
+    - wordpress-main.yaml
   rke2:
     join_token: ivy-234567
   hosts:
@@ -46,11 +48,12 @@ iac:
       count: 1
       roles:
       - argocd
+      #- rke2
       provider:
         name: ivy
       disks:
       - name: "root"
-        size: "53687091200"
+        size: "103687091200"
         pool: "default"
         base_volume: "ubuntu-jammy"
       networks:
