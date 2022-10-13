@@ -1,7 +1,0 @@
-- name: patch rke2-ingress-nginx-admission validatingwebhookconfigurations
-  ansible.builtin.shell: >
-    CA=`kubectl -n kube-system get secret rke2-ingress-nginx-admission -ojsonpath='{.data.ca}'` ; kubectl -n kube-system patch validatingwebhookconfigurations rke2-ingress-nginx-admission --type='json' -p='[{"op": "add", "path": "/webhooks/0/clientConfig/caBundle", "value":"'$CA'"}]' 2>&1 > /patched.txt
-  args:
-    executable: /bin/bash
-  when: ansible_fqdn == JOIN_ADDR
-

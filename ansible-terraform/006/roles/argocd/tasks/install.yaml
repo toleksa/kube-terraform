@@ -89,7 +89,6 @@
         src: argocd-cert.yaml
     when: argocd_cert_installed.resources == []
 
-#  - include_tasks: ingress-patch.yml
   - name: gather ingress CA
     ansible.builtin.shell: kubectl -n kube-system get secret rke2-ingress-nginx-admission -ojsonpath='{.data.ca}'
     changed_when: false
