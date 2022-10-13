@@ -81,7 +81,7 @@ resource "libvirt_domain" "{{iac.name}}-{{instance.key}}{{count}}" {
 {%     elif network.bridge is defined %}
     bridge         = "{{network.bridge}}"
 {%     endif %}
-{%     if network.mac_prefix|default(false) %}
+{%     if network.mac_prefix is defined %}
 {%       if count < 10 %}
     mac            = "{{network.mac_prefix}}:0{{count}}"
 {%       elif count < 100 %}
