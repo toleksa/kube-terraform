@@ -6,7 +6,7 @@
     src: "apps/{{ item }}"
     dest: "/{{ item }}"
   with_items: "{{ hostvars.localhost.iac.argocd.apps }}"
-  when: "hostvars.localhost.iac.argocd.apps is defined"
+  when: "hostvars.localhost.iac.argocd.apps is defined and hostvars.localhost.iac.argocd.apps != None"
 
 - block:
   - name: deploy apps
@@ -14,7 +14,7 @@
       state: present
       src: "/{{ item }}"
     with_items: "{{ hostvars.localhost.iac.argocd.apps }}"
-    when: "hostvars.localhost.iac.argocd.apps is defined"
+    when: "hostvars.localhost.iac.argocd.apps is defined and hostvars.localhost.iac.argocd.apps != None"
   run_once: true
 
 - name: clone kube-apps repo
