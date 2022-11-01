@@ -34,13 +34,13 @@ iac:
     metallb:
       #addresses: "127.0.0.1"
     monitoring:
-      enabled: true
+      enabled: false
     elk:
       enabled: true
     apps:
-    - kaboom-games-main.yaml
-    - python-rest-api-main.yaml
-    - wordpress-main.yaml
+    #- kaboom-games-main.yaml
+    #- python-rest-api-main.yaml
+    #- wordpress-main.yaml
   rke2:
     join_token: ivy-234567
   hosts:
