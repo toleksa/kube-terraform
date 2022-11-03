@@ -34,6 +34,7 @@
       chart_ref: argo-cd/argo-cd
       release_namespace: argocd
       create_namespace: true
+      chart_version: "{{ argocd_initial_version }}"
     when: argocd_installed is not defined or argocd_installed == false
 
 #- name: debug
