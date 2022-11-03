@@ -36,7 +36,7 @@ iac:
     monitoring:
       enabled: false
     elk:
-      enabled: true
+      enabled: false
     apps:
     #- kaboom-games-main.yaml
     #- python-rest-api-main.yaml
