@@ -1,0 +1,43 @@
+libvirt:
+  config:
+    source: "dmacvicar/libvirt"
+    version: "0.6.12"
+
+iac:
+  name: "nito"
+  domain: "kube.ac"
+  providers:
+  - name: "nito"
+    type: "libvirt"
+    config: "qemu+ssh://art@nito.vpn/system"
+  pools:
+  - name: "default"
+    path: "/data/virtualki"
+#  networks:
+#  - name: "main"
+#    bridge: "br0"
+  volumes:
+  - name: ubuntu-jammy
+    source: "http://192.168.0.2:8765/jammy-server-cloudimg-amd64-disk-kvm.img"
+    format: "qcow2"
+    pool: "default"
+  hosts:
+    jenkins:
+      count: 1
+      roles:
+      - base
+      provider:
+        name: nito
+      disks:
+      - name: "root"
+        size: "53687091200"
+        pool: "default"
+        base_volume: "ubuntu-jammy"
+      networks:
+#      - name: "main"
+#      - bridge: "br0"
+        mac_prefix: "44:8a:5b:10:00"
+      resources:
+        cpu: 2
+        mem: 4000
+
