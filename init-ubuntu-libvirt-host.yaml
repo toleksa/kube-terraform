@@ -11,10 +11,11 @@
       pkg: ['eject','nano','xauth']
       state: absent
   - name: stop apt.daily*
-    systemd:
+    ansible.builtin.systemd:
       name: "{{ item }}"
       state: stopped
       enabled: no
+      masked: yes
     with_items:
     - apt-daily.timer
     - apt-daily.service
