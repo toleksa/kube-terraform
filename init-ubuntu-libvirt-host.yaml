@@ -10,6 +10,14 @@
     apt:
       pkg: ['eject','nano','xauth']
       state: absent
+  - name: stop apt.daily*
+    systemd:
+      name: "{{ item }}"
+      state: stopped
+      enabled: no
+    with_items:
+    - apt-daily.timer
+    - apt-daily.service
   - name: Update and upgrade apt packages
     apt:
       upgrade: yes
