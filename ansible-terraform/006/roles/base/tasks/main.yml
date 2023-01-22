@@ -1,4 +1,11 @@
 ---
+- name: Setting-up file-max limit
+  sysctl:
+    name: fs.file-max
+    value: 1618107
+    state: present
+    reload: yes
+
 - name: install packages
   ansible.builtin.apt:
     pkg:
