@@ -1,4 +1,16 @@
 ---
+- name: Ensure ulimit is set to 65535
+  lineinfile:
+    dest: /etc/security/limits.conf
+    regexp: '^.*soft nofile.*$'
+    line: 'root soft nofile 65535'
+
+- name: Ensure ulimit is set to 65535
+  lineinfile:
+    dest: /etc/security/limits.conf
+    regexp: '^.*hard nofile.*$'
+    line: 'root hard nofile 65535'
+
 - name: Setting-up file-max limit
   sysctl:
     name: fs.file-max
