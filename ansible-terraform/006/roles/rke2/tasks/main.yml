@@ -189,4 +189,19 @@
   retries: 120
   when: "'rke2_worker' not in group_names"
 
+- name: download k9s
+  ansible.builtin.get_url:
+    url: "{{ k9s_url }}"
+    dest: '/root/k9s.tgz'
+    mode: '0600'
+  register: k9s_download
+
+- name: deploy k9s
+  ansible.builtin.unarchive:
+    src: '/root/k9s.tgz'
+    dest: /usr/bin
+    remote_src: yes
+    include: k9s
+  when: k9s_download.changed
+
 
