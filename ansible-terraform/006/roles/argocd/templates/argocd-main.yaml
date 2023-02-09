@@ -24,10 +24,6 @@ spec:
             enabled: true
 
         argocd:
-          installCRDs: false
-          global:
-            image:
-              tag: v2.1.3
           dex:
             enabled: false
           server:
