@@ -204,4 +204,15 @@
     include: k9s
   when: k9s_download.changed
 
+- name: get kustomize installer
+  ansible.builtin.get_url:
+    url: https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh
+    dest: /tmp/kustomize.sh
+    mode: 0700
+
+- name: install kustomize
+  ansible.builtin.command: |
+    /tmp/kustomize.sh "/usr/bin"
+  args:
+    creates: /usr/bin/kustomize
 
