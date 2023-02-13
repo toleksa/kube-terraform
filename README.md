@@ -35,3 +35,8 @@ virsh pool-build default
 virsh pool-start default
 virsh pool-autostart default
 ```
+
+- Error from server (InternalError): error when creating "STDIN": Internal error occurred: failed calling webhook "validate.nginx.ingress.kubernetes.io": failed to call webhook: Post "https://rke2-ingress-nginx-controller-admission.kube-system.svc:443/networking/v1/ingresses?timeout=10s": x509: certificate signed by unknown authority
+
+```kubectl delete -A ValidatingWebhookConfiguration rke2-ingress-nginx-admission```
+
