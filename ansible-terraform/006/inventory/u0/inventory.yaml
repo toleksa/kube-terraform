@@ -1,0 +1,7 @@
+[argocd]
+u0.kube.ac ansible_user=root
+
+[u0]
+u0.kube.ac ansible_user=root
+localhost
+

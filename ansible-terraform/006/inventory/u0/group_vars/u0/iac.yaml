@@ -1,0 +1,26 @@
+iac:
+  name: "u0"
+  domain: "kube.ac"
+  providers:
+  - name: "legion5"
+    type: "machine"
+    config: ""
+  argocd:
+    dns:
+      enabled: true
+      host: 192.168.0.2
+      zone: "kube.ac"
+      secret: "{{ lookup('ansible.builtin.env', 'DNS_KEY')|default() }}"
+    metallb:
+      #addresses: "127.0.0.1"
+    monitoring:
+      enabled: true
+    elk:
+      enabled: false
+    apps:
+    #- kaboom-games-main.yaml
+    - python-rest-api-main.yaml
+    #- wordpress-main.yaml
+  rke2:
+    join_token: u0-234567
+
