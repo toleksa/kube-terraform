@@ -20,6 +20,7 @@ spec:
   - group: '*'
     kind: '*'
 
+---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -41,6 +42,7 @@ spec:
       selfHeal: true
       prune: true
 
+---
 apiVersion: argoproj.io/v1alpha1
 kind: AppProject
 metadata:
@@ -62,6 +64,7 @@ spec:
   - group: '*'
     kind: '*'
 
+---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
