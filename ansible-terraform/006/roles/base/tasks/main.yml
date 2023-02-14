@@ -2,14 +2,12 @@
 - name: Ensure ulimit is set to 1048576
   lineinfile:
     dest: /etc/security/limits.conf
-    regexp: '^.*soft nofile.*$'
-    line: 'root soft nofile 1048576'
-
-- name: Ensure ulimit is set to 1048576
-  lineinfile:
-    dest: /etc/security/limits.conf
-    regexp: '^.*hard nofile.*$'
-    line: 'root hard nofile 1048576'
+    line: "{{ item.line }}"
+  with_items:
+    - { line: "root soft nofile 1048576" } 
+    - { line: "root hard nofile 1048576" } 
+    - { line: "* soft nofile 1048576" } 
+    - { line: "* hard nofile 1048576" } 
 
 - name: Setting-up file-max limit
   sysctl:
@@ -27,12 +25,15 @@
     - atop
     - python-is-python3
     state: present
+    update_cache: yes
 
 - name: start and enable qemu-guest-agent
   ansible.builtin.systemd:
     name: qemu-guest-agent
     state: started
     enabled: yes
+  #TODO: should check host's provider, not global one, sth like iac.providers[host.provider.name].type == "libvirt"
+  when: iac.providers[0].type is defined and iac.providers[0].type == "libvirt"
 
 - name: create /etc/cron.hourly
   ansible.builtin.file:
