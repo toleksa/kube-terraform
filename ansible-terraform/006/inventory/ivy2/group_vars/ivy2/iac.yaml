@@ -49,6 +49,7 @@ iac:
       roles:
       - argocd
       #- rke2
+      #- base
       provider:
         name: ivy
       disks:
