@@ -52,7 +52,7 @@ spec:
           - name: default
             protocol: layer2
             addresses:
-            - "{{ hostvars.localhost.iac.argocd.metallb.addresses|default(ansible_host + '-' + ansible_host) }}"
+            - "{{ hostvars.localhost.iac.argocd.metallb.addresses|default(ansible_default_ipv4.address + '-' + ansible_default_ipv4.address) }}"
             avoid-buggy-ips: true
 
         elk:
