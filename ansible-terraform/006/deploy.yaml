@@ -7,6 +7,7 @@
       #name: "{{ iac.providers[0].type }}"
       #TODO: hardcoded
       name: "libvirt"
+    when: iac.providers[0].type == "libvirt"
 
 - hosts: all
   gather_facts: no
