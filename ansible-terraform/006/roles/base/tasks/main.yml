@@ -11,10 +11,14 @@
 
 - name: Setting-up file-max limit
   sysctl:
-    name: fs.file-max
-    value: 1048576
+    name: "{{ item.name }}"
+    value: "{{ item.value }}"
     state: present
     reload: yes
+  with_items:
+    - { name: "fs.file-max", value: 1048576 }
+    - { name: "fs.inotify.max_user_instances", value: 2048 }
+    - { name: "fs.inotify.max_user_watches", value: 1048576 }
 
 - name: install packages
   ansible.builtin.apt:
