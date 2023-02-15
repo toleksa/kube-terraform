@@ -46,7 +46,7 @@ spec:
             host: "{{ hostvars.localhost.iac.argocd.dns.host|default() }}"
             zone: "{{ hostvars.localhost.iac.argocd.dns.zone|default() }}"
             tsigSecret: "{{ hostvars.localhost.iac.argocd.dns.secret|default() }}"
-          metrics: {{ .hostvars.localhost.iac.argocd.dns.metrics|default('false') }}
+          metrics: {{ hostvars.localhost.iac.argocd.dns.metrics|default('false') }}
 
         metallb:
           pools:
