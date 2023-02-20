@@ -47,3 +47,9 @@
   roles:
   - openshift
 
+- hosts: localhost
+  tasks:
+  - name: print message
+    ansible.builtin.debug: 
+      msg: "{{ iac.message }}"
+    when: iac.message is defined
