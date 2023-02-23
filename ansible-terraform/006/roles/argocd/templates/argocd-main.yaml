@@ -47,7 +47,7 @@ spec:
             zone: "{{ hostvars.localhost.iac.argocd.dns.zone|default() }}"
             tsigSecret: "{{ hostvars.localhost.iac.argocd.dns.secret|default() }}"
           metrics: {{ hostvars.localhost.iac.argocd.dns.metrics|default('false') }}
-          sources: {{ hostvars.localhost.iac.argocd.dns.sources|default() }}
+          sources: {{ hostvars.localhost.iac.argocd.dns.sources|default(['ingress']) }}
 
         metallb:
           pools:
