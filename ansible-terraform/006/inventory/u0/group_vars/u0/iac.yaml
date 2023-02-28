@@ -19,7 +19,7 @@ iac:
       enabled: false
     apps:
     #- kaboom-games-main.yaml
-    - python-rest-api-main.yaml
+    #- python-rest-api-main.yaml
     #- wordpress-main.yaml
   rke2:
     join_token: u0-234567
