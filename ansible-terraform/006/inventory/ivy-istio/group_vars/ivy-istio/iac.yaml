@@ -31,13 +31,13 @@ iac:
       host: 192.168.0.2
       zone: "kube.ac"
       secret: "{{ lookup('ansible.builtin.env', 'DNS_KEY')|default() }}"
-      metrics: true
+      metrics: false
       sources:
         - ingress
     metallb:
-      #addresses: "192.168.0.231-192.168.0.239"
+      addresses: "192.168.0.230-192.168.0.239"
     monitoring:
-      enabled: true
+      enabled: false
     elk:
       enabled: false
     istio:
