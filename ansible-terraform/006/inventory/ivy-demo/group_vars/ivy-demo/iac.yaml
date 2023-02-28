@@ -36,10 +36,12 @@ iac:
         - ingress
         - istio-virtualservice
     metallb:
-      addresses: "192.168.0.231-192.168.0.239"
+      addresses: "192.168.0.230-192.168.0.239"
     monitoring:
       enabled: true
     elk:
+      enabled: false
+    istio:
       enabled: false
     apps:
     #- kaboom-games-main.yaml
@@ -48,7 +50,7 @@ iac:
     - argo-combined-app.yaml
   rke2:
     join_token: ivy-345678
-  message: "You need to manually assign iac.argocd.metallb.addresses: {{ iac.argocd.metallb.addresses }}  on target machine, without it external-dns and ingresses won't work properly"
+  message: "You need to manually assign iac.argocd.metallb.addresses on target machine, without it external-dns and ingresses won't work properly: for i in `seq 0 9` ; do ip a a 192.168.0.23${i}/24 dev ens3 ; done"
   hosts:
     s:
       count: 1
