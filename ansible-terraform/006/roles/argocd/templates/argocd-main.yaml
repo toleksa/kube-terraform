@@ -60,6 +60,9 @@ spec:
         elk:
           enabled: {{ hostvars.localhost.iac.argocd.elk.enabled|default('false') }}
 
+        istio:
+          enabled: {{ hostvars.localhost.iac.argocd.istio.enabled|default('false') }}
+
   syncPolicy:
     automated:
       prune: true
