@@ -32,8 +32,6 @@ iac:
       zone: "kube.ac"
       secret: "{{ lookup('ansible.builtin.env', 'DNS_KEY')|default() }}"
       metrics: false
-      sources:
-        - ingress
     metallb:
       addresses: "192.168.0.230-192.168.0.239"
     monitoring:
