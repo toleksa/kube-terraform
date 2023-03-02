@@ -55,7 +55,9 @@ spec:
             addresses:
             - "{{ ansible_default_ipv4.address + '-' + ansible_default_ipv4.address }}"
 {% if hostvars.localhost.iac.argocd.metallb.addresses is defined %}
-            - "{{ hostvars.localhost.iac.argocd.metallb.addresses }}"
+{% for address in hostvars.localhost.iac.argocd.metallb.addresses %}
+            - "{{ address }}"
+{% endfor %}
 {% endif %}
             avoid-buggy-ips: true
 
