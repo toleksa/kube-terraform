@@ -37,6 +37,8 @@ iac:
     monitoring:
       enabled: true
     elk:
+      enabled: true
+    istio:
       enabled: false
     apps:
     #- kaboom-games-main.yaml
