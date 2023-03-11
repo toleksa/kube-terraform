@@ -37,7 +37,7 @@ iac:
     monitoring:
       enabled: true
     elk:
-      enabled: true
+      enabled: false
     istio:
       enabled: false
     apps:
