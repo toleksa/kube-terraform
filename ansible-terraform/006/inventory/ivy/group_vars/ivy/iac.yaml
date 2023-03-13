@@ -37,15 +37,18 @@ iac:
       enabled: true
     elk:
       enabled: false
+    istio:
+      enabled: false
     apps:
     - kaboom-games-main.yaml
     - python-rest-api-main.yaml
     - wordpress-main.yaml
+    #- argo-combined-app.yaml
   rke2:
     join_token: ivy-123456
   hosts:
     s:
-      count: 3
+      count: 1
       roles:
       - argocd
       provider:
@@ -61,9 +64,9 @@ iac:
         mac_prefix: "44:8a:5b:00:01"
       resources:
         cpu: 3
-        mem: 3500
+        mem: 3600
     w:
-      count: 1
+      count: 3
       roles:
       - argocd
       - rke2_worker
@@ -80,5 +83,5 @@ iac:
         mac_prefix: "44:8a:5b:00:11"
       resources:
         cpu: 3
-        mem: 3500
+        mem: 3600
 
