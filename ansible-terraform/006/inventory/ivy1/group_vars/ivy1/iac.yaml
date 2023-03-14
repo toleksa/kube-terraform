@@ -4,7 +4,7 @@ libvirt:
     version: "0.6.12"
 
 iac:
-  name: "c3"
+  name: "c1"
   domain: "kube.ac"
   providers:
   - name: "ivy"
@@ -46,7 +46,7 @@ iac:
     #- wordpress-main.yaml
     #- argo-combined-app.yaml
   rke2:
-    join_token: ivy-234567
+    join_token: ivy-123456
   hosts:
     s:
       count: 1
