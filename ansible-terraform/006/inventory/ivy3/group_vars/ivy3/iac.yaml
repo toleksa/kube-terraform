@@ -36,13 +36,13 @@ iac:
     monitoring:
       enabled: true
     elk:
-      enabled: true
+      enabled: false
     istio:
       enabled: false
     apps:
-    - kaboom-games-main.yaml
+    #- kaboom-games-main.yaml
     - python-rest-api-main.yaml
-    - wordpress-main.yaml
+    #- wordpress-main.yaml
     #- argo-combined-app.yaml
   rke2:
     join_token: ivy-123456
