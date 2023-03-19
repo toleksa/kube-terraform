@@ -36,7 +36,7 @@ iac:
     monitoring:
       enabled: true
     elk:
-      enabled: false
+      enabled: true
     istio:
       enabled: false
     apps:
@@ -64,7 +64,7 @@ iac:
         mac_prefix: "44:8a:5b:00:01"
       resources:
         cpu: 3
-        mem: 3600
+        mem: 3800
     w:
       count: 3
       roles:
@@ -83,5 +83,5 @@ iac:
         mac_prefix: "44:8a:5b:00:11"
       resources:
         cpu: 3
-        mem: 3600
+        mem: 3800
 
