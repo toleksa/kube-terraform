@@ -1,0 +1,21 @@
+---
+- hosts: all
+  gather_facts: no
+  tasks:
+  - meta: refresh_inventory
+
+  - name: print inventory
+    debug:
+      var: hostvars | list
+    run_once: true
+
+- hosts: argocd
+  roles:
+  - argocd
+
+- hosts: localhost
+  tasks:
+  - name: print message
+    ansible.builtin.debug: 
+      msg: "{{ iac.argocd.metallb.addresses }}"
+
