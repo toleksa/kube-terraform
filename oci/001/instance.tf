@@ -12,8 +12,8 @@ resource "oci_core_instance" "vm1" {
     # Optional
     display_name = "vm1"
     create_vnic_details {
-        #assign_public_ip = true
-        #subnet_id = "<subnet-ocid>"
+        assign_public_ip = true
+        subnet_id = "ocid1.subnet.oc1.eu-zurich-1.aaaaaaaaper3h2lyrziuh7llervqaksc6yz46czyrrwy5gti2dmz2dw4q43a"
     }
     metadata = {
         ssh_authorized_keys = file("~/.ssh/id_rsa.pub")
