@@ -4,8 +4,8 @@ resource "oci_core_instance" "vm1" {
     shape = "VM.Standard.E2.1.Micro"
     source_details {
         #https://docs.oracle.com/en-us/iaas/images/image/50672ce3-b252-4938-9099-06b938344302/
-        #Oracle-Linux-8-2023.05.24-0
-        source_id = "ocid1.image.oc1.eu-zurich-1.aaaaaaaa65hiqnviv765w3mjwyqzx64sgr6p2bsrwm63snsdqvtpl2lexyeq"
+        #Oracle-Linux-8.7-2023.05.24-0
+        source_id = "ocid1.image.oc1.eu-zurich-1.aaaaaaaad5t3txkxdpokv5ejxodnwl4nx3xyyme3bvl2u5sauqjdyv4dtpba"
         source_type = "image"
     }
 
