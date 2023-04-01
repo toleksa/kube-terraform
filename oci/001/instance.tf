@@ -20,3 +20,17 @@ resource "oci_core_instance" "vm1" {
     } 
     preserve_boot_volume = false
 }
+
+# Outputs
+output "compute_id" {
+  value = oci_core_instance.tf_compute.id
+}
+
+output "db_state" {
+  value = oci_core_instance.tf_compute.state
+}
+
+output "compute_public_ip" {
+  value = oci_core_instance.tf_compute.public_ip
+}
+
