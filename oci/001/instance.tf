@@ -26,7 +26,7 @@ output "compute_id" {
   value = oci_core_instance.tf_compute.id
 }
 
-output "db_state" {
+output "instance_state" {
   value = oci_core_instance.tf_compute.state
 }
 
