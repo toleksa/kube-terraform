@@ -23,14 +23,14 @@ resource "oci_core_instance" "vm1" {
 
 # Outputs
 output "compute_id" {
-  value = oci_core_instance.tf_compute.id
+  value = oci_core_instance.vm1.id
 }
 
 output "instance_state" {
-  value = oci_core_instance.tf_compute.state
+  value = oci_core_instance.vm1.state
 }
 
 output "compute_public_ip" {
-  value = oci_core_instance.tf_compute.public_ip
+  value = oci_core_instance.vm1.public_ip
 }
 
