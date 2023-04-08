@@ -8,4 +8,5 @@ variable "user_ocid" {}
 variable "availablity_domain_name" {
   default = ""
 }
-
+variable "instance_shape" {}
+variable "instance_source" {}

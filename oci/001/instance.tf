@@ -1,11 +1,9 @@
 resource "oci_core_instance" "vm1" {
     availability_domain = var.availablity_domain_name
     compartment_id = var.compartment_ocid
-    shape = "VM.Standard.E2.1.Micro"
+    shape = var.instance_shape
     source_details {
-        #https://docs.oracle.com/en-us/iaas/images/image/50672ce3-b252-4938-9099-06b938344302/
-        #Oracle-Linux-8.7-2023.05.24-0
-        source_id = "ocid1.image.oc1.eu-zurich-1.aaaaaaaad5t3txkxdpokv5ejxodnwl4nx3xyyme3bvl2u5sauqjdyv4dtpba"
+        source_id = var.instance_source
         source_type = "image"
     }
 
