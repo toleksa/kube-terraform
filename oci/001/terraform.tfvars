@@ -18,5 +18,6 @@ availablity_domain_name = "nvfE:EU-ZURICH-1-AD-1"
 #Oracle-Linux-8.7-2023.05.24-0  
 instance_source      = "ocid1.image.oc1.eu-zurich-1.aaaaaaaad5t3txkxdpokv5ejxodnwl4nx3xyyme3bvl2u5sauqjdyv4dtpba"
 instance_shape       = "VM.Standard.E2.1.Micro"
+#instance_shape       = "VM.Standard.A1.Flex"
 ssh_authorized_keys  = "~/.ssh/id_rsa.pub"
 
