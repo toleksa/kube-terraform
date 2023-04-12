@@ -13,6 +13,11 @@ resource "oci_core_instance" "vm1" {
         assign_public_ip = true
         subnet_id = "ocid1.subnet.oc1.eu-zurich-1.aaaaaaaaper3h2lyrziuh7llervqaksc6yz46czyrrwy5gti2dmz2dw4q43a"
     }
+    shape_config {
+        #Optional
+        memory_in_gbs = 1
+        ocpus = 1
+    }
     metadata = {
         ssh_authorized_keys = file(var.ssh_authorized_keys)
     } 
