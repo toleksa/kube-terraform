@@ -39,6 +39,22 @@ resource "oci_core_security_list" "security_list1" {
             min = 80
         }
     }
+    ingress_security_rules {
+        #Required
+        protocol = 6  #TCP
+        source = "0.0.0.0/0"
+
+        #Optional
+        description = "http"
+        source_type = "CIDR_BLOCK"
+        stateless = false
+        tcp_options {
+            #Optional
+            max = 443
+            min = 443
+        }
+    }
+
     egress_security_rules {
         protocol = 6  #TCP
         destination = "0.0.0.0/0"
