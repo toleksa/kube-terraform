@@ -6,17 +6,43 @@ resource "oci_core_vcn" "vcn1" {
 }
 
 resource "oci_core_subnet" "subnet1" {
-  availability_domain = var.availablity_domain_name
   cidr_block          = "10.0.0.0/24"
   display_name        = "subnet1"
   compartment_id      = var.compartment_ocid
   vcn_id              = oci_core_vcn.vcn1.id
-  route_table_id      = oci_core_vcn.vcn1.default_route_table_id
+  route_table_id      = oci_core_route_table.route_table1.id
   #security_list_ids   = [oci_core_vcn.vcn1.default_security_list_id,oci_core_security_list.security_list1.id]
   #security_list_ids   = [oci_core_vcn.vcn1.default_security_list_id]
   security_list_ids   = [oci_core_security_list.security_list1.id]
   dhcp_options_id     = oci_core_vcn.vcn1.default_dhcp_options_id
   dns_label           = "subnet1"
+}
+
+resource "oci_core_route_table" "route_table1" {
+    #Required
+    compartment_id = var.compartment_ocid
+    vcn_id = oci_core_vcn.vcn1.id
+
+    #Optional
+    display_name = "route_table1"
+    route_rules {
+        #Required
+        network_entity_id = oci_core_internet_gateway.internet_gateway1.id
+
+        #Optional
+        destination = "0.0.0.0/0"
+        destination_type = "CIDR_BLOCK"
+    }
+}
+
+resource "oci_core_internet_gateway" "internet_gateway1" {
+    #Required
+    compartment_id = var.compartment_ocid
+    vcn_id = oci_core_vcn.vcn1.id
+
+    #Optional
+    enabled = true
+    display_name = "internet_gateway1"
 }
 
 resource "oci_core_security_list" "security_list1" {
