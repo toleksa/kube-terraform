@@ -228,3 +228,8 @@
     filename: kubernetes
     update_cache: yes
 
+- name: install kubeadm
+  ansible.builtin.apt:
+    name: kubeadm
+    state: present
+
