@@ -1,0 +1,96 @@
+---
+# tasks file for kubernetes-tools
+
+- name: install python3-kubernetes
+  ansible.builtin.apt:
+    pkg: python3-kubernetes
+    state: present
+
+- name: .bash_kube
+  ansible.builtin.get_url:
+    url: 'https://raw.githubusercontent.com/toleksa/configs/main/.bash_kube'
+    dest: '/root/.bash_kube'
+    mode: '0700'
+
+- name: add .bash_kube to .bashrc
+  ansible.builtin.lineinfile:
+    path: /root/.bashrc
+    regexp: ". ~/.bash_kube"
+    line: "    . ~/.bash_kube"
+
+- name: get helm installer
+  ansible.builtin.get_url:
+    url: https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
+    dest: /tmp/get-helm-3
+    mode: 0700
+
+- name: install helm
+  ansible.builtin.command: |
+    /tmp/get-helm-3
+  args:
+    creates: /usr/local/bin/helm
+
+- name: helm add repos
+  kubernetes.core.helm_repository:
+    name: "{{ item.name }}"
+    repo_url: "{{ item.url }}"
+  with_items:
+  - { name: "bitnami",              url: "https://charts.bitnami.com/bitnami" }
+  - { name: "helm",                 url: "https://charts.helm.sh/stable" }
+  - { name: "argo-cd",              url: "https://argoproj.github.io/argo-helm" }
+  - { name: "longhorn",             url: "https://charts.longhorn.io" }
+  - { name: "prometheus-community", url: "https://prometheus-community.github.io/helm-charts" }
+  - { name: "elastic",              url: "https://helm.elastic.co" }
+
+- name: clone kube-system repo
+  ansible.builtin.git:
+    repo: 'https://github.com/toleksa/kube-system.git'
+    dest: /root/kube-system
+    version: HEAD
+  #TODO: extend that check to other k8s distributions
+  when: "'rke2_worker' not in group_names"
+
+- name: download k9s
+  ansible.builtin.get_url:
+    url: "{{ k9s_url }}"
+    dest: '/root/k9s.tgz'
+    mode: '0600'
+  register: k9s_download
+
+- name: deploy k9s
+  ansible.builtin.unarchive:
+    src: '/root/k9s.tgz'
+    dest: /usr/bin
+    remote_src: yes
+    include: k9s
+  when: k9s_download.changed
+
+- name: get kustomize installer
+  ansible.builtin.get_url:
+    url: https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh
+    dest: /tmp/kustomize.sh
+    mode: 0700
+
+- name: install kustomize
+  ansible.builtin.command: |
+    /tmp/kustomize.sh "/usr/bin"
+  args:
+    creates: /usr/bin/kustomize
+
+- name: add kubernetes apt key
+  ansible.builtin.apt_key:
+    url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+    state: present
+
+- name: add kubernetes repository
+  apt_repository:
+    repo: 'deb https://apt.kubernetes.io/ kubernetes-xenial main'
+    state: present
+    filename: kubernetes
+    update_cache: yes
+
+- name: install kubeadm
+  ansible.builtin.apt:
+    name: kubeadm
+    state: present
+
