@@ -1,8 +1,6 @@
 ---
 # tasks file for rke2
 - ansible.builtin.include_role:
-    name: base
-- ansible.builtin.include_role:
     name: kubernetes-tools
 
 - block:

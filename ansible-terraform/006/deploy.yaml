@@ -31,6 +31,10 @@
   roles:
   - base
 
+- hosts: kubernetes-tools
+  roles:
+  - kubernetes-tools
+
 - hosts: elkstack
   roles:
   - elkstack
