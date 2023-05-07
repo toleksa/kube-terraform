@@ -90,4 +90,14 @@
     path: /etc/update-motd.d/
     state: absent
 
+- name: hushlogin
+  ansible.builtin.copy:
+    content: ""
+    dest: /root/.hushlogin
+    force: false
+    owner: root
+    group: root
+    mode: 0444
+
 - meta: flush_handlers
+
