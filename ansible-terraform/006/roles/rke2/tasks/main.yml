@@ -82,6 +82,15 @@
     retries: 120
   when: ansible_fqdn == JOIN_ADDR
 
+- name: add ENVVARS to /root/bash.bashrc
+  lineinfile:                                                                                                                                           
+    dest: /etc/bash.bashrc
+    line: "{{ item.line }}"
+    regexp: "{{ item.regexp }}"
+  with_items:                                                                                                                                           
+    - { line: "export PATH=$PATH:/var/lib/rancher/rke2/bin", regexp: "*" }
+    - { line: "export KUBECONFIG=/etc/rancher/rke2/rke2.yaml", regexp: "^export KUBECONFIG=" }
+
 - block:
   - name: start rke2 servers
     ansible.builtin.systemd:
