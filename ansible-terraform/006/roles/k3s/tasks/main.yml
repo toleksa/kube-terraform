@@ -1,0 +1,154 @@
+---
+# tasks file for k3s
+- ansible.builtin.include_role:
+    name: kubernetes-tools
+
+- block:
+  - name: prepare k3s_servers list
+    ansible.builtin.set_fact:
+      k3s_servers: "{{ k3s_servers|default([]) + [item] }}"
+    loop: "{{ play_hosts }}"
+    run_once: true
+
+  - name: debug k3s_servers
+    debug:
+      var: k3s_servers
+
+  delegate_to: localhost
+
+- name: set JOIN_ADDR
+  ansible.builtin.set_fact:
+    JOIN_ADDR: "{{ k3s_servers | sort | first }}"
+  run_once: true
+  delegate_to: localhost
+
+- name: debug JOIN_ADDR
+  ansible.builtin.debug:
+    var: JOIN_ADDR
+
+- name: create k3s config dir
+  ansible.builtin.file:
+    path: /etc/rancher/k3s
+    state: directory
+
+- name: k3s master config
+  ansible.builtin.copy:
+    dest: "/etc/rancher/k3s/config.yaml"
+    content: |
+      token: "{{ hostvars.localhost.iac.k3s.join_token }}"
+      tls-san:
+      - "{{ JOIN_ADDR }}"
+  when: ansible_fqdn == JOIN_ADDR
+
+- name: k3s config
+  ansible.builtin.template:
+    src: "config.yaml"
+    dest: "/etc/rancher/k3s/config.yaml"
+  when: ansible_fqdn != JOIN_ADDR
+
+- name: get k3s installer
+  ansible.builtin.get_url:
+    url: https://get.k3s.io
+    dest: /tmp/k3s.sh
+    mode: 0700
+
+- name: set worker flag for installation
+  ansible.builtin.set_fact:
+    k3s_worker_flag: 'INSTALL_K3S_EXEC="agent"'
+  when: "'k3s_agent' in group_names"
+
+- name: install k3s
+  ansible.builtin.command: |
+    /tmp/k3s.sh "{{ k3s_worker_flag|default() }}"
+  args:
+    creates: /etc/rancher/k3s/k3s.yaml
+
+- block:
+  - name: start master k3s
+    ansible.builtin.systemd:
+      name: k3s.service
+      state: started
+      enabled: yes
+
+  - name: wait for master to be ready
+    vars:
+      _kubectl: "kubectl --kubeconfig /etc/rancher/k3s/k3s.yaml"
+    ansible.builtin.shell: "{{ _kubectl }} get nodes {{ ansible_fqdn }}|cat"
+    changed_when: false
+    ignore_errors: "{{ _ignore_errors|default(false) }}"
+    register: _get_nodes
+    check_mode: false
+    until: '" Ready" in _get_nodes.stdout|default("")'
+    retries: 120
+  when: ansible_fqdn == JOIN_ADDR
+
+#- name: add kube PATH /root/bash.bashrc
+#  lineinfile:                                                                                                                                           
+#    dest: /etc/bash.bashrc
+#    line: "{{ item.line }}"
+#  with_items:                                                                                                                                           
+#    - { line: "export PATH=$PATH:/var/lib/rancher/rke2/bin" }
+
+- name: set KUBECONFIG in /root/bash.bashrc
+  lineinfile:                                                                                                                                           
+    dest: /etc/bash.bashrc
+    line: "{{ item.line }}"
+    regexp: "{{ item.regexp }}"
+  with_items:                                                                                                                                           
+    - { line: "export KUBECONFIG=/etc/rancher/k3s/k3s.yaml", regexp: "^export KUBECONFIG=" }
+
+- block:
+  - name: start k3s servers
+    ansible.builtin.systemd:
+      name: k3s.service
+      state: started
+      enabled: yes
+    ignore_errors: yes
+    when: "'k3s_agent' not in group_names"
+
+  - name: start k3s agents
+    ansible.builtin.systemd:
+      name: k3s-agent.service
+      state: started
+      enabled: yes
+    ignore_errors: yes
+    when: "'k3s_agent' in group_names"
+
+  when: ansible_fqdn != JOIN_ADDR
+
+#- name: Set ingress as LoadBalancer
+#  kubernetes.core.k8s:
+#    kubeconfig: /etc/rancher/k3s/k3s.yaml
+#    state: present
+#    definition:
+#      apiVersion: helm.cattle.io/v1
+#      kind: HelmChartConfig
+#      metadata:
+#        name: rke2-ingress-nginx
+#        namespace: kube-system
+#      spec:
+#        valuesContent: |-
+#          controller:
+#            publishService:
+#              enabled: true
+#              pathOverride: kube-system/rke2-ingress-nginx-controller
+#            service:
+#              enabled: true
+#              type: LoadBalancer
+#TODO: those two together doesn't work, possible include_task - https://stackoverflow.com/questions/57465088/in-combination-with-when-and-run-once-in-ansible-it-will-accidentally-skip-the
+  #run_once: true
+  #when: "'rke2_worker' not in group_names"
+#  when: ansible_fqdn == JOIN_ADDR
+
+- name: check if all nodes are online
+  vars:
+    _kubectl: "kubectl --kubeconfig /etc/rancher/k3s/k3s.yaml"
+  ansible.builtin.shell: "{{ _kubectl }} get nodes {{ ansible_fqdn }}|cat"
+  changed_when: false
+  ignore_errors: "{{ _ignore_errors|default(false) }}"
+  register: _get_nodes
+  check_mode: false
+  until: '" Ready" in _get_nodes.stdout|default("")'
+  retries: 120
+  when: "'k3s_agent' not in group_names"
+

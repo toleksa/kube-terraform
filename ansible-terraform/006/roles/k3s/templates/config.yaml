@@ -1,0 +1,5 @@
+server: "https://{{JOIN_ADDR}}:6443"
+token: "{{hostvars.localhost.iac.k3s.join_token}}"
+tls-san:
+- "{{JOIN_ADDR}}"
+
