@@ -39,6 +39,10 @@
   roles:
   - elkstack
  
+- hosts: k3s
+  roles:
+  - k3s
+
 - hosts: rke2
   roles:
   - rke2
