@@ -52,14 +52,14 @@
     dest: /tmp/k3s.sh
     mode: 0700
 
-- name: set worker flag for installation
+- name: set agent flag for installation
   ansible.builtin.set_fact:
-    k3s_worker_flag: 'INSTALL_K3S_EXEC="agent"'
+    k3s_agent_flag: 'agent'
   when: "'k3s_agent' in group_names"
 
 - name: install k3s
   ansible.builtin.command: |
-    /tmp/k3s.sh "{{ k3s_worker_flag|default() }}"
+    /tmp/k3s.sh "{{ k3s_agent_flag|default() }}"
   args:
     creates: /etc/rancher/k3s/k3s.yaml
 
