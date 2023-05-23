@@ -82,13 +82,6 @@
     retries: 120
   when: ansible_fqdn == JOIN_ADDR
 
-#- name: add kube PATH /root/bash.bashrc
-#  lineinfile:                                                                                                                                           
-#    dest: /etc/bash.bashrc
-#    line: "{{ item.line }}"
-#  with_items:                                                                                                                                           
-#    - { line: "export PATH=$PATH:/var/lib/rancher/rke2/bin" }
-
 - name: set KUBECONFIG in /root/bash.bashrc
   lineinfile:                                                                                                                                           
     dest: /etc/bash.bashrc
@@ -115,30 +108,6 @@
     when: "'k3s_agent' in group_names"
 
   when: ansible_fqdn != JOIN_ADDR
-
-#- name: Set ingress as LoadBalancer
-#  kubernetes.core.k8s:
-#    kubeconfig: /etc/rancher/k3s/k3s.yaml
-#    state: present
-#    definition:
-#      apiVersion: helm.cattle.io/v1
-#      kind: HelmChartConfig
-#      metadata:
-#        name: rke2-ingress-nginx
-#        namespace: kube-system
-#      spec:
-#        valuesContent: |-
-#          controller:
-#            publishService:
-#              enabled: true
-#              pathOverride: kube-system/rke2-ingress-nginx-controller
-#            service:
-#              enabled: true
-#              type: LoadBalancer
-#TODO: those two together doesn't work, possible include_task - https://stackoverflow.com/questions/57465088/in-combination-with-when-and-run-once-in-ansible-it-will-accidentally-skip-the
-  #run_once: true
-  #when: "'rke2_worker' not in group_names"
-#  when: ansible_fqdn == JOIN_ADDR
 
 - name: check if all nodes are online
   vars:
