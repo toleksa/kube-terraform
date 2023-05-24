@@ -90,6 +90,12 @@
   with_items:                                                                                                                                           
     - { line: "export KUBECONFIG=/etc/rancher/k3s/k3s.yaml", regexp: "^export KUBECONFIG=" }
 
+- name: ~/.kube/config
+  file:
+    src: /etc/rancher/k3s/k3s.yaml
+    dest: /root/.kube/config
+    state: link
+
 - block:
   - name: start k3s servers
     ansible.builtin.systemd:
