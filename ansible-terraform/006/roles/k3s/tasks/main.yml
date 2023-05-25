@@ -95,6 +95,7 @@
     src: /etc/rancher/k3s/k3s.yaml
     dest: /root/.kube/config
     state: link
+  when: "'k3s_agent' not in group_names"
 
 - block:
   - name: start k3s servers
