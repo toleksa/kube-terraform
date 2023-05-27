@@ -67,5 +67,6 @@ iac:
         mac_prefix: "44:8a:5b:00:03"
       resources:
         cpu: 6
-        mem: 14500
+        #mem: 14500
+        mem: 10000
 
