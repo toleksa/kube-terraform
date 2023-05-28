@@ -90,20 +90,30 @@
         src: argocd-cert.yaml
     when: argocd_cert_installed.resources == []
 
-  - name: gather ingress CA
-    ansible.builtin.shell: kubectl -n kube-system get secret rke2-ingress-nginx-admission -ojsonpath='{.data.ca}'
-    changed_when: false
-    register: ingress_CA
-
-  - name: patch ingress - add CA
-    kubernetes.core.k8s_json_patch:
-      kind: ValidatingWebhookConfiguration
-      namespace: kube-system
+  - name: check if secret/rke2-ingress-nginx-admission exists
+    kubernetes.core.k8s_info:
+      api_version: v1
+      kind: Secret
       name: rke2-ingress-nginx-admission
-      patch:
-        - op: add
-          path: /webhooks/0/clientConfig/caBundle
-          value: "{{ ingress_CA.stdout }}"
+      namespace: kube-system
+    register: rke2_ingress
+
+  - block:
+    - name: gather ingress CA
+      ansible.builtin.shell: kubectl -n kube-system get secret rke2-ingress-nginx-admission -ojsonpath='{.data.ca}'
+      changed_when: false
+      register: ingress_CA
+
+    - name: patch ingress - add CA
+      kubernetes.core.k8s_json_patch:
+        kind: ValidatingWebhookConfiguration
+        namespace: kube-system
+        name: rke2-ingress-nginx-admission
+        patch:
+          - op: add
+            path: /webhooks/0/clientConfig/caBundle
+            value: "{{ ingress_CA.stdout }}"
+    when: rke2_ingress.resources != []
 
   - name: set argocd password
     kubernetes.core.k8s:
