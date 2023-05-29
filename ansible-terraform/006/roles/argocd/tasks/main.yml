@@ -3,6 +3,7 @@
 
 - ansible.builtin.include_role: 
     name: rke2
+    #name: k3s
 
 - name: Waiting for kubernetes to start
   ansible.builtin.shell: >
@@ -11,11 +12,11 @@
       echo -n .
     done
   changed_when: false
-  when: "'rke2_worker' not in group_names"
+  when: "('rke2_worker' not in group_names) and ('k3s_agent' not in group_names)"
 
 - include_tasks: install.yaml
-  when: "'rke2_worker' not in group_names"
+  when: "('rke2_worker' not in group_names) and ('k3s_agent' not in group_names)"
 
 - include_tasks: apps.yaml
-  when: "'rke2_worker' not in group_names"
+  when: "('rke2_worker' not in group_names) and ('k3s_agent' not in group_names)"
 
