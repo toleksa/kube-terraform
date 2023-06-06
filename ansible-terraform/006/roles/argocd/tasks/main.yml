@@ -2,8 +2,7 @@
 # tasks file for argocd
 
 - ansible.builtin.include_role: 
-    name: rke2
-    #name: k3s
+    name: '{{ hostvars.localhost.iac.argocd.k8s_backend|default(k8s_backend) }}'
 
 - name: Waiting for kubernetes to start
   ansible.builtin.shell: >
