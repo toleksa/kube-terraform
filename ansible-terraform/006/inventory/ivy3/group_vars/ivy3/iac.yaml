@@ -22,6 +22,7 @@ iac:
     format: "qcow2"
     pool: "default"
   argocd:
+    k8s_backend: rke2
     dns:
       #enabled: false
       #host: 127.0.0.1

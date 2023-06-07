@@ -22,6 +22,7 @@ iac:
     format: "qcow2"
     pool: "default"
   argocd:
+    k8s_backend: rke2
     dns:
       #enabled: false
       #host: 127.0.0.1
@@ -46,6 +47,8 @@ iac:
     #- wordpress-main.yaml
     #- argo-combined-app.yaml
   rke2:
+    join_token: ivy-123456
+  k3s:
     join_token: ivy-123456
   hosts:
     s:
