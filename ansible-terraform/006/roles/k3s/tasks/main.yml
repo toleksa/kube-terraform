@@ -40,6 +40,17 @@
       - "{{ JOIN_ADDR }}"
   when: ansible_fqdn == JOIN_ADDR
 
+- name: create helm chart config dir
+  ansible.builtin.file:
+    path: /var/lib/rancher/k3s/server/manifests
+    state: directory
+
+- name: traefik config
+  ansible.builtin.template:
+    src: "traefik.yaml"
+    dest: "/var/lib/rancher/k3s/server/manifests/traefik-config.yaml"
+  when: ansible_fqdn == JOIN_ADDR
+
 - name: k3s config
   ansible.builtin.template:
     src: "config.yaml"
