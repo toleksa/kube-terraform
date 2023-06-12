@@ -1,0 +1,5 @@
+config_file: ~/.oci/config
+config_profile: DEFAULT
+
+plugin: oracle.oci.oci
+fetch_db_hosts: true
