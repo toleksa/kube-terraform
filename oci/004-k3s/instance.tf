@@ -155,8 +155,8 @@ resource "oci_core_instance" "vm2" {
     }
     shape_config {
         #Optional
-        memory_in_gbs = 1
-        ocpus = 1
+        memory_in_gbs = 24
+        ocpus = 4
     }
     metadata = {
         ssh_authorized_keys = file(var.ssh_authorized_keys)
