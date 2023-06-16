@@ -96,3 +96,15 @@
     name: kubeadm
     state: present
 
+- name: install etcdctl
+#TODO: ubuntu has too old 3.3.x version, so install manually
+#  ansible.builtin.apt:
+#    name: etcd-client
+#    state: present
+  ansible.builtin.command: >
+    ETCD_VERSION="v3.5.9"
+    ETCD_URL="https://github.com/etcd-io/etcd/releases/download/${ETCD_VERSION}/etcd-${ETCD_VERSION}-linux-amd64.tar.gz"
+    curl -sL ${ETCD_URL} | sudo tar -zxv --strip-components=1 -C /usr/local/bin
+  args:
+    creates: /usr/local/bin/etcdctl
+
