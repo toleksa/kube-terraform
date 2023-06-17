@@ -49,8 +49,7 @@
     repo: 'https://github.com/toleksa/kube-system.git'
     dest: /root/kube-system
     version: HEAD
-  #TODO: extend that check to other k8s distributions
-  when: "'rke2_worker' not in group_names"
+  when: "('rke2_worker' not in group_names) and ('k3s_worker' not in group_names) and ('k8s_worker' not in group_names)"
 
 - name: download k9s
   ansible.builtin.get_url:
