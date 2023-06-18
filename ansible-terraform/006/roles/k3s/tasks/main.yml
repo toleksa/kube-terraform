@@ -96,6 +96,17 @@
   with_items:                                                                                                                                           
     - { line: "export KUBECONFIG=/etc/rancher/k3s/k3s.yaml", regexp: "^export KUBECONFIG=" }
 
+- name: set k3s certs in /root/bash.bashrc                                                                                                              
+  lineinfile:                                                                                                                                           
+    dest: /etc/bash.bashrc                                                                                                                              
+    line: "{{ item.line }}"                                                                                                                             
+    regexp: "{{ item.regexp }}"                                                                                                                         
+  with_items:                                                                                                                                           
+    - { line: "export ETCDCTL_CACERT=/var/lib/rancher/k3s/server/tls/etcd/server-ca.crt", regexp: "^export ETCDCTL_CACERT=" }                           
+    - { line: "export ETCDCTL_CERT=/var/lib/rancher/k3s/server/tls/etcd/client.crt", regexp: "^export ETCDCTL_CERT=" }                                  
+    - { line: "export ETCDCTL_KEY=/var/lib/rancher/k3s/server/tls/etcd/client.key", regexp: "^export ETCDCTL_KEY=" }                                    
+    - { line: "export ETCDCTL_API=3", regexp: "^export ETCDCTL_API=3" }   
+
 - name: ~/.kube/config
   file:
     src: /etc/rancher/k3s/k3s.yaml
