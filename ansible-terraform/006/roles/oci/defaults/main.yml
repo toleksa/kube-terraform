@@ -1,0 +1,53 @@
+---
+# defaults file for kube-vm
+terraform_path: /usr/bin/terraform
+storage_path: "{{playbook_dir}}/storage"
+
+default:
+  libvirt:
+    config:
+      source: "dmacvicar/libvirt"
+      version: "0.6.12"
+
+  iac:
+    domain: "example.com"
+    volumes:
+    - name: ubuntu-jammy
+      source: "https://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64-disk-kvm.img"
+      format: "qcow2"
+      pool: "default"
+
+  instance:
+    count: 1
+    roles:
+    - base
+    disks:
+    - name: "root"
+      size: "53687091200"
+      pool: "default"
+      base_volume: "ubuntu-jammy"
+    resources:
+      cpu: 1
+      mem: 1000
+    networks:
+    - name: "default"
+    #- bridge: "br0"
+    user_data_pool: "default"
+    user_data:
+      prefer_fqdn_over_hostname: true
+      ssh_pwauth: True
+      chpasswd:
+        list: root:root
+        expire: False
+
+      users:
+        - name: root
+          ssh_import_id:
+            - gh:toleksa
+
+      packages:
+        - qemu-guest-agent
+
+      runcmd:
+        - systemctl start qemu-guest-agent
+
