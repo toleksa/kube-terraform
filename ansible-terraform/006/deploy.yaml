@@ -4,10 +4,10 @@
   tasks:
   - name: call terraform
     include_role: 
-      #name: "{{ iac.providers[0].type }}"
+      name: "{{ iac.providers[0].type }}"
       #TODO: hardcoded
-      name: "libvirt"
-    when: iac.providers[0].type == "libvirt"
+      #name: "libvirt"
+    #when: iac.providers[0].type == "libvirt"
 
 - hosts: all
   gather_facts: no
@@ -19,6 +19,11 @@
       var: hostvars | list
     run_once: true
 
+  - name: print iac
+    debug:
+      var: hostvars.localhost.iac.hosts
+    run_once: true
+
 #  - name: stop here after terraform destroy
 #    fail:
 #      msg: "stop here after terraform destroy"
@@ -26,6 +31,19 @@
 
 #  - meta: end_batch
 #    when: terraform_action == "destroy"
+
+- name: oci
+  hosts: tag_ansible_group=oci
+  become: yes
+  become_method: sudo
+  remote_user: ubuntu
+  tasks:
+  - include_role:
+      name: "{{ role_item }}"
+    with_items:
+    - "{{ hostvars.localhost.iac.hosts.oci.roles }}"
+    loop_control:
+      loop_var: role_item
 
 - hosts: base
   roles:
