@@ -4,7 +4,7 @@ libvirt:
     version: "0.6.12"
 
 iac:
-  name: "c1"
+  name: "oci"
   domain: "kube.ac"
   providers:
   - name: "ivy"
@@ -51,11 +51,12 @@ iac:
   k3s:
     join_token: ivy-123456
   hosts:
-    s:
+    oci:  #TODO: hardcoded name in deploy.yaml
       count: 1
       roles:
-      - argocd
+      #- argocd
       #- rke2
+      - k3s
       #- base
       provider:
         name: ivy
