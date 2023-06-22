@@ -51,6 +51,8 @@
     dest: '/etc/cron.hourly/dns-update.sh'
     mode: '0700'
   notify: update dns
+  when: '"tag_ansible_group=oci" not in group_names'
+
 - name: crontab dns-update
   ansible.builtin.cron:
     name: dns-update.sh
