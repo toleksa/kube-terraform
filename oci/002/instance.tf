@@ -114,6 +114,7 @@ resource "oci_core_instance" "vm2" {
         ssh_authorized_keys = file(var.ssh_authorized_keys)
     } 
     preserve_boot_volume = false
+    freeform_tags = {"ansible_group": "002"}
 }
 
 # Outputs
