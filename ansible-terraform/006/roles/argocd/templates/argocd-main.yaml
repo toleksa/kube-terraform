@@ -67,6 +67,9 @@ spec:
         istio:
           enabled: {{ hostvars.localhost.iac.argocd.istio.enabled|default('false') }}
 
+        neuvector:
+          enabled: {{ hostvars.localhost.iac.argocd.neuvector.enabled|default('false') }}
+
   syncPolicy:
     automated:
       prune: true
