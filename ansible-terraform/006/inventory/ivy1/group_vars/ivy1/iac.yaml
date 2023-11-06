@@ -41,6 +41,8 @@ iac:
       enabled: false
     istio:
       enabled: false
+    neuvector:
+      enabled: false
     apps:
     #- kaboom-games-main.yaml
     - python-rest-api-main.yaml
@@ -54,9 +56,10 @@ iac:
     s:
       count: 1
       roles:
-      - argocd
+      #- argocd
       #- rke2
-      #- base
+      #- kubernetes-tools
+      - base
       provider:
         name: ivy
       disks:
@@ -71,5 +74,5 @@ iac:
       resources:
         cpu: 6
         #mem: 14500
-        mem: 10000
+        mem: 4000
 

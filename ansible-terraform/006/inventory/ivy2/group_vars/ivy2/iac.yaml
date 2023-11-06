@@ -22,6 +22,7 @@ iac:
     format: "qcow2"
     pool: "default"
   argocd:
+    #k8s_backend: k3s
     k8s_backend: rke2
     dns:
       #enabled: false
@@ -37,9 +38,11 @@ iac:
     monitoring:
       enabled: true
     elk:
-      enabled: true
+      enabled: false
     istio:
       enabled: false
+    neuvector:
+      enabled: true
     apps:
     #- kaboom-games-main.yaml
     - python-rest-api-main.yaml
@@ -47,11 +50,15 @@ iac:
     #- argo-combined-app.yaml
   rke2:
     join_token: ivy-123456
+  k3s:
+    join_token: ivy-123456
   hosts:
     s:
       count: 1
       roles:
       - argocd
+      #- kubernetes-tools
+      #- base
       provider:
         name: ivy
       disks:
@@ -64,6 +71,6 @@ iac:
       - bridge: "br0"
         mac_prefix: "de:ad:01:01:01"
       resources:
-        cpu: 6
-        mem: 15000
+        cpu: 4
+        mem: 10000
 
