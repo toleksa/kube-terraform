@@ -88,7 +88,7 @@
     retries: 120
   when: ansible_fqdn == JOIN_ADDR
 
-- name: set KUBECONFIG in /root/bash.bashrc
+- name: set KUBECONFIG in /etc/bash.bashrc
   lineinfile:                                                                                                                                           
     dest: /etc/bash.bashrc
     line: "{{ item.line }}"
@@ -96,16 +96,23 @@
   with_items:                                                                                                                                           
     - { line: "export KUBECONFIG=/etc/rancher/k3s/k3s.yaml", regexp: "^export KUBECONFIG=" }
 
-- name: set k3s certs in /root/bash.bashrc                                                                                                              
+- name: set k3s certs for etcdctl in /etc/bash.bashrc
   lineinfile:                                                                                                                                           
     dest: /etc/bash.bashrc                                                                                                                              
     line: "{{ item.line }}"                                                                                                                             
     regexp: "{{ item.regexp }}"                                                                                                                         
   with_items:                                                                                                                                           
-    - { line: "export ETCDCTL_CACERT=/var/lib/rancher/k3s/server/tls/etcd/server-ca.crt", regexp: "^export ETCDCTL_CACERT=" }                           
-    - { line: "export ETCDCTL_CERT=/var/lib/rancher/k3s/server/tls/etcd/client.crt", regexp: "^export ETCDCTL_CERT=" }                                  
-    - { line: "export ETCDCTL_KEY=/var/lib/rancher/k3s/server/tls/etcd/client.key", regexp: "^export ETCDCTL_KEY=" }                                    
-    - { line: "export ETCDCTL_API=3", regexp: "^export ETCDCTL_API=3" }   
+    - { line: "export ETCDCTL_CACERT=/var/lib/rancher/k3s/server/tls/etcd/server-ca.crt", regexp: "^export ETCDCTL_CACERT=" }
+    - { line: "export ETCDCTL_CERT=/var/lib/rancher/k3s/server/tls/etcd/client.crt", regexp: "^export ETCDCTL_CERT=" }
+    - { line: "export ETCDCTL_KEY=/var/lib/rancher/k3s/server/tls/etcd/client.key", regexp: "^export ETCDCTL_KEY=" }
+    - { line: "export ETCDCTL_API=3", regexp: "^export ETCDCTL_API=3" }
+
+- name: set CONTAINER_RUNTIME_ENDPOINT in /etc/bash.bashrc
+  lineinfile:
+    dest: /etc/bash.bashrc
+    line: "{{ item.line }}"
+  with_items:
+    - { line: "export CONTAINER_RUNTIME_ENDPOINT=unix:///run/k3s/containerd/containerd.sock" }
 
 - name: ~/.kube/config
   file:
