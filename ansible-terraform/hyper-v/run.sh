@@ -12,6 +12,7 @@ fi
 
 if [ "$1" == "start" ]; then
   terraform apply -auto-approve || exit 1
+  ansible-playbook -i inv deploy.yaml
   exit 0
 fi
 
