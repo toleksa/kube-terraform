@@ -1,4 +1,17 @@
 ---
+- name: remove auto-upgrade packages
+  ansible.builtin.apt:
+    pkg:
+    - unattended-upgrades
+    - update-notifier
+    - update-manager
+    state: absent
+
+- name: disable auto-upgrades
+  copy:
+    src: 20auto-upgrades
+    dest: /etc/apt/apt.conf.d/20auto-upgrades
+
 - name: Ensure ulimit is set to 1048576
   lineinfile:
     dest: /etc/security/limits.conf
@@ -30,6 +43,7 @@
     - python-is-python3
     state: present
     update_cache: yes
+    lock_timeout: 300
 
 - name: start and enable qemu-guest-agent
   ansible.builtin.systemd:
