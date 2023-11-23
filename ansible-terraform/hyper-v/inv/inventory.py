@@ -43,9 +43,10 @@ def list_hyper_v_machines(host, username, password):
         inventory = {}
         inventory['all'] = {'hosts': []}
         inventory['_meta'] = {'hostvars': {}}
-        #d = json.loads(line.replace("'", "\""))
-        #TODO: this fails on 1 VM, because domain becomes dict instead of list of dicts
-        for domain in json.loads(result.std_out.decode()):
+        domains = json.loads(result.std_out.decode())
+        if isinstance(domains, dict):
+            domains = [domains]
+        for domain in domains:
             notes = domain['Notes'].split('\n')
             if notes==['']:
                 continue
