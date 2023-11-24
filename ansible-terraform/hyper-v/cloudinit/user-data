@@ -1,0 +1,16 @@
+#cloud-config
+fqdn: "kube1.c5.kube.ac"
+chpasswd:
+  expire: false
+  list: root:root
+packages:
+- qemu-guest-agent
+prefer_fqdn_over_hostname: true
+runcmd:
+- systemctl start qemu-guest-agent
+ssh_pwauth: true
+users:
+- name: root
+  ssh_import_id:
+  - gh:toleksa
+
