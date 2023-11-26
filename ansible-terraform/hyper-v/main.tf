@@ -54,7 +54,7 @@ resource "hyperv_machine_instance" "kube1" {
     switch_name  = "external"
     wait_for_ips = false
     dynamic_mac_address = false
-    static_mac_address = "de:ad:01:01:01:aa"
+    static_mac_address = "DEAD010101AA"
   }
 
   hard_disk_drives {
@@ -68,6 +68,8 @@ resource "hyperv_machine_instance" "kube1" {
     controller_number   = 0
     controller_location = 1
     path                = "c:\\virtualki\\kube1.iso"
+    #source = "http://192.168.0.2:8765/kube1.iso"
+    resource_pool_name  = "Primordial"
   }
 
   vm_firmware {
