@@ -20,10 +20,10 @@ resource "hyperv_vhd" "kube1-disk" {
   source = "http://192.168.0.2:8765/kube1.vhdx"
 }
 
-resource "hyperv_vhd" "kube1-cloudinit" {
-  path = "c:\\virtualki\\kube1.iso"
-  source = "http://192.168.0.2:8765/kube1.iso"
-}
+#resource "hyperv_vhd" "kube1-cloudinit" {
+#  path = "c:\\virtualki\\kube1.iso"
+#  source = "http://192.168.0.2:8765/kube1.iso"
+#}
 
 resource "hyperv_machine_instance" "kube1" {
   name                   = "kube1"
