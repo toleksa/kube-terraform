@@ -12,7 +12,39 @@
       #delay: 0
       #sleep: 1
       #timeout: 600
-- hosts: all
+
+- hosts: base
   roles:
   - base
+
+- hosts: kubernetes-tools
+  roles:
+  - kubernetes-tools
+
+- hosts: elkstack
+  roles:
+  - elkstack
+
+- hosts: k3s
+  roles:
+  - k3s
+
+- hosts: rke2
+  roles:
+  - rke2
+
+- hosts: argocd
+  roles:
+  - argocd
+
+- hosts: openshift
+  roles:
+  - openshift
+
+- hosts: localhost
+  tasks:
+  - name: print message
+    ansible.builtin.debug:
+      msg: "{{ iac.message }}"
+    when: iac.message is defined
 
