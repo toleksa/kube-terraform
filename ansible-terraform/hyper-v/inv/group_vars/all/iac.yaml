@@ -1,6 +1,7 @@
 iac:
   name: "c5"
   domain: "kube.ac"
+  message: "happy hyper-v'ing :)"
 #  providers:
 #  - name: "ivy"
 #    type: "libvirt"
