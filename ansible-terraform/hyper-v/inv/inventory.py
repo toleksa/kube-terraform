@@ -69,12 +69,12 @@ def list_hyper_v_machines(host, username, password):
         print(f"Error: {e}")
 
 if __name__ == "__main__":
-    dotenv_path = join(dirname(__file__), '.env')
+    dotenv_path = join(dirname(__file__), '../.env')
     load_dotenv(dotenv_path)
 
-    HYPERV_HOST = os.environ.get("HYPERV_HOST")
-    HYPERV_USER = os.environ.get("HYPERV_USER")
-    HYPERV_PASS = os.environ.get("HYPERV_PASS")
+    HYPERV_HOST = os.environ.get("TF_VAR_HYPERV_HOST")
+    HYPERV_USER = os.environ.get("TF_VAR_HYPERV_USER")
+    HYPERV_PASS = os.environ.get("TF_VAR_HYPERV_PASS")
 
     list_hyper_v_machines(HYPERV_HOST, HYPERV_USER, HYPERV_PASS)
 
