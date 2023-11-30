@@ -1,0 +1,82 @@
+---
+# tasks file for hyperv
+
+- name: debug show iac
+  debug:
+    var: iac
+
+- name: debug terraform_action
+  debug:
+    var: terraform_action
+
+- name: debug hostvars
+  debug:
+    var: hostvars
+
+#- name: default
+#  debug:
+#    var: default.instance.count
+
+- block:
+
+  - name: create project dir
+    file:
+      path: "{{ item }}"
+      state: directory
+    with_items:
+      - "{{ storage_path }}/{{ iac.name }}/terraform"
+
+  - name: generate terraform.tf and provider.tf
+    template:
+      src: "{{ item }}"
+      dest: "{{ storage_path }}/{{ iac.name }}/terraform/{{ item }}"
+    with_items:
+    - terraform.tf
+    - provider.tf
+
+#TODO
+#  - name: generate main.tf files
+#    template:
+#      src: main.tf
+#      dest: "{{ storage_path }}/{{ iac.name }}/terraform/main-{{ provider.name }}.tf"
+#    loop: "{{ iac.providers }}"
+#    when: "provider.type == 'libvirt'"
+#    loop_control:
+#      loop_var: provider
+
+  - name: generate instance TFs
+    template:
+      src: vm.tf
+      dest: "{{ storage_path }}/{{ iac.name }}/terraform/{{ instance.key }}.tf"
+    loop: "{{ iac.hosts|dict2items }}"
+    loop_control:
+      label: '{{ instance.key }}'
+      loop_var: instance
+
+#  - name: halt
+#    fail:
+#      msg: "stop"
+
+  - name: apply terraform
+    terraform:
+      binary_path: "{{ terraform_path }}"
+      project_path: "{{ storage_path }}/{{ iac.name }}/terraform"
+      force_init: true
+
+  delegate_to: localhost
+  when: terraform_action == "apply"
+
+
+- block:
+  - name: terraform destroy
+    terraform:
+      binary_path: "{{ terraform_path }}"
+      project_path: "{{ storage_path }}/{{ iac.name }}/terraform"
+      state: absent
+
+#  - meta: end_play
+
+  delegate_to: localhost
+  when: terraform_action == "destroy"
+
+
