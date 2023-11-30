@@ -6,6 +6,9 @@ iac:
 #  - name: "ivy"
 #    type: "libvirt"
 #    config: "qemu+ssh://root@192.168.0.3/system"
+  providers:
+  - name: "hyperv"
+    type: "hyperv"
 #  pools:
 #  - name: "default"
 #    path: "/virtualki"
@@ -49,25 +52,25 @@ iac:
     join_token: ivy-123456
 #  k3s:
 #    join_token: ivy-123456
-#  hosts:
-#    s:
-#      count: 1
-#      roles:
-#      - argocd
-#      #- kubernetes-tools
-#      #- base
-#      provider:
-#        name: ivy
-#      disks:
-#      - name: "root"
-#        size: "53687091200"
+  hosts:
+    kube:
+      count: 1
+      roles:
+      #- argocd
+      #- kubernetes-tools
+      - base
+      provider:
+        name: hyperv
+      disks:
+      - name: "root"
+        size: "53687091200"
 #        pool: "default"
 #        base_volume: "ubuntu-jammy"
-#      networks:
+      networks:
 ##      - name: "main"
 #      - bridge: "br0"
-#        mac_prefix: "de:ad:01:01:01"
-#      resources:
-#        cpu: 4
-#        mem: 10000
+        mac_prefix: "DEAD010101"
+      resources:
+        cpu: 4
+        mem: 10000
 
