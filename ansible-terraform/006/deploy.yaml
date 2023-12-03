@@ -24,6 +24,13 @@
       var: hostvars.localhost.iac.hosts
     run_once: true
 
+  - name: Wait for machine
+    ansible.builtin.wait_for_connection:
+      #default values:
+      #delay: 0
+      #sleep: 1
+      #timeout: 600
+
 #  - name: stop here after terraform destroy
 #    fail:
 #      msg: "stop here after terraform destroy"
