@@ -76,6 +76,10 @@
     terraform:
       binary_path: "{{ terraform_path }}"
       project_path: "{{ storage_path }}/{{ iac.name }}/terraform"
+      variables:
+        HYPERV_USER: "{{ lookup('ansible.builtin.env', 'TF_VAR_HYPERV_USER') }}"
+        HYPERV_PASS: "{{ lookup('ansible.builtin.env', 'TF_VAR_HYPERV_PASS') }}"
+        HYPERV_HOST: "{{ lookup('ansible.builtin.env', 'TF_VAR_HYPERV_HOST') }}"
       state: absent
 
 #  - meta: end_play
