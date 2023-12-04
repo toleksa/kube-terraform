@@ -4,9 +4,9 @@
 
 {%   for disk in instance.value.disks|default(default.instance.disks) %}
 resource "hyperv_vhd" "{{iac.name}}-{{instance.key}}{{count}}-{{disk.name}}" {
-  path = "c:\\virtualki\\kube{{count}}.vhdx" #Needs to be absolute path
+  path = "c:\\virtualki\\{{iac.name}}-{{instance.key}}{{count}}.vhdx" #Needs to be absolute path
   size = "{{ disk.size|human_to_bytes }}"
-  source = "http://192.168.0.2:8765/kube{{count}}.vhdx"
+  source = "http://192.168.0.2:8765/hyperv/{{iac.name}}-{{instance.key}}{{count}}.vhdx"
 }
 {%   endfor %}
 
@@ -55,7 +55,7 @@ resource "hyperv_machine_instance" "{{iac.name}}-{{instance.key}}{{count}}" {
   dvd_drives {
     controller_number   = 0
     controller_location = 63
-    path                = "c:\\virtualki\\kube{{count}}.iso"
+    path                = "c:\\virtualki\\{{iac.name}}-{{instance.key}}{{count}}.iso"
     resource_pool_name  = "Primordial"
   }
 
