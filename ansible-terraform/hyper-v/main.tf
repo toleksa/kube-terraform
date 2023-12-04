@@ -59,7 +59,7 @@ resource "hyperv_machine_instance" "kube1" {
   }
 
   integration_services = {
-    "Guest Service Interface" = false
+    "Guest Service Interface" = true
     "Heartbeat"               = true
     "Key-Value Pair Exchange" = true
     "Shutdown"                = true
