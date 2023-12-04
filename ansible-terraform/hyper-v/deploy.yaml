@@ -1,13 +1,13 @@
 ---
-- hosts: hyperv
-  gather_facts: no
-  tasks:
-  - name: call terraform
-    include_role:
-      name: "{{ iac.providers[0].type }}"
-      #TODO: hardcoded
-      #name: "libvirt"
-    #when: iac.providers[0].type == "libvirt"
+#- hosts: hyperv
+#  gather_facts: no
+#  tasks:
+#  - name: call terraform
+#    include_role:
+#      name: "{{ iac.providers[0].type }}"
+#      #TODO: hardcoded
+#      #name: "libvirt"
+#    #when: iac.providers[0].type == "libvirt"
 - hosts: all
   gather_facts: false
   tasks:
