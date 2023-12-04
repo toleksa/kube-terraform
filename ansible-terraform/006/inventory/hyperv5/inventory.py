@@ -4,8 +4,16 @@ import winrm
 import base64
 import json
 import os
+import yaml
+import jinja2
 from os.path import join, dirname
 from dotenv import load_dotenv
+
+def lookup(type, key):
+    if type=="env":
+        return os.environ.get(key)
+    return None
+
 
 def list_hyper_v_machines(host, username, password):
     try:
@@ -55,7 +63,7 @@ def list_hyper_v_machines(host, username, password):
                 if note:
                     key, value = note.split(":")
                     d[key]=value
-            if d['cluster']=='c5': #TODO hardcoded cluster
+            if d['cluster']==CLUSTER_NAME: #TODO hardcoded cluster
                 inventory['all']['hosts'].append(d['hostname'])
                 inventory['_meta']['hostvars'][d['hostname']] = {'ansible_host': d['hostname'], 'ansible_user': 'root'}
                 for role in d['roles'].split(','):
@@ -69,6 +77,17 @@ def list_hyper_v_machines(host, username, password):
         print(f"Error: {e}")
 
 if __name__ == "__main__":
+    IAC_PROFILE = os.getenv('IAC_PROFILE') 
+
+    if IAC_PROFILE == None:
+        print("INFO: $IAC_PROFILE is empty, getting CWD name")
+        IAC_PROFILE = os.path.dirname(__file__).split(os.sep)[-1]
+        print(IAC_PROFILE)
+
+    with open(os.path.dirname(__file__) + "/group_vars/" + IAC_PROFILE + "/iac.yaml", "r") as f:
+        iac = yaml.safe_load(f)
+        CLUSTER_NAME = jinja2.Template(iac['iac']['name']).render(lookup=lookup)
+
     dotenv_path = join(dirname(__file__), '../../.env')
     load_dotenv(dotenv_path)
 
