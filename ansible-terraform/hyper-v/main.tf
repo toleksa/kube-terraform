@@ -52,7 +52,7 @@ resource "hyperv_machine_instance" "kube1" {
   wait_for_state_timeout = 10
   wait_for_ips_timeout   = 10
   checkpoint_type        = "Disabled"
-  notes                  = "cluster:c5\nhostname:kube1.c5.kube.ac\nroles:argocd"
+  notes                  = "cluster:c7\nhostname:kube1.c7.kube.ac\nroles:argocd"
 
   vm_processor {
     expose_virtualization_extensions = false
@@ -72,7 +72,7 @@ resource "hyperv_machine_instance" "kube1" {
     switch_name  = "external"
     wait_for_ips = false
     dynamic_mac_address = false
-    static_mac_address = "DEAD010101AA"
+    static_mac_address = "DEAD010701AA"
   }
 
   hard_disk_drives {
