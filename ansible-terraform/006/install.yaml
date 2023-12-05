@@ -1,0 +1,75 @@
+- hosts: all
+  gather_facts: no
+  tasks:
+  - meta: refresh_inventory
+
+  - name: print inventory
+    debug:
+      var: hostvars | list
+    run_once: true
+
+  - name: print iac
+    debug:
+      var: hostvars.localhost.iac.hosts
+    run_once: true
+
+  - name: ansible_play_hosts_all
+    debug:
+      var: ansible_play_hosts_all
+    run_once: true
+
+  - name: Wait for machine
+    ansible.builtin.wait_for_connection:
+      #default values:
+      #delay: 0
+      #sleep: 1
+      #timeout: 600
+
+- name: oci
+  hosts: tag_ansible_group=oci
+  become: yes
+  become_method: sudo
+  remote_user: ubuntu
+  tasks:
+  - include_role:
+      name: "{{ role_item }}"
+    with_items:
+    - "{{ hostvars.localhost.iac.hosts.oci.roles }}"
+    loop_control:
+      loop_var: role_item
+
+- hosts: base
+  roles:
+  - base
+
+- hosts: kubernetes-tools
+  roles:
+  - kubernetes-tools
+
+- hosts: elkstack
+  roles:
+  - elkstack
+
+- hosts: k3s
+  roles:
+  - k3s
+
+- hosts: rke2
+  roles:
+  - rke2
+
+- hosts: argocd
+  roles:
+  - argocd
+
+- hosts: openshift
+  roles:
+  - openshift
+
+- hosts: localhost
+  tasks:
+  - name: print message
+    ansible.builtin.debug:
+      msg: "{{ iac.message }}"
+    when: iac.message is defined
+

@@ -29,7 +29,10 @@ else
 fi
 
 CMD="ansible-playbook -i inventory/$1 deploy.yaml --extra-vars \"variable_host=$1\" --extra-vars \"terraform_action=$terraform_action\""
-#CMD="ansible-playbook -i inventory/$1 deploy.yaml --extra-vars \"variable_host=$1\" --extra-vars \"terraform_action=$terraform_action\" --start-at-task=\"tagged task\""
-echo $CMD
+echo "EXEC: $CMD"
+eval $CMD
+
+CMD="ansible-playbook -i inventory/$1 install.yaml"
+echo "EXEC: $CMD"
 eval $CMD
 
