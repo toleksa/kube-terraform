@@ -34,12 +34,12 @@ resource "hyperv_vhd" "kube1-disk" {
   #path = "c:\\virtualki\\jammy-server-cloudimg-amd64.vhdx" #Needs to be absolute path
   path = "c:\\virtualki\\kube1.vhdx" #Needs to be absolute path
   size = 53687091200 #50GB
-  source = "http://192.168.0.2:8765/kube1.vhdx"
+  source = "http://192.168.0.2:8765/hyperv/kube1.vhdx"
 }
 
 #resource "hyperv_vhd" "kube1-cloudinit" {
 #  path = "c:\\virtualki\\kube1.iso"
-#  source = "http://192.168.0.2:8765/kube1.iso"
+#  source = "http://192.168.0.2:8765/hyperv/kube1.iso"
 #}
 
 resource "hyperv_machine_instance" "kube1" {
@@ -86,7 +86,7 @@ resource "hyperv_machine_instance" "kube1" {
     controller_number   = 0
     controller_location = 1
     path                = "c:\\virtualki\\kube1.iso"
-    #source = "http://192.168.0.2:8765/kube1.iso"
+    #source = "http://192.168.0.2:8765/hyperv/kube1.iso"
     resource_pool_name  = "Primordial"
   }
 

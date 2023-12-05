@@ -1,5 +1,5 @@
 #cloud-config
-fqdn: "kube1.c5.kube.ac"
+fqdn: "kube1.c7.kube.ac"
 chpasswd:
   expire: false
   list: root:root
