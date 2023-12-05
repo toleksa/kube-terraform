@@ -32,7 +32,9 @@ CMD="ansible-playbook -i inventory/$1 deploy.yaml --extra-vars \"variable_host=$
 echo "EXEC: $CMD"
 eval $CMD
 
-CMD="ansible-playbook -i inventory/$1 install.yaml"
-echo "EXEC: $CMD"
-eval $CMD
+if [ "$terraform_action" == "apply" ]; then
+  CMD="ansible-playbook -i inventory/$1 install.yaml"
+  echo "EXEC: $CMD"
+  eval $CMD
+fi
 
