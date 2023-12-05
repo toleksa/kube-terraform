@@ -69,7 +69,7 @@ iac:
       networks:
 ##      - name: "main"
 #      - bridge: "br0"
-        mac_prefix: "DEAD010201"
+        mac_prefix: "DEAD010601"
       resources:
         cpu: 4
         mem: 10000
