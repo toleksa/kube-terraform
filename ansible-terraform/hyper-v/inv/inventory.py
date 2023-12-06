@@ -55,7 +55,7 @@ def list_hyper_v_machines(host, username, password):
                 if note:
                     key, value = note.split(":")
                     d[key]=value
-            if d['cluster']=='c5': #TODO hardcoded cluster
+            if d['cluster']=='c7': #TODO hardcoded cluster
                 inventory['all']['hosts'].append(d['hostname'])
                 inventory['_meta']['hostvars'][d['hostname']] = {'ansible_host': d['hostname'], 'ansible_user': 'root'}
                 for role in d['roles'].split(','):
