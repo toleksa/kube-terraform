@@ -28,12 +28,12 @@ else
   exit 2
 fi
 
-CMD="ansible-playbook -i inventory/$1 deploy.yaml --extra-vars \"variable_host=$1\" --extra-vars \"terraform_action=$terraform_action\""
+CMD="ansible-playbook -i inventory/$1 provision.yaml --extra-vars \"variable_host=$1\" --extra-vars \"terraform_action=$terraform_action\""
 echo "EXEC: $CMD"
 eval $CMD
 
 if [ "$terraform_action" == "apply" ]; then
-  CMD="ansible-playbook -i inventory/$1 install.yaml"
+  CMD="ansible-playbook -i inventory/$1 deploy.yaml"
   echo "EXEC: $CMD"
   eval $CMD
 fi
