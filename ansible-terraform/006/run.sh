@@ -20,21 +20,18 @@ fi
 . .env
 
 if [ "$2" == "destroy" ]; then
-  terraform_action="destroy"
+  CMD="ansible-playbook -i inventory/$1 provision.yaml --extra-vars \"variable_host=$1\" --extra-vars \"terraform_action=destroy\""
+  echo "EXEC: $CMD"
+  eval $CMD && if [[ "$1" == *hyperv* ]]; then echo "EXEC: reloading hyperv isos" ; ./reload.py ; fi #TODO: change this condition to sth more reliable
 elif [ "$2" == "apply" ] || [ $# -eq 1 ]; then
-  terraform_action="apply"
-else
-  echo "unrecognized command parameter"
-  exit 2
-fi
-
-CMD="ansible-playbook -i inventory/$1 provision.yaml --extra-vars \"variable_host=$1\" --extra-vars \"terraform_action=$terraform_action\""
-echo "EXEC: $CMD"
-eval $CMD
-
-if [ "$terraform_action" == "apply" ]; then
+  CMD="ansible-playbook -i inventory/$1 provision.yaml --extra-vars \"variable_host=$1\" --extra-vars \"terraform_action=apply\""
+  echo "EXEC: $CMD"
+  eval $CMD
   CMD="ansible-playbook -i inventory/$1 deploy.yaml"
   echo "EXEC: $CMD"
   eval $CMD
+else
+  echo "unrecognized command parameter"
+  exit 2
 fi
 
