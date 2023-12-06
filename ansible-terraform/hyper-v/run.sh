@@ -13,7 +13,7 @@ fi
 . .env
 
 if [ "$1" == "stop" ]; then
-  terraform destroy -auto-approve
+  terraform destroy -auto-approve && echo "EXEC: reloading hyperv isos" ; ../006/reload.py
   exit 0
 fi
 
