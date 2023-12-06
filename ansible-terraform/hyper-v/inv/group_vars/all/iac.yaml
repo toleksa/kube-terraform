@@ -1,5 +1,5 @@
 iac:
-  name: "c5"
+  name: "c7"
   domain: "kube.ac"
   message: "happy hyper-v'ing :)"
 #  providers:
