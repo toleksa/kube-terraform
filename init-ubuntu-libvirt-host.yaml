@@ -1,5 +1,21 @@
 - hosts: all
   tasks:
+  - name: remove auto-upgrade packages
+    ansible.builtin.apt:
+      pkg:
+      - unattended-upgrades
+      - update-notifier
+      - update-manager
+      state: absent
+  - name: disable auto-upgrades
+    copy:
+      dest: /etc/apt/apt.conf.d/20auto-upgrades
+      content: |
+        APT::Periodic::Update-Package-Lists "0";
+        APT::Periodic::Download-Upgradeable-Packages "0";
+        APT::Periodic::AutocleanInterval "0";
+        APT::Periodic::Unattended-Upgrade "0";
+      force: true
   - name: Set timezone to Europe/Zurich
     community.general.timezone:
       name: Europe/Zurich
