@@ -3,6 +3,8 @@
 ## warning
 ssh: handshake failed: ssh: unable to authenticate, attempted methods [none publickey], no supported methods remain
 * ```ssh-add ~/.ssh/id_rsa```
+Or /etc/ssh/sshd_config:
+* ```PubkeyAcceptedAlgorithms +ssh-rsa```
 
 ## client (this machine)
 * ```install-terraform.sh```
