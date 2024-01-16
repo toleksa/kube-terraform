@@ -107,8 +107,8 @@
     - name: Wait till ValidatingWebhookConfiguration rke2-ingress-nginx-admission exists
       shell: kubectl -n kube-system get ValidatingWebhookConfiguration -A rke2-ingress-nginx-admission -o json
       ignore_errors: yes
-      register: rke2-ingress-nginx-admission_result
-      until: rke2-ingress-nginx-admission.rc == 0
+      register: rke2_ingress_nginx_admission_result
+      until: rke2_ingress_nginx_admission_result.rc == 0
       retries: 30
       delay: 3
 
