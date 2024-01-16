@@ -53,11 +53,12 @@ spec:
           - name: default
             protocol: layer2
             addresses:
-            - "{{ ansible_default_ipv4.address + '-' + ansible_default_ipv4.address }}"
 {% if hostvars.localhost.iac.argocd.metallb.addresses is defined %}
-{% for address in hostvars.localhost.iac.argocd.metallb.addresses %}
+  {% for address in hostvars.localhost.iac.argocd.metallb.addresses %}
             - "{{ address }}"
-{% endfor %}
+  {% endfor %}
+{% else %}
+            - "{{ ansible_default_ipv4.address + '-' + ansible_default_ipv4.address }}"
 {% endif %}
             avoid-buggy-ips: true
 
@@ -69,6 +70,9 @@ spec:
 
         neuvector:
           enabled: {{ hostvars.localhost.iac.argocd.neuvector.enabled|default('false') }}
+
+        kubecost:
+          enabled: {{ hostvars.localhost.iac.argocd.kubecost.enabled|default('false') }}
 
   syncPolicy:
     automated:
