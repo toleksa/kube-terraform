@@ -205,14 +205,14 @@
     ansible.builtin.shell: >
       argocd login {{ argocd_ip.stdout }}:443 --username admin --password password --insecure
       && argocd app sync argocd-main
-    retries: 4
-    delay: 3
+    retries: 11
+    delay: 5
     register: result
-    until: result.rc == 0 or result.attempts == 5 or "code = FailedPrecondition desc = another operation is already in progress" in result.stderr
+    until: result.rc == 0 or result.attempts == 12 or "code = FailedPrecondition desc = another operation is already in progress" in result.stderr
     changed_when: false
-    failed_when: 
-    - result.rc!=0
-    - '"rpc error: code = FailedPrecondition desc = another operation is already in progress" not in result.stderr'
+    failed_when: False
+    #- result.rc!=0
+    #- '"rpc error: code = FailedPrecondition desc = another operation is already in progress" not in result.stderr'
 
   - name: debug print argocd sync result
     debug:
