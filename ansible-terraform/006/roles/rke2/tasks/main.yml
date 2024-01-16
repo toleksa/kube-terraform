@@ -104,13 +104,6 @@
   with_items:
     - { line: "export CONTAINER_RUNTIME_ENDPOINT=unix:///run/k3s/containerd/containerd.sock" }
 
-- name: ~/.kube/config
-  file:
-    src: /etc/rancher/rke2/rke2.yaml
-    dest: /root/.kube/config
-    state: link
-  when: "'rke2_worker' not in group_names"
-
 - block:
   - name: start rke2 servers
     ansible.builtin.systemd:
@@ -129,6 +122,19 @@
     when: "'rke2_worker' in group_names"
 
   when: ansible_fqdn != JOIN_ADDR
+
+- name: wait for /etc/rancher/rke2/rke2.yaml
+  ansible.builtin.wait_for:
+    path: /etc/rancher/rke2/rke2.yaml
+    state: present
+  when: "'rke2_worker' not in group_names"
+
+- name: ~/.kube/config
+  file:
+    src: /etc/rancher/rke2/rke2.yaml
+    dest: /root/.kube/config
+    state: link
+  when: "'rke2_worker' not in group_names"
 
 - name: Set ingress as LoadBalancer
   kubernetes.core.k8s:
