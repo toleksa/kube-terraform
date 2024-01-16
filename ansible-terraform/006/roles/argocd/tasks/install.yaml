@@ -111,6 +111,7 @@
       until: rke2_ingress_nginx_admission_result.rc == 0
       retries: 30
       delay: 3
+      changed_when: False
 
     - name: patch ingress - add CA
       kubernetes.core.k8s_json_patch:
