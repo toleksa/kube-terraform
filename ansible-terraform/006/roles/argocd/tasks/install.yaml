@@ -104,6 +104,14 @@
       changed_when: false
       register: ingress_CA
 
+    - name: Wait till ValidatingWebhookConfiguration rke2-ingress-nginx-admission exists
+      shell: kubectl -n kube-system get ValidatingWebhookConfiguration -A rke2-ingress-nginx-admission -o json
+      ignore_errors: yes
+      register: rke2-ingress-nginx-admission_result
+      until: rke2-ingress-nginx-admission.rc == 0
+      retries: 30
+      delay: 3
+
     - name: patch ingress - add CA
       kubernetes.core.k8s_json_patch:
         kind: ValidatingWebhookConfiguration
