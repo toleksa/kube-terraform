@@ -208,9 +208,8 @@
     retries: 4
     delay: 3
     register: result
-    until: result.rc == 0 or result.attempts == 5 or "rpc error: code = FailedPrecondition desc = another operation is already in progress" in result.stderr
+    until: result.rc == 0 or result.attempts == 5 or "code = FailedPrecondition desc = another operation is already in progress" in result.stderr
     changed_when: false
-    #TODO: isn't that redundant now?
     failed_when: 
     - result.rc!=0
     - '"rpc error: code = FailedPrecondition desc = another operation is already in progress" not in result.stderr'
