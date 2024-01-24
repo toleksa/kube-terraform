@@ -18,7 +18,8 @@ iac:
 #    bridge: "br0"
   volumes:
   - name: ubuntu-jammy
-    source: "http://192.168.0.2:8765/jammy-server-cloudimg-amd64-disk-kvm.img"
+    #source: "http://192.168.0.2:8765/jammy-server-cloudimg-amd64-disk-kvm.img"
+    source: "http://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64-disk-kvm.img"
     format: "qcow2"
     pool: "default"
   argocd:
