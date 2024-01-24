@@ -22,6 +22,7 @@ iac:
 #    format: "qcow2"
 #    pool: "default"
   argocd:
+    targetRevision: HEAD
     #k8s_backend: k3s
     k8s_backend: rke2
     dns:
@@ -43,6 +44,8 @@ iac:
       enabled: false
     neuvector:
       enabled: true
+    kubecost:
+      enabled: true
     apps:
     #- kaboom-games-main.yaml
     - python-rest-api-main.yaml
@@ -50,8 +53,8 @@ iac:
     #- argo-combined-app.yaml
   rke2:
     join_token: hyperv6-123456
-#  k3s:
-#    join_token: hyperv6-123456
+  k3s:
+    join_token: hyperv6-123456
   hosts:
     s:
       count: 1
