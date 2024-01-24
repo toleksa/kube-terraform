@@ -36,6 +36,8 @@ iac:
       secret: "{{ lookup('ansible.builtin.env', 'DNS_KEY')|default() }}"
     metallb:
       #addresses: "127.0.0.1"
+    longhorn:
+      enabled: true
     monitoring:
       enabled: true
     elk:
