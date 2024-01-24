@@ -38,18 +38,18 @@ iac:
     metallb:
       #addresses: "127.0.0.1"
     monitoring:
-      enabled: true
+      enabled: false
     elk:
       enabled: false
     istio:
       enabled: false
     neuvector:
-      enabled: true
+      enabled: false
     kubecost:
-      enabled: true
+      enabled: false
     apps:
     #- kaboom-games-main.yaml
-    - python-rest-api-main.yaml
+    ##- python-rest-api-main.yaml
     #- wordpress-main.yaml
     #- argo-combined-app.yaml
   rke2:
