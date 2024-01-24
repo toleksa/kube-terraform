@@ -22,6 +22,7 @@ iac:
 #    format: "qcow2"
 #    pool: "default"
   argocd:
+    targetRevision: resource
     #k8s_backend: k3s
     k8s_backend: rke2
     dns:
@@ -35,17 +36,21 @@ iac:
       secret: "{{ lookup('ansible.builtin.env', 'DNS_KEY')|default() }}"
     metallb:
       #addresses: "127.0.0.1"
+    longhorn:
+      enabled: false
     monitoring:
-      enabled: true
+      enabled: false
     elk:
       enabled: false
     istio:
       enabled: false
     neuvector:
-      enabled: true
+      enabled: false
+    kubecost:
+      enabled: false
     apps:
     #- kaboom-games-main.yaml
-    - python-rest-api-main.yaml
+    #- python-rest-api-main.yaml
     #- wordpress-main.yaml
     #- argo-combined-app.yaml
   rke2:
@@ -56,9 +61,9 @@ iac:
     s:
       count: 1
       roles:
-      #- argocd
+      - argocd
       #- kubernetes-tools
-      - base
+      #- base
       provider:
         name: hyperv
       disks:
