@@ -19,9 +19,10 @@ spec:
         domain: "{{ hostvars.localhost.iac.name }}.{{ hostvars.localhost.iac.domain|default(default.iac.domain) }}"
 
         longhorn:
-          defaultClassReplicaCount: 1
+          enabled: {{ hostvars.localhost.iac.argocd.longhorn.enabled|default('true') }}
           ingress:
             enabled: true
+            host: "longhorn.{{ hostvars.localhost.iac.name }}.{{ hostvars.localhost.iac.domain|default(default.iac.domain) }}"
 
         argocd:
           dex:
