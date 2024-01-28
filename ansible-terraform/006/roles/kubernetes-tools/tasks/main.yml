@@ -43,6 +43,9 @@
   - { name: "longhorn",             url: "https://charts.longhorn.io" }
   - { name: "prometheus-community", url: "https://prometheus-community.github.io/helm-charts" }
   - { name: "elastic",              url: "https://helm.elastic.co" }
+  - { name: "kubecost",             url: "https://kubecost.github.io/cost-analyzer" }
+  - { name: "neuvector",            url: "https://neuvector.github.io/neuvector-helm" }
+
 
 - name: clone kube-system repo
   ansible.builtin.git:
