@@ -40,7 +40,7 @@ iac:
     longhorn:
       enabled: true
     monitoring:
-      enabled: false
+      enabled: true
     elk:
       enabled: false
     istio:
@@ -51,7 +51,7 @@ iac:
       enabled: false
     apps:
     #- kaboom-games-main.yaml
-    ##- python-rest-api-main.yaml
+    - python-rest-api-main.yaml
     #- wordpress-main.yaml
     #- argo-combined-app.yaml
   rke2:
