@@ -17,7 +17,7 @@ spec:
         replicaCount: 3
         domain: "{{ hostvars.localhost.iac.name }}.{{ hostvars.localhost.iac.domain|default(default.iac.domain) }}"
         monitoring:
-          enabled: true
+          enabled: {{ hostvars.localhost.iac.argocd.monitoring.enabled|default('false') }}
   syncPolicy:
     automated:
       prune: true
