@@ -1,5 +1,5 @@
 ---
 # defaults file for argocd
 storage_path: "{{playbook_dir}}/storage"
-argocd_initial_version: 5.52.2
+argocd_initial_version: 5.53.8
 k8s_backend: "rke2"
