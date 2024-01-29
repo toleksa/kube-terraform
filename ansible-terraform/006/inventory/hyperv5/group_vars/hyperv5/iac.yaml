@@ -22,35 +22,32 @@ iac:
 #    format: "qcow2"
 #    pool: "default"
   argocd:
-    targetRevision: resource
+    targetRevision: dev
     #k8s_backend: k3s
     k8s_backend: rke2
     dns:
-      #enabled: false
-      #host: 127.0.0.1
-      #zone: "example.com"
-      #secret: "secret"
       enabled: true
       host: 192.168.0.2
       zone: "kube.ac"
       secret: "{{ lookup('ansible.builtin.env', 'DNS_KEY')|default() }}"
-    metallb:
-      #addresses: "127.0.0.1"
+    kubecost:
+      enabled: false
     longhorn:
-      enabled: false
+      enabled: true
+    metallb:
+      enabled: true
     monitoring:
+      enabled: true
+    neuvector:
       enabled: false
+
     elk:
       enabled: false
     istio:
       enabled: false
-    neuvector:
-      enabled: false
-    kubecost:
-      enabled: false
     apps:
     #- kaboom-games-main.yaml
-    #- python-rest-api-main.yaml
+    - python-rest-api-main.yaml
     #- wordpress-main.yaml
     #- argo-combined-app.yaml
   rke2:
