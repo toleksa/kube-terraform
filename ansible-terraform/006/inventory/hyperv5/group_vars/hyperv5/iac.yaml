@@ -58,9 +58,10 @@ iac:
     s:
       count: 1
       roles:
-      - argocd
+      #- argocd
       #- kubernetes-tools
       #- base
+      - dev
       provider:
         name: hyperv
       disks:
