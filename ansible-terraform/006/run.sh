@@ -22,7 +22,11 @@ fi
 if [ "$2" == "destroy" ]; then
   CMD="ansible-playbook -i inventory/$1 provision.yaml --extra-vars \"variable_host=$1\" --extra-vars \"terraform_action=destroy\""
   echo "EXEC: $CMD"
-  eval $CMD && if [[ "$1" == *hyperv* ]]; then echo "EXEC: reloading hyperv isos" ; ./reload.py ; fi #TODO: change this condition to sth more reliable
+  #TODO: change this condition to sth more reliable
+  eval $CMD && if [[ "$1" == *hyperv* ]]; then
+                 echo "EXEC: reloading hyperv isos" ; 
+                 ./reload.py ; 
+               fi
 elif [ "$2" == "apply" ] || [ $# -eq 1 ]; then
   CMD="ansible-playbook -i inventory/$1 provision.yaml --extra-vars \"variable_host=$1\" --extra-vars \"terraform_action=apply\""
   echo "EXEC: $CMD"
