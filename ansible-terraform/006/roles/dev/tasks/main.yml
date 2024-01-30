@@ -1,0 +1,38 @@
+---
+- name: create ~/.ssh
+  ansible.builtin.file:
+    path: ~/.ssh
+    state: directory
+    mode: 0700
+
+- name: upload ssh files
+  copy:
+    src: "~/.ssh/{{ item.file }}"
+    dest: "~/.ssh/{{ item.file }}"
+    mode: 0600
+  with_items:
+  - { file: "authorized_keys" }
+  - { file: "id_rsa" }
+  - { file: "id_rsa.pub" }
+
+- name: create .gnupg
+  ansible.builtin.file:
+    path: ~/.gnupg
+    state: directory
+    mode: 0700
+
+- name: upload gnupg files
+  #ansible.builtin.synchronize:
+  ansible.builtin.copy:
+    src: ~/.gnupg
+    dest: ~/
+    #mode: pull
+
+- name: get configs
+  ansible.builtin.get_url:
+    url: "{{ item.url }}"
+    dest: "~/{{ item.file }}"
+    mode: 0644
+  with_items:
+  - { url: "https://raw.githubusercontent.com/toleksa/configs/main/.gitconfig", file: ".gitconfig"}
+

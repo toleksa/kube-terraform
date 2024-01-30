@@ -66,6 +66,10 @@
   roles:
   - openshift
 
+- hosts: dev
+  roles:
+  - dev
+
 - hosts: localhost
   tasks:
   - name: print message
