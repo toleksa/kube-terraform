@@ -38,6 +38,10 @@
     loop_control:
       loop_var: role_item
 
+- hosts: dev
+  roles:
+  - dev
+
 - hosts: base
   roles:
   - base
@@ -65,10 +69,6 @@
 - hosts: openshift
   roles:
   - openshift
-
-- hosts: dev
-  roles:
-  - dev
 
 - hosts: localhost
   tasks:
