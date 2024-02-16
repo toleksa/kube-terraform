@@ -41,6 +41,7 @@
     - bind9-utils
     - atop
     - python-is-python3
+    - byobu
     state: present
     update_cache: yes
     lock_timeout: 300
@@ -99,7 +100,18 @@
   ansible.builtin.get_url:
     url: 'https://raw.githubusercontent.com/toleksa/configs/main/.vimrc'
     dest: '/root/.vimrc'
+    mode: '0600'
+
+- name: .byobu dir
+  ansible.builtin.file:
+    path: "/root/.byobu"
+    state: directory
     mode: '0700'
+- name: .byobu/status
+  ansible.builtin.get_url:
+    url: 'https://raw.githubusercontent.com/toleksa/configs/main/status'
+    dest: '/root/.byobu/status'
+    mode: '0600'
 
 - name: remove /etc/update-motd.d/
   ansible.builtin.file:
