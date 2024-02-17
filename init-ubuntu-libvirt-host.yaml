@@ -45,7 +45,7 @@
       autoremove: yes
   - name: install packages
     apt:
-      pkg: ['qemu-kvm','libvirt-daemon-system','bridge-utils','prometheus-node-exporter','python3-libvirt','python3-lxml','libguestfs-tools']
+      pkg: ['qemu-kvm','libvirt-daemon-system','bridge-utils','prometheus-node-exporter','python3-libvirt','python3-lxml','libguestfs-tools','byobu']
       state: latest
 
   - name: get mac address
@@ -148,6 +148,16 @@
       name: dns-update.sh
       special_time: reboot
       job: '/etc/cron.hourly/dns-update.sh'
+  - name: .byobu dir
+    ansible.builtin.file:
+      path: "/root/.byobu"
+      state: directory
+      mode: '0700'
+  - name: .byobu/status
+    ansible.builtin.get_url:
+      url: 'https://raw.githubusercontent.com/toleksa/configs/main/status'
+      dest: '/root/.byobu/status'
+      mode: '0600'
 
   handlers:
   - name: restart netplan
