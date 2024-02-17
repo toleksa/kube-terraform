@@ -18,6 +18,8 @@ spec:
         domain: "{{ hostvars.localhost.iac.name }}.{{ hostvars.localhost.iac.domain|default(default.iac.domain) }}"
         monitoring:
           enabled: {{ hostvars.localhost.iac.argocd.monitoring.enabled|default('false') }}
+        jaeger:
+          enabled: true
   syncPolicy:
     automated:
       prune: true
