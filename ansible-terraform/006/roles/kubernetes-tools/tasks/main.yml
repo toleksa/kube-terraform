@@ -45,7 +45,7 @@
   - { name: "elastic",              url: "https://helm.elastic.co" }
   - { name: "kubecost",             url: "https://kubecost.github.io/cost-analyzer" }
   - { name: "neuvector",            url: "https://neuvector.github.io/neuvector-helm" }
-
+  - { name: "jaegertracing",        url: "https://jaegertracing.github.io/helm-charts" }
 
 - name: clone kube-system repo
   ansible.builtin.git:
