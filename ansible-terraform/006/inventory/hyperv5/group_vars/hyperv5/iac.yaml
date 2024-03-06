@@ -2,36 +2,19 @@ iac:
   name: "c5"
   domain: "kube.ac"
   message: "happy hyper-v'ing :)"
-#  providers:
-#  - name: "ivy"
-#    type: "libvirt"
-#    config: "qemu+ssh://root@192.168.0.3/system"
   providers:
   - name: "hyperv"
     type: "hyperv"
-#  pools:
-#  - name: "default"
-#    path: "/virtualki"
-#  networks:
-#  - name: "main"
-#    bridge: "br0"
-#  volumes:
-#  - name: ubuntu-jammy
-#    #source: "http://192.168.0.2:8765/jammy-server-cloudimg-amd64-disk-kvm.img"
-#    source: "http://192.168.0.3/jammy-server-cloudimg-amd64-disk-kvm.img"
-#    format: "qcow2"
-#    pool: "default"
   argocd:
     targetRevision: dev
-    #k8s_backend: k3s
-    k8s_backend: rke2
+    k8s_backend: k3s
     dns:
       enabled: true
       host: 192.168.0.2
       zone: "kube.ac"
       secret: "{{ lookup('ansible.builtin.env', 'DNS_KEY')|default() }}"
     kubecost:
-      enabled: false
+      enabled: true
     longhorn:
       enabled: true
     metallb:
@@ -39,7 +22,7 @@ iac:
     monitoring:
       enabled: true
     neuvector:
-      enabled: false
+      enabled: true
 
     elk:
       enabled: false
@@ -50,15 +33,11 @@ iac:
     - python-rest-api-main.yaml
     #- wordpress-main.yaml
     #- argo-combined-app.yaml
-  rke2:
-    join_token: hyperv5-123456
-#  k3s:
-#    join_token: hyperv5-123456
   hosts:
     s:
       count: 1
       roles:
-      #- argocd
+      - argocd
       #- kubernetes-tools
       #- base
       - dev
