@@ -35,7 +35,7 @@
   ansible.builtin.copy:
     dest: "/etc/rancher/rke2/config.yaml"
     content: |
-      token: "{{ hostvars.localhost.iac.rke2.join_token }}"
+      token: "{{ hostvars.localhost.iac.rke2.join_token|default(hostvars.localhost.iac.name) }}"
       tls-san:
       - "{{ JOIN_ADDR }}"
   when: ansible_fqdn == JOIN_ADDR
