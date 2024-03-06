@@ -58,8 +58,8 @@ iac:
       roles:
       #- argocd
       #- rke2
-      #- kubernetes-tools
-      - base
+      - kubernetes-tools
+      #- base
       provider:
         name: ivy
       disks:
@@ -74,5 +74,5 @@ iac:
       resources:
         cpu: 6
         #mem: 14500
-        mem: 4000
+        mem: 6000
 
