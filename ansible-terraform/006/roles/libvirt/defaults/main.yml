@@ -7,7 +7,7 @@ default:
   libvirt:
     config:
       source: "dmacvicar/libvirt"
-      version: "0.6.12"
+      version: "0.7.6"
 
   iac:
     domain: "example.com"
