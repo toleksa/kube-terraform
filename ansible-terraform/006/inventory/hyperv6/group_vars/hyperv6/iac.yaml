@@ -7,14 +7,14 @@ iac:
     type: "hyperv"
   argocd:
     targetRevision: HEAD
-    k8s_backend: rke2
+    k8s_backend: k3s
     dns:
       enabled: true
       host: 192.168.0.2
       zone: "kube.ac"
       secret: "{{ lookup('ansible.builtin.env', 'DNS_KEY')|default() }}"
     kubecost:
-      enabled: true
+      enabled: false
     longhorn:
       enabled: true
     metallb:
@@ -22,14 +22,14 @@ iac:
     monitoring:
       enabled: true
     neuvector:
-      enabled: true
+      enabled: false
     elk:
       enabled: false
     istio:
       enabled: false
     apps:
     #- kaboom-games-main.yaml
-    - python-rest-api-main.yaml
+    #- python-rest-api-main.yaml
     #- wordpress-main.yaml
     #- argo-combined-app.yaml
   hosts:

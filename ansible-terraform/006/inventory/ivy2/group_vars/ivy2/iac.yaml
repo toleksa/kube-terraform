@@ -1,8 +1,3 @@
-libvirt:
-  config:
-    source: "dmacvicar/libvirt"
-    version: "0.6.12"
-
 iac:
   name: "c2"
   domain: "kube.ac"
@@ -24,8 +19,8 @@ iac:
     pool: "default"
   argocd:
     targetRevision: HEAD
-    #k8s_backend: k3s
-    k8s_backend: rke2
+    k8s_backend: k3s
+    #k8s_backend: rke2
     dns:
       #enabled: false
       #host: 127.0.0.1

@@ -30,16 +30,16 @@ iac:
       enabled: false
     apps:
     #- kaboom-games-main.yaml
-    - python-rest-api-main.yaml
+    #- python-rest-api-main.yaml
     #- wordpress-main.yaml
     #- argo-combined-app.yaml
   hosts:
     s:
       count: 1
       roles:
-      - argocd
+      #- argocd
       #- kubernetes-tools
-      #- base
+      - base
       - dev
       provider:
         name: hyperv
