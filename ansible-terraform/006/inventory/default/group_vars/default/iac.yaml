@@ -1,18 +1,20 @@
 iac:
-  name: "c4"
+  name: "default"
   #domain: "kube.ac"
   providers:
-  - name: "virtbox"
+  - name: "ivy"
     type: "libvirt"
-    config: "qemu+ssh://root@192.168.0.4/system"
+    config: "qemu+ssh://root@192.168.0.3/system"
   hosts:
-    mymachine:
-    #  provider:
-    #    name: virtbox
-    #count: 1
-    #roles:
-    #- base
-    #- argocd
-    #resources:
-    #  cpu: 1
-    #  mem: 1000
+    machine:
+      #provider:
+        #name: ivy
+      networks:                                                                          
+      #- name: "main"
+      - bridge: "br0"
+      #count: 1
+      #roles:
+      #- base
+      #resources:
+      #  cpu: 1
+      #  mem: 1000
