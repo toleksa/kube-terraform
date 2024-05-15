@@ -64,7 +64,6 @@ resource "libvirt_domain" "{{iac.name}}-{{instance.key}}{{count}}" {
 {%   for disk in instance.value.disks|default(default.instance.disks) %}
   disk {
     volume_id = libvirt_volume.{{iac.name}}-{{instance.key}}{{count}}-{{disk.name}}.id
-    scsi      = "true"
     wwn       = "{{ '%016d' % loop.index0 }}"
   }
 {%   endfor %}
