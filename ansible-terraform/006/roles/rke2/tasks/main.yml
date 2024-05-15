@@ -11,7 +11,7 @@
     run_once: true
 
   - name: debug rke2_servers
-    debug:
+    ansible.builtin.debug:
       var: rke2_servers
 
   delegate_to: localhost
@@ -83,22 +83,22 @@
   when: ansible_fqdn == JOIN_ADDR
 
 - name: add kube PATH /etc/bash.bashrc
-  lineinfile:                                                                                                                                           
+  ansible.builtin.lineinfile:
     dest: /etc/bash.bashrc
     line: "{{ item.line }}"
-  with_items:                                                                                                                                           
+  with_items:
     - { line: "export PATH=$PATH:/var/lib/rancher/rke2/bin" }
 
 - name: set KUBECONFIG in /etc/bash.bashrc
-  lineinfile:                                                                                                                                           
+  ansible.builtin.lineinfile:
     dest: /etc/bash.bashrc
     line: "{{ item.line }}"
     regexp: "{{ item.regexp }}"
-  with_items:                                                                                                                                           
+  with_items:
     - { line: "export KUBECONFIG=/etc/rancher/rke2/rke2.yaml", regexp: "^export KUBECONFIG=" }
 
 - name: set CONTAINER_RUNTIME_ENDPOINT in /etc/bash.bashrc
-  lineinfile:
+  ansible.builtin.lineinfile:
     dest: /etc/bash.bashrc
     line: "{{ item.line }}"
   with_items:
@@ -130,7 +130,7 @@
   when: "'rke2_worker' not in group_names"
 
 - name: ~/.kube/config
-  file:
+  ansible.builtin.file:
     src: /etc/rancher/rke2/rke2.yaml
     dest: /root/.kube/config
     state: link
