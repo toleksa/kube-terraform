@@ -87,7 +87,7 @@
     dest: /etc/apt/trusted.gpg.d/kubernetes.asc
 
 - name: add kubernetes repository
-  apt_repository:
+  ansible.builtin.apt_repository:
     repo: 'deb [signed-by=/etc/apt/trusted.gpg.d/kubernetes.asc] https://pkgs.k8s.io/core:/stable:/v1.29/deb/ /'
     state: present
     filename: kubernetes

@@ -8,12 +8,12 @@
     state: absent
 
 - name: disable auto-upgrades
-  copy:
+  ansible.builtin.copy:
     src: 20auto-upgrades
     dest: /etc/apt/apt.conf.d/20auto-upgrades
 
 - name: Ensure ulimit is set to 1048576
-  lineinfile:
+  ansible.builtin.lineinfile:
     dest: /etc/security/limits.conf
     line: "{{ item.line }}"
   with_items:
@@ -23,7 +23,7 @@
     - { line: "* hard nofile 1048576" } 
 
 - name: Setting-up file-max limit
-  sysctl:
+  ansible.builtin.sysctl:
     name: "{{ item.name }}"
     value: "{{ item.value }}"
     state: present
@@ -127,17 +127,16 @@
     group: root
     mode: 0444
 
-- name: add docker apt key                                                                                                                          
+- name: add docker apt key
   ansible.builtin.get_url:
     url: https://download.docker.com/linux/ubuntu/gpg
     dest: /etc/apt/trusted.gpg.d/docker.asc
-                                                                                                                                                        
-- name: add docker repository                                                                                                                       
-  apt_repository:                                                                                                                                       
+- name: add docker repository
+  ansible.builtin.apt_repository:
     repo: 'deb [arch=amd64 signed-by=/etc/apt/trusted.gpg.d/docker.asc] https://download.docker.com/linux/ubuntu jammy stable'
     state: present
     filename: docker
-    update_cache: yes   
+    update_cache: yes
 
 - meta: flush_handlers
 
