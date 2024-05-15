@@ -2,7 +2,7 @@
 # tasks file for argocd/apps.yaml
 
 - name: upload app yamls
-  template:
+  ansible.builtin.template:
     src: "apps/{{ item }}"
     dest: "/{{ item }}"
   with_items: "{{ hostvars.localhost.iac.argocd.apps }}"

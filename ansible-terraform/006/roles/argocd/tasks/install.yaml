@@ -8,7 +8,7 @@
     mode: '0777'
 
 - name: argocd-main.yaml
-  template:
+  ansible.builtin.template:
     src: argocd-main.yaml
     dest: /argocd-main.yaml
 
@@ -66,7 +66,7 @@
     #TODO: if creates is not working, or skipping entire block if cert is already placed, then consider community.crypto.openssl_privatekey: instead of shell
     # https://docs.ansible.com/ansible/latest/collections/community/crypto/docsite/guide_selfsigned.html
     - name: generate argocd key and cert
-      command: >
+      ansible.builtin.command: >
         openssl req -x509 -nodes -days 3650 -newkey rsa:4096 
         -keyout "{{ storage_path }}/{{ hostvars.localhost.iac.name }}/certs/argocd.key" 
         -out "{{ storage_path }}/{{ hostvars.localhost.iac.name }}/certs/argocd.crt" 
@@ -79,7 +79,7 @@
       delegate_to: localhost
 
     - name: generate argocd-cert secret
-      template:
+      ansible.builtin.template:
         src: argocd-cert.yaml
         dest: argocd-cert.yaml
 
@@ -154,7 +154,7 @@
       msg:  "argocd login {{ argocd_ip.stdout }}:443 --username admin --password password --insecure"
 
   - name: waiting for argocd:443
-    uri:
+    ansible.builtin.uri:
       url: "http://{{ argocd_ip.stdout }}:443"
       return_content: no
       validate_certs: no
@@ -215,8 +215,7 @@
     #- '"rpc error: code = FailedPrecondition desc = another operation is already in progress" not in result.stderr'
 
   - name: debug print argocd sync result
-    debug:
+    ansible.builtin.debug:
       var: result
   run_once: true
-
 
