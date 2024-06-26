@@ -98,8 +98,12 @@
     name: kubeadm
     state: present
 
+- name: install kubecolor
+  ansible.builtin.apt:
+    name: kubecolor
+    state: present
+
 - name: install etcdctl
   ansible.builtin.apt:
     name: etcd-client
     state: present
-
