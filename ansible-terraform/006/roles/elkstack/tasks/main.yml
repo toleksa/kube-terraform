@@ -14,7 +14,7 @@
   when: gpg.changed
 
 - name: add elasticsearch repo
-  ansible.builtin.apt_repository:
+  ansible.builtin.deb822_repository:
     repo: deb [signed-by=/usr/share/keyrings/elastic.gpg] https://artifacts.elastic.co/packages/8.x/apt stable main
     state: present
 
