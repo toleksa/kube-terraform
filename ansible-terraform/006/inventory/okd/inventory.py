@@ -26,7 +26,7 @@ IAC_PROFILE = os.getenv('IAC_PROFILE')
 
 if IAC_PROFILE == None:
     print("INFO: $IAC_PROFILE is empty, getting CWD name")
-    IAC_PROFILE = os.path.dirname(__file__).split(os.sep)[-1]
+    IAC_PROFILE = os.path.dirname(__file__).split(os.sep)[-2]
     print(IAC_PROFILE)
 
 with open(os.path.dirname(__file__) + "/group_vars/" + IAC_PROFILE + "/iac.yaml", "r") as f:
@@ -50,8 +50,8 @@ libvirt.registerErrorHandler(f=libvirt_callback, ctx=None)
 #name_filter_re = re.compile(NAME_FILTER)
 
 inventory = {}
-inventory['all'] = {'hosts': []}
-inventory['_meta'] = {'hostvars': {}}
+inventory['all'] = {'hosts': ['localhost']}
+inventory['_meta'] = {'hostvars': {'localhost': {'ansible_python_interpreter':'/usr/bin/python'}}}
 
 for u in URI:
     conn = libvirt.open(u)
