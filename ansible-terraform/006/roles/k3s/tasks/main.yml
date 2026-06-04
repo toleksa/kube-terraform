@@ -7,7 +7,7 @@
   - name: prepare k3s_servers list
     ansible.builtin.set_fact:
       k3s_servers: "{{ k3s_servers|default([]) + [item] }}"
-    loop: "{{ play_hosts }}"
+    loop: "{{ ansible_play_batch }}"
     run_once: true
 
   - name: debug k3s_servers
