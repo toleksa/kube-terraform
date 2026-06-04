@@ -131,12 +131,19 @@
   ansible.builtin.get_url:
     url: https://download.docker.com/linux/ubuntu/gpg
     dest: /etc/apt/trusted.gpg.d/docker.asc
+
 - name: add docker repository
   ansible.builtin.deb822_repository:
-    repo: 'deb [arch=amd64 signed-by=/etc/apt/trusted.gpg.d/docker.asc] https://download.docker.com/linux/ubuntu jammy stable'
+    name: docker-ce
+    types: deb
+    uris: https://download.docker.com/linux/ubuntu
+    suites: jammy
+    components: stable
+    architectures: amd64
+    signed_by: /etc/apt/trusted.gpg.d/docker.asc
     state: present
-    filename: docker
-    update_cache: yes
+  notify: update apt cache
+
 
 - meta: flush_handlers
 

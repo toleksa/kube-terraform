@@ -88,10 +88,17 @@
 
 - name: add kubernetes repository
   ansible.builtin.deb822_repository:
-    repo: 'deb [signed-by=/etc/apt/trusted.gpg.d/kubernetes.asc] https://pkgs.k8s.io/core:/stable:/v1.29/deb/ /'
+    name: kubernetes
+    types: deb
+    uris: https://pkgs.k8s.io/core:/stable:/v1.29/deb/
+    suites: /
+    signed_by: /etc/apt/trusted.gpg.d/kubernetes.asc
     state: present
-    filename: kubernetes
+
+- name: update apt cache
+  ansible.builtin.apt:
     update_cache: yes
+    cache_valid_time: 3600
 
 - name: install kubeadm
   ansible.builtin.apt:

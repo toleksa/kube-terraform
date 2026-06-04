@@ -15,8 +15,18 @@
 
 - name: add elasticsearch repo
   ansible.builtin.deb822_repository:
-    repo: deb [signed-by=/usr/share/keyrings/elastic.gpg] https://artifacts.elastic.co/packages/8.x/apt stable main
+    name: elk
+    types: deb
+    uris: https://artifacts.elastic.co/packages/8.x/apt
+    suites: stable
+    components: main
+    signed_by: /usr/share/keyrings/elastic.gpg
     state: present
+
+- name: update apt cache
+  ansible.builtin.apt:
+    update_cache: yes
+    cache_valid_time: 3600
 
 - name: install packages
   ansible.builtin.apt:
