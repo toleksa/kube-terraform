@@ -59,7 +59,7 @@ spec:
             - "{{ address }}"
   {% endfor %}
 {% else %}
-            - "{{ ansible_default_ipv4.address + '-' + ansible_default_ipv4.address }}"
+            - "{{ ansible_facts['default_ipv4']['address'] + '-' + ansible_facts['default_ipv4']['address'] }}"
 {% endif %}
             avoid-buggy-ips: true
 
