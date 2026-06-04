@@ -51,6 +51,7 @@ libvirt.registerErrorHandler(f=libvirt_callback, ctx=None)
 
 inventory = {}
 inventory['all'] = {'hosts': []}
+inventory['_meta'] = {'hostvars': {}}
 
 for u in URI:
     conn = libvirt.open(u)
