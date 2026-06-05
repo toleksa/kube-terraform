@@ -168,7 +168,7 @@
   - name: argocd login
     ansible.builtin.shell: >
       . ~/.bashrc
-      && argocd login {{ argocd_ip.stdout }}:443 --username admin --password password --insecure
+      && argocd login --core
     args:
       executable: /bin/bash
     changed_when: false
@@ -176,11 +176,10 @@
   #TODO: change it to ansible way with retry
   - name: Waiting for argocd project
     ansible.builtin.shell: >
-      argocd login {{ argocd_ip.stdout }}:443 --username admin --password password --insecure
-      && until argocd proj list | grep default ; do
-        sleep 5s
-        echo -n .
-      done
+      argocd login --core
+      && kubectl config set-context --current --namespace argocd
+      && until argocd proj list | grep default ; do sleep 5s ; done
+      && kubectl config set-context --current --namespace ''
     changed_when: false
 
 #- name: debug argocd
@@ -203,7 +202,7 @@
 
   - name: argocd app sync argocd-main
     ansible.builtin.shell: >
-      argocd login {{ argocd_ip.stdout }}:443 --username admin --password password --insecure
+      argocd login --core
       && argocd app sync argocd-main
     retries: 11
     delay: 5
