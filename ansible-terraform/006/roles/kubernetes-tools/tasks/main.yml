@@ -90,7 +90,7 @@
   ansible.builtin.deb822_repository:
     name: kubernetes
     types: deb
-    uris: https://pkgs.k8s.io/core:/stable:/v1.29/deb/
+    uris: https://pkgs.k8s.io/core:/stable:/v1.36/deb/
     suites: /
     signed_by: /etc/apt/trusted.gpg.d/kubernetes.asc
     state: present
