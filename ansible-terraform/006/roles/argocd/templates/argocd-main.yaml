@@ -50,6 +50,7 @@ spec:
           metrics: {{ hostvars.localhost.iac.argocd.dns.metrics|default(hostvars.localhost.iac.argocd.monitoring.enabled|default('false')) }}
 
         metallb:
+          enabled: {{ hostvars.localhost.iac.argocd.metallb.enabled|default('true') }}
           pools:
           - name: default
             protocol: layer2
