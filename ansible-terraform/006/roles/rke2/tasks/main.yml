@@ -172,3 +172,9 @@
   retries: 120
   when: "'rke2_worker' not in group_names"
 
+- name: Create symlink for kubectl
+  file:
+    src: /var/lib/rancher/rke2/bin/kubectl
+    dest: /usr/bin/kubectl
+    state: link
+
