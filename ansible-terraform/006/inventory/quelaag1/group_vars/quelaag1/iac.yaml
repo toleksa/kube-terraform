@@ -1,0 +1,74 @@
+iac:
+  name: "c5"
+  domain: "kube.ac"
+  providers:
+  - name: "quelaag"
+    type: "libvirt"
+    config: "qemu+ssh://root@192.168.0.5/system"
+  pools:
+  - name: "default"
+    path: "/data/virtualki"
+#  networks:
+#  - name: "main"
+#    bridge: "br0"
+  volumes:
+  - name: ubuntu-noble
+    source: "http://192.168.0.2:8765/noble-server-cloudimg-amd64.img"
+    format: "qcow2"
+    pool: "default"
+  argocd:
+    k8s_backend: k3s
+    dns:
+      #enabled: false
+      #host: 127.0.0.1
+      #zone: "example.com"
+      #secret: "secret"
+      enabled: true
+      host: 192.168.0.2
+      zone: "kube.ac"
+      secret: "{{ lookup('ansible.builtin.env', 'DNS_KEY')|default() }}"
+      metrics: true
+    metallb:
+      enabled: false
+      #addresses: "192.168.0.231-192.168.0.239"
+    monitoring:
+      enabled: true
+    elk:
+      enabled: false
+    istio:
+      enabled: false
+    neuvector:
+      enabled: false
+    apps:
+    #- kaboom-games-main.yaml
+    - python-rest-api-main.yaml
+    #- wordpress-main.yaml
+    #- argo-combined-app.yaml
+  rke2:
+    join_token: quelaag-123456
+  k3s:
+    join_token: quelaag-123456
+  hosts:
+    s:
+      count: 1
+      roles:
+      - argocd
+      #- rke2
+      #- kubernetes-tools
+      #- base
+      provider:
+        name: quelaag
+      disks:
+      - name: "root"
+        size: "103687091200"
+        pool: "default"
+        base_volume: "ubuntu-noble"
+      networks:
+#     - name: "main"
+      - bridge: "br0"
+        mac_prefix: "de:ad:01:00:03"
+      resources:
+        cpu: 6
+        #mem: 14500
+        mem: 16000
+
