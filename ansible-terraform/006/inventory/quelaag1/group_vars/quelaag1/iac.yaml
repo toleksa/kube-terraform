@@ -16,6 +16,10 @@ iac:
     source: "http://192.168.0.2:8765/noble-server-cloudimg-amd64.img"
     format: "qcow2"
     pool: "default"
+  - name: ubuntu-resolute
+    source: "http://192.168.0.2:8765/resolute-server-cloudimg-amd64.img"
+    format: "qcow2"
+    pool: "default"
   argocd:
     k8s_backend: k3s
     dns:
@@ -38,16 +42,18 @@ iac:
     istio:
       enabled: false
     neuvector:
-      enabled: false
+      enabled: true
+    kubecost:
+      enabled: true
     apps:
     #- kaboom-games-main.yaml
     - python-rest-api-main.yaml
     #- wordpress-main.yaml
     #- argo-combined-app.yaml
   rke2:
-    join_token: quelaag-123456
+    join_token: quelaag-567890
   k3s:
-    join_token: quelaag-123456
+    join_token: quelaag-567890
   hosts:
     s:
       count: 1
@@ -62,11 +68,11 @@ iac:
       - name: "root"
         size: "103687091200"
         pool: "default"
-        base_volume: "ubuntu-noble"
+        base_volume: "ubuntu-resolute"
       networks:
 #     - name: "main"
       - bridge: "br0"
-        mac_prefix: "de:ad:01:00:03"
+        mac_prefix: "de:ad:01:05:00"
       resources:
         cpu: 6
         #mem: 14500
