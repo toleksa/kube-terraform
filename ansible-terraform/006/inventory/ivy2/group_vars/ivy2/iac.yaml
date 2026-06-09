@@ -13,8 +13,11 @@ iac:
 #    bridge: "br0"
   volumes:
   - name: ubuntu-jammy
-    #source: "http://192.168.0.2:8765/jammy-server-cloudimg-amd64-disk-kvm.img"
-    source: "http://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64-disk-kvm.img"
+    source: "http://192.168.0.2:8765/jammy-server-cloudimg-amd64-disk-kvm.img"
+    format: "qcow2"
+    pool: "default"
+  - name: ubuntu-resolute
+    source: "http://192.168.0.2:8765/resolute-server-cloudimg-amd64.img"
     format: "qcow2"
     pool: "default"
   argocd:
@@ -31,6 +34,7 @@ iac:
       zone: "kube.ac"
       secret: "{{ lookup('ansible.builtin.env', 'DNS_KEY')|default() }}"
     metallb:
+      enabled: false
       #addresses: "127.0.0.1"
     longhorn:
       enabled: true
@@ -46,20 +50,21 @@ iac:
       enabled: false
     apps:
     #- kaboom-games-main.yaml
-    - python-rest-api-main.yaml
+    #- python-rest-api-main.yaml
     #- wordpress-main.yaml
     #- argo-combined-app.yaml
   rke2:
-    join_token: ivy-123456
+    join_token: ivy-234567
   k3s:
-    join_token: ivy-123456
+    join_token: ivy-234567
   hosts:
     s:
       count: 1
       roles:
-      - argocd
+      #- argocd
+      #- k3s
       #- kubernetes-tools
-      #- base
+      - base
       provider:
         name: ivy
       disks:
@@ -70,7 +75,7 @@ iac:
       networks:
 #      - name: "main"
       - bridge: "br0"
-        mac_prefix: "de:ad:01:01:01"
+        mac_prefix: "de:ad:01:02:00"
       resources:
         cpu: 4
         mem: 10000
