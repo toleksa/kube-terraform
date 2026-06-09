@@ -1,16 +1,13 @@
 iac:
-  name: "c5"
+  name: "c9"
   domain: "kube.ac"
   providers:
-  - name: "virtbox"
-    type: "libvirt"
-    config: "qemu+ssh://root@192.168.0.4/system"
   - name: "ivy"
     type: "libvirt"
     config: "qemu+ssh://root@192.168.0.3/system"
-  - name: "virtualbox"
-    type: "vbox"
-    config: "vbox://invalid_addr/hehe"
+  - name: "quelaag"
+    type: "libvirt"
+    config: "qemu+ssh://root@192.168.0.5/system"
   pools:
   - name: "default"
     path: "/virtualki"
@@ -22,8 +19,12 @@ iac:
     source: "http://192.168.0.2:8765/jammy-server-cloudimg-amd64-disk-kvm.img"
     format: "qcow2"
     pool: "default"
+  - name: ubuntu-resolute
+    source: "http://192.168.0.2:8765/resolute-server-cloudimg-amd64.img"
+    format: "qcow2"
+    pool: "default"
   argocd:
-    k8s_backend: rke2
+    k8s_backend: k3s
     dns:
       #enabled: false
       #host: 127.0.0.1
@@ -34,88 +35,59 @@ iac:
       zone: "kube.ac"
       secret: "{{ lookup('ansible.builtin.env', 'DNS_KEY')|default() }}"
     metallb:
+      enabled: false
       #addresses: "127.0.0.1"
     monitoring:
       enabled: true
     elk:
       enabled: false
+    neuvector:
+      enabled: true
+    kubecost:
+      enabled: true
     apps:
     - kaboom-games-main.yaml
     - python-rest-api-main.yaml
     - wordpress-main.yaml
   rke2:
-    join_token: multi-123456
+    join_token: multi-901234
   hosts:
     s:
       count: 3
       roles:
       - argocd
       provider:
-        name: virtbox
+        name: quelaag
       disks:
       - name: "root"
         size: "53687091200"
         pool: "default"
-        base_volume: "ubuntu-jammy"
+        base_volume: "ubuntu-resolute"
       networks:
       #- name: "main"
       - bridge: "br0"
-        mac_prefix: "de:ad:01:00:05"
+        mac_prefix: "de:ad:01:09:00"
       resources:
         cpu: 4
-        mem: 4500
-      user_data_pool: "default"
-      user_data:
-        prefer_fqdn_over_hostname: true
-        ssh_pwauth: True
-        chpasswd:
-          list: root:root
-          expire: False
+        mem: 6000
 
-        users:
-          - name: root
-            ssh_import_id:
-              - gh:toleksa
-
-        packages:
-          - qemu-guest-agent
-
-        runcmd:
-          - systemctl start qemu-guest-agent
     w:
       count: 3
       roles:
       - argocd
-      - rke2_worker
+      #- rke2_worker
+      - k3s_agent
       provider:
         name: ivy
       disks:
       - name: "root"
         size: "53687091200"
         pool: "default"
-        base_volume: "ubuntu-jammy"
+        base_volume: "ubuntu-resolute"
       networks:
       #- name: "main"
       - bridge: "br0"
-        mac_prefix: "de:ad:01:00:15"
+        mac_prefix: "de:ad:01:09:01"
       resources:
         cpu: 4
         mem: 4400
-      user_data_pool: "default"
-      user_data:
-        prefer_fqdn_over_hostname: true
-        ssh_pwauth: True
-        chpasswd:
-          list: root:root
-          expire: False
-
-        users:
-          - name: root
-            ssh_import_id:
-              - gh:toleksa
-
-        packages:
-          - qemu-guest-agent
-
-        runcmd:
-          - systemctl start qemu-guest-agent
