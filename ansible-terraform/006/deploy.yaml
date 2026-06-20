@@ -25,12 +25,12 @@
       #sleep: 1
       #timeout: 600
 
-- hosts: all
-  gather_facts: yes
-  tasks:
-  - name: debug ansible_facts['fqdn']
-    ansible.builtin.debug:
-      var: ansible_facts['fqdn']
+  - debug:
+      msg:
+        inventory_hostname: "{{ inventory_hostname }}"
+        ansible_host: "{{ ansible_host | default('unset') }}"
+        ansible_connection: "{{ ansible_connection }}"
+        ansible_user: "{{ ansible_user | default('unset') }}"
 
 - name: oci
   hosts: tag_ansible_group=oci

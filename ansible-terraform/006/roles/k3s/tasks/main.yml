@@ -26,10 +26,6 @@
   ansible.builtin.debug:
     var: JOIN_ADDR
 
-- name: debug ansible_fqdn
-  ansible.builtin.debug:
-    var: ansible_facts['fqdn']
-
 - name: create k3s config dir
   ansible.builtin.file:
     path: /etc/rancher/k3s
@@ -42,7 +38,7 @@
       token: "{{ hostvars.localhost.iac.k3s.join_token|default(hostvars.localhost.iac.name) }}"
       tls-san:
       - "{{ JOIN_ADDR }}"
-  when: ansible_facts['fqdn'] == JOIN_ADDR
+  when: inventory_hostname == JOIN_ADDR
 
 - name: create helm chart config dir
   ansible.builtin.file:
@@ -53,13 +49,13 @@
   ansible.builtin.template:
     src: "traefik.yaml"
     dest: "/var/lib/rancher/k3s/server/manifests/traefik-config.yaml"
-  when: ansible_facts['fqdn'] == JOIN_ADDR
+  when: inventory_hostname == JOIN_ADDR
 
 - name: k3s config
   ansible.builtin.template:
     src: "config.yaml"
     dest: "/etc/rancher/k3s/config.yaml"
-  when: ansible_facts['fqdn'] != JOIN_ADDR
+  when: inventory_hostname != JOIN_ADDR
 
 - name: get k3s installer
   ansible.builtin.get_url:
@@ -83,14 +79,14 @@
   - name: wait for master to be ready
     vars:
       _kubectl: "kubectl --kubeconfig /etc/rancher/k3s/k3s.yaml"
-    ansible.builtin.shell: "{{ _kubectl }} get nodes {{ ansible_facts['fqdn'] }}|cat"
+    ansible.builtin.shell: "{{ _kubectl }} get nodes {{ inventory_hostname }}|cat"
     changed_when: false
     ignore_errors: "{{ _ignore_errors|default(false) }}"
     register: _get_nodes
     check_mode: false
     until: '" Ready" in _get_nodes.stdout|default("")'
     retries: 120
-  when: ansible_facts['fqdn'] == JOIN_ADDR
+  when: inventory_hostname == JOIN_ADDR
 
 - name: set KUBECONFIG in /etc/bash.bashrc
   ansible.builtin.lineinfile:
@@ -153,12 +149,12 @@
     ignore_errors: yes
     when: "'k3s_agent' in group_names"
 
-  when: ansible_facts['fqdn'] != JOIN_ADDR
+  when: inventory_hostname != JOIN_ADDR
 
 - name: check if all nodes are online
   vars:
     _kubectl: "kubectl --kubeconfig /etc/rancher/k3s/k3s.yaml"
-  ansible.builtin.shell: "{{ _kubectl }} get nodes {{ ansible_facts['fqdn'] }}|cat"
+  ansible.builtin.shell: "{{ _kubectl }} get nodes {{ inventory_hostname }}|cat"
   changed_when: false
   ignore_errors: "{{ _ignore_errors|default(false) }}"
   register: _get_nodes
