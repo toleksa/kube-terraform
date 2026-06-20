@@ -129,11 +129,17 @@
     state: present
   when: "'rke2_worker' not in group_names"
 
+- name: Ensure kube directory exists
+  ansible.builtin.file:
+    path: /root/.kube
+    state: directory
+
 - name: ~/.kube/config
   ansible.builtin.file:
     src: /etc/rancher/rke2/rke2.yaml
     dest: /root/.kube/config
     state: link
+    force: true
   when: "'rke2_worker' not in group_names"
 
 - name: Set ingress as LoadBalancer
