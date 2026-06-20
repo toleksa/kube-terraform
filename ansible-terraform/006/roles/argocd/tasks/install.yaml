@@ -203,7 +203,9 @@
   - name: argocd app sync argocd-main
     ansible.builtin.shell: >
       argocd login --core
+      && kubectl config set-context --current --namespace argocd
       && argocd app sync argocd-main
+      && kubectl config set-context --current --namespace ''
     retries: 11
     delay: 5
     register: result
