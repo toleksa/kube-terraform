@@ -119,7 +119,8 @@
     src: /etc/rancher/k3s/k3s.yaml
     dest: /root/.kube/config
     state: link
-  when: inventory_hostname == JOIN_ADDR
+    force: yes
+  when: "'k3s_agent' not in group_names"
 
 - block:
   - name: set agent flag for installation
