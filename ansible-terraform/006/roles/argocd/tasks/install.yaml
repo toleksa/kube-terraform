@@ -164,6 +164,8 @@
     retries: 48 # Retries for 48 * 5 seconds = 240 seconds = 4 minutes
     delay: 5 # Every 5 seconds
     register: uri_output
+    #i guess it's not working on new rke2 version
+    when: hostvars.localhost.iac.argocd.k8s_backend != 'rke2'
 
   - name: argocd login
     ansible.builtin.shell: >
